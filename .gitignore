@@ -1,0 +1,9 @@
+.DS_Store
+*.DS_Store
+.git/
+.git/*
+*.zip
+*.gzip
+node_modules/
+node_modules/*
+*.log
