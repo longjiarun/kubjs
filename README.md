@@ -1,1 +1,1 @@
-### some thing very cool
+### something very cool
