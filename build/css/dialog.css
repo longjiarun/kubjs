@@ -205,6 +205,9 @@
   padding: 0.3em 2%;
   background: #ffffff;
 }
+.loader {
+  z-index: 10002;
+}
 .loader .dialog {
   width: 36%;
   margin: 0 32%;
