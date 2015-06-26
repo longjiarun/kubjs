@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Format Test</title>
+</head>
+<body>
+
+
+<script type="text/javascript" src="../build/js/date.js"></script>
+<script type="text/javascript">
+function test(){
+    var date  = new Date();
+
+    var str = date.format("yyyy-MM-dd,HH:mm:ss");
+
+    console.log(str);
+
+    console.log(str.parseDate("yyyy-MM-dd,HH:mm:ss").format("yyyy-MM-dd,HH:mm:ss"))
+
+}  
+test();
+</script>
+</body>
+</html>

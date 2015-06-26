@@ -1,0 +1,136 @@
+@import "animate";
+@import "common";
+@import "spinner";
+@white:#fff;
+@font-color:#333;
+@border-color:#eee;
+@border:1px solid @border-color;
+@font-size:16px;
+@m-size:0.75em;
+.kub-ofh{
+    overflow: hidden;
+    height: 100%;
+}
+.dialog-modal{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left:0;
+    right: 0;
+    width:100%;
+    z-index:10000;
+    display: none;
+}
+.modal{
+    background: rgba(0,0,0,0.6);
+}
+.dialog{
+    width:86%;
+    margin:0 7%;
+    position: absolute;
+    
+    font-size:@font-size;
+    background: @white;
+    border-radius: 6px;
+    color:@font-color;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: @border;
+    .dialog-button{
+        background: none;
+        border: none;
+        padding: 0.5em;
+        font-size:100%;
+        text-align: center;
+        display: inline-block;
+    }
+    .dialog-header{
+        padding:0.5em @m-size;
+        text-align: center;
+        border-bottom: @border;
+        .dialog-close{
+            float: right;
+            font-weight: bold;
+            line-height: 1;
+            font-size:1.2em;
+            color:#999;
+            padding:5px;
+            margin:-5px -5px 0 0;
+        }
+        &:hover{
+            color:@font-color;
+        }
+    }
+    .dialog-body{
+        padding:1.2em @m-size;
+    }
+    .dialog-footer{
+        border-top: @border;
+        .dialog-button{
+            width: 100%;
+            position: relative;
+            &:after{
+                position: absolute;
+                content: "";
+                display: block;
+                border-right: @border;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                height: 100%;
+            }
+            &:last-child:after {
+                display: none;
+            }
+        }
+    }
+
+    .column2 .dialog-button{
+        width: 50%;
+    }
+    .column3 .dialog-button{
+        width: 33.33%;
+    }
+    .column4 .dialog-button{
+        width: 25%;
+    }
+    .column5 .dialog-button{
+        width: 20%;
+    }
+}
+.toast{
+    position:fixed;
+    bottom: auto;
+    z-index:10001;
+    .dialog{
+        /*position: fixed;*/
+    }
+    .dialog-body{
+        padding: 0.5em @m-size;
+    }
+}
+.prompt .prompt-input{
+    font-size:100%;
+    margin-top:0.2em;
+    width: 96%;
+    border:@border;
+    padding: 0.3em 2%;
+    background: @white;
+}
+
+.loader{
+    .dialog{
+        width:36%;
+        margin:0 32%;
+        background-color:rgba(0,0,0,0.7);
+        border-radius: 0.8em;
+        border:none;
+        .loader-message{
+            color:@white;
+            text-align: center;
+            padding-top:0.2em;
+        }
+        .dialog-body{
+            padding:@m-size;
+        }
+    }
+}
