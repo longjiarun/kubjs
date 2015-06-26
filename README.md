@@ -12,4 +12,4 @@
 
 ####问题反馈
 
->给我发邮件 longjiarun@qq.com，或者 add some issues
+>给我发邮件 longjiarun@qq.com或者 add some issues
