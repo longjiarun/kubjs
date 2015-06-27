@@ -20,14 +20,21 @@
     width:100%;
     z-index:10000;
     display: none;
+
+    display: table;
+    height: 100%;
 }
 .modal{
     background: rgba(0,0,0,0.6);
 }
+.dialog-wrapper{
+    display: table-cell;
+    vertical-align: middle;
+}
 .dialog{
     width:86%;
     margin:0 7%;
-    position: absolute;
+    /*position: absolute;*/
     
     font-size:@font-size;
     background: @white;
@@ -62,6 +69,9 @@
     }
     .dialog-body{
         padding:1.2em @m-size;
+        img{
+            max-width: 100%;
+        }
     }
     .dialog-footer{
         border-top: @border;
@@ -98,11 +108,18 @@
     }
 }
 .toast{
-    position:fixed;
+    /*position:fixed;*/
     bottom: auto;
+    height: auto;
     z-index:10001;
+
+    display: block;
+
+    .dialog-wrapper{
+        display: block;
+    }
     .dialog{
-        /*position: fixed;*/
+        position: absolute;
     }
     .dialog-body{
         padding: 0.5em @m-size;

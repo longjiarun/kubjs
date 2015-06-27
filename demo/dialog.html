@@ -8,8 +8,11 @@
 </head>
 <body>
 
-
-
+<style type="text/css">
+    body{
+        height: 1000px;
+    }
+</style>
 <link rel="stylesheet" type="text/css" href="../build/css/dialog.css">
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/underscore.js"></script>
@@ -19,7 +22,6 @@
 <script type="text/javascript" src="../build/js/prompt.js"></script>
 <script type="text/javascript" src="../build/js/toast.js"></script>
 <script type="text/javascript" src="../build/js/loader.js"></script>
-
 <script type="text/javascript">
 function test(){
     //loading 弹窗，用于在loading时，阻塞用户行为
@@ -28,18 +30,13 @@ function test(){
     //3秒以后自动消失
     setTimeout(function(){
         loader.hide();
-    },3000)
+    },3000);
 
-    //6秒以后自动出现
-    setTimeout(function(){
-        loader.show();
-    },6000)
-
-
+    //1.5s以后消失
     var toast = new Toast({
-        message:"Loading"
+        message:"Loading",
+        delay:1500
     });
-
 
     //弹窗
     //可定制多个按钮
@@ -61,12 +58,8 @@ function test(){
     });
     console.log(dialog)
 
-
-    return;
-    
-
     var alert = new Alert({
-        message:"这是个Alert",
+        message:'这是个Alert<img data-src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" data-done="true">',
         //可定制
         locale:"en",
         confirm:function(e,dialog){
@@ -77,8 +70,6 @@ function test(){
         }
     });
     console.log(alert);
-    //return;
-
 
     var prompt = new Prompt({
         message:"这是个prompt:",
@@ -106,10 +97,8 @@ function test(){
         }
     });
     console.log(prompt);
-
 }  
 test();
-
 </script>
 </body>
 </html>
