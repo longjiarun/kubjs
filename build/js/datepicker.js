@@ -11,8 +11,6 @@
     var DatePicker = function(element,options){
         this.$element = $(element);
         this.options = $.extend({},DatePicker.prototype.defaults,options || {});
-
-        console.log(options)
         this._init();
     };
 
@@ -60,37 +58,7 @@
             return self;
         };
 
-        this.scroll = function(handler){
-            var self = this,options = self.options;
-
-            //初始化hammer事件
-            var hammer = new Hammer(handler[0]),
-                $ul = handler.find("ul"),rows,
-                y = handler[0].y,height;
         
-            //监听拖动开始事件
-            hammer.get("pan").set({
-                threshold: 0
-            });
-            hammer.on("panstart",function(event){
-                rows = 0;
-            }).on("panmove",function(event){
-                self.setTranslate($ul, y + event.deltaY  +"px",0.5);
-                event.srcEvent.preventDefault();
-                event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
-            }).on("panend",function(event){
-
-                height = $ul.find("li").eq(0).height();
-                rows = -self.getRows(y + event.deltaY, height,$ul.find("li").length);
-                self.setTranslate($ul, rows * height +"px",0.5);
-
-                handler[0].y = y = rows * height;
-                handler[0].rows = Math.abs(rows);
-            })
-            .on("pancancel",function(event){
-                console.log("cancel")
-            });
-        };
 
         this.getRows = function(y,height,maxRows){
             maxRows = maxRows-3;
@@ -118,21 +86,58 @@
 
             self.ui.columns = self.dialog.$element.find(".date-column");
 
-            self.setDate(options.date)
+            self.setDate(options.date);
+
             self.ui.columns.each(function(){
-                self.scroll($(this));
+                self._scroll($(this));
             });
         };
 
-        this._setColumnY = function($this,value){
-            var rows, $ul = $this.find(VALUECONTAINERTAG);     
+        this._scroll = function(handler){
+            var self = this,options = self.options;
 
-            rows = -($ul.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
+            //初始化hammer事件
+            var hammer = new Hammer(handler[0]),
+                $valueContainer = handler.find(VALUECONTAINERTAG),rows,
+                y = handler[0].y,height;
+        
+            //监听拖动开始事件
+            hammer.get("pan").set({
+                threshold: 0
+            });
+            hammer.on("panstart",function(event){
+                rows = 0;
+            }).on("panmove",function(event){
+                self.setTranslate($valueContainer, y + event.deltaY  +"px",0.5);
+                event.srcEvent.preventDefault();
+                event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
+            }).on("panend",function(event){
+                height = $valueContainer.find(VALUETAG).eq(0).height();
 
-            this.setTranslate($ul, rows * HEIGHTUNIT +"px",0);
+                rows = -self.getRows(y + event.deltaY, height,$valueContainer.find(VALUETAG).length);
 
+                self.setTranslate($valueContainer, rows * height +"px",0.5);
+
+                self._storeData(handler,rows);
+            });
+            return this;
+        };
+
+        this._storeData = function($this,rows){
             $this[0].y = rows * HEIGHTUNIT;
             $this[0].rows = Math.abs(rows);
+            return this;
+        };
+
+        this._setTranslateByValue = function($this,value){
+            var rows, $valueContainer = $this.find(VALUECONTAINERTAG);     
+
+            rows = -($valueContainer.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
+
+            this.setTranslate($valueContainer, rows * HEIGHTUNIT +"px",0);
+
+            this._storeData($this,rows);
+            return this;
         };
 
         this.setDate = function(date){
@@ -142,22 +147,22 @@
                 var $this = $(this),type = $this.attr("data-type");
                 switch(type){
                     case "year":
-                        self._setColumnY($this,date.getFullYear());
+                        self._setTranslateByValue($this,date.getFullYear());
                         break;
                     case "month":
-                        self._setColumnY($this,date.getMonth());
+                        self._setTranslateByValue($this,date.getMonth());
                         break;
                     case "day":
-                        self._setColumnY($this,date.getDate());
+                        self._setTranslateByValue($this,date.getDate());
                         break;
                     case "hour":
-                        self._setColumnY($this,date.getHours());
+                        self._setTranslateByValue($this,date.getHours());
                         break;
                     case "minute":
-                        self._setColumnY($this,date.getMinutes());
+                        self._setTranslateByValue($this,date.getMinutes());
                         break;
                     case "second":
-                        self._setColumnY($this,date.getSeconds());
+                        self._setTranslateByValue($this,date.getSeconds());
                         break;
                 }
             });

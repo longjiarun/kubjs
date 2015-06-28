@@ -157,26 +157,19 @@
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/underscore.js"></script>
 <script type="text/javascript" src="../build/js/lib/hammer.js"></script>
-<script type="text/javascript" src="../build/js/calculator.js"></script>
-
 <script type="text/javascript" src="../build/js/dialog.js"></script>
 <script type="text/javascript" src="../build/js/date.js"></script>
-
 <script type="text/javascript" src="../build/js/datepicker.js"></script>
 <script type="text/javascript">
     
 
 function test(){
-    //try{
-        var datepicker = new DatePicker($("body"),{
-            title:"选择时间",
-            confirm:function(e,datepicker){
-                console.log(datepicker.date)
-            }
-        });
-    //}catch(e){
-    //    alert(e.message)
-    //}
+    var datepicker = new DatePicker($("body"),{
+        title:"选择时间",
+        confirm:function(e,datepicker){
+            console.log(datepicker.date)
+        }
+    });
 }  
 test();
 </script>
