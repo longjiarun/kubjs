@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatePicker Test</title>
+    <style type="text/css">
+    .wrapper{
+        width:300px;
+        margin: 200px auto;
+        text-align: center;
+    }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="../build/css/dialog.css">
+    <link rel="stylesheet" type="text/css" href="../build/css/datepicker.css">
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="datepicker">
+        <div class="date-column year">
+            <ul>
+                <li data-value="2015">2012</li>
+                <li data-value="2015" class="active">2013</li>
+                <li data-value="2015">2014</li>
+                <li data-value="2015">2015</li>
+                <li data-value="2015">2016</li>
+                <li data-value="2015">2017</li>
+                <li data-value="2015">2018</li>
+            </ul>
+        </div>
+        <div class="date-column month">
+            <ul>
+                <li data-value="2015">04</li>
+                <li data-value="2015" class="active">05</li>
+                <li data-value="2015">06</li>
+                <li data-value="2015">07</li>
+                <li data-value="2015">08</li>
+                <li data-value="2015">09</li>
+                <li data-value="2015">10</li>
+            </ul>
+        </div>
+        <div class="date-column day">
+            <ul>
+                <li data-value="2015">11</li>
+                <li data-value="2015" class="active">12</li>
+                <li data-value="2015">13</li>
+                <li data-value="2015">14</li>
+                <li data-value="2015">15</li>
+                <li data-value="2015">16</li>
+                <li data-value="2015">17</li>
+            </ul>
+        </div>
+        <div class="date-column hour">
+            <ul>
+                <li data-value="2015">11</li>
+                <li data-value="2015" class="active">12</li>
+                <li data-value="2015">13</li>
+                <li data-value="2015">14</li>
+                <li data-value="2015">15</li>
+                <li data-value="2015">16</li>
+                <li data-value="2015">17</li>
+            </ul>
+        </div>
+        <div class="date-column minute">
+            <ul>
+                <li data-value="2015">11</li>
+                <li data-value="2015" class="active">12</li>
+                <li data-value="2015">13</li>
+                <li data-value="2015">14</li>
+                <li data-value="2015">15</li>
+                <li data-value="2015">16</li>
+                <li data-value="2015">17</li>
+            </ul>
+        </div>
+        <div class="date-column second">
+            <ul>
+                <li data-value="2015">11</li>
+                <li data-value="2015" class="active">12</li>
+                <li data-value="2015">13</li>
+                <li data-value="2015">14</li>
+                <li data-value="2015">15</li>
+                <li data-value="2015">16</li>
+                <li data-value="2015">17</li>
+            </ul>
+        </div>
+        <div class="overlay"></div>
+    </div>
+</div>
+
+
+
+<script type="text/html" id="J_template">
+    
+    <div class="datepicker">
+        <div class="date-column year" data-type="year">
+            <ul>
+                <li></li>
+                <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%>
+                    <li data-value="<%= i%>"><%= i%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="date-column month"  data-type="month">
+            <ul>
+                <li></li>
+                <%for(var i= 1;i<=12;i++){%>
+                    <li data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="date-column day"  data-type="day">
+            <ul>
+                <li></li>
+                <%for(var i= 1;i<=31;i++){%>
+                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="date-column hour"  data-type="hour">
+            <ul>
+                <li></li>
+                <%for(var i= 0;i<=59;i++){%>
+                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="date-column minute"  data-type="minute">
+            <ul>
+                <li></li>
+                <%for(var i= 0;i<=59;i++){%>
+                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="date-column second"  data-type="second">
+            <ul>
+                <li></li>
+                <%for(var i= 0;i<=59;i++){%>
+                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                <%}%>
+                <li></li>
+            </ul>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+
+</script>
+<script type="text/javascript" src="../build/js/lib/zepto.js"></script>
+<script type="text/javascript" src="../build/js/lib/underscore.js"></script>
+<script type="text/javascript" src="../build/js/lib/hammer.js"></script>
+<script type="text/javascript" src="../build/js/calculator.js"></script>
+
+<script type="text/javascript" src="../build/js/dialog.js"></script>
+<script type="text/javascript" src="../build/js/date.js"></script>
+
+<script type="text/javascript" src="../build/js/datepicker.js"></script>
+<script type="text/javascript">
+    
+
+function test(){
+    //try{
+        var datepicker = new DatePicker($("body"),{
+            title:"选择时间",
+            confirm:function(e,datepicker){
+                console.log(datepicker.date)
+            }
+        });
+    //}catch(e){
+    //    alert(e.message)
+    //}
+}  
+test();
+</script>
+</body>
+</html>

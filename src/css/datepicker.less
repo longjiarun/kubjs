@@ -1,0 +1,98 @@
+@import "animate";
+@import "common";
+
+@height:38px;
+@padding:0.6em;
+@font-size:16px;
+.datepicker-dialog{
+    .dialog-body{
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+}
+.datepicker{
+    font-size:@font-size;
+    position: relative;
+    color:#333;
+    text-align: center;
+    white-space:nowrap;
+    .overlay{
+        position: absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        height:@height*3 ;
+        
+        width: 100%;
+        z-index:-1;
+
+        top:@height;
+        height: @height;
+        box-shadow: 0 0 @height*2 rgba(0,0,0,0.3);
+        border-radius: 6px;
+    }
+    ul,li{
+        list-style:none;
+        margin:0;
+        padding: 0;
+    }
+    .date-column {
+        position: relative;
+        top:0;
+        height: @height * 3;
+        padding:0 @padding; 
+        display: inline-block;
+        overflow:hidden;
+        &:after{
+            position: absolute;
+            font-size:0.5em;
+            top:@height;
+            right:0
+        } 
+        .date-column-scroll{
+            height: @height * 3;
+            width:80px;
+            text-align: left;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        ul{
+            /*transform: translate(0,1.5em);*/
+            /*transition:all 0.5s ease-out;*/
+            -webkit-transition-property:all;
+            transition-property:all;
+            -webkit-transition-timing-function:ease-out;
+            transition-timing-function:ease-out;
+            -webkit-transition-duration:0.5s;
+            transition-duration:0.5s;
+            li{
+                line-height: @height;
+                height:@height;
+                
+                opacity: 0.6;
+            }
+            .active{
+                opacity: 1;
+            }
+        }
+    }
+    
+    .year:after{
+        content:"年";
+    }
+    .month:after{
+        content:"月";
+    }
+    .day:after{
+        content:"日";
+    }
+    .hour:after{
+        content:"时";
+    }
+    .minute:after{
+        content:"分";
+    }
+    .second:after{
+        content:"秒";
+    }
+}
