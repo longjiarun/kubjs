@@ -39,7 +39,7 @@
             delay:2000
         };
         this.setPosition = function(){
-            this.$dialog.css({
+            this.$element.css({
                 top:this.options.top
             });
             return this;

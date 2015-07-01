@@ -14,13 +14,11 @@
         this.options = $.extend({},DatePicker.prototype.defaults,options || {});
 
 
-        this.$element.on("focus",function(e){
+        this.$element.on("click",function(e){
+            self.$element[0].blur();
             !self.completed ? self._init() : self.dialog.show();
-            
-            e.preventDefault();
             return false;
         });
-        
     };
 
     var HEIGHTUNIT = 38,DURATION=0.3,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = $("#J_template").html();
@@ -135,6 +133,11 @@
                 $valueContainer = handler.find(VALUECONTAINERTAG),rows,timer,
                 y = handler[0].y,height, shouldSetDays = handler.hasClass("month") || handler.hasClass("year");
             
+
+            
+
+            return false;
+
             //监听拖动开始事件
             hammer.get("pan").set({
                 threshold: 0
@@ -163,12 +166,12 @@
                 event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
                 event.returnValue = false;
             });
+
+
+
+
             return this;
         };
-
-
-
-
 
         this._setDays = function(){
             var self = this,days = self.getDays(self.getValue("year"),self.getValue("month")),day = self.getValue("day"),
