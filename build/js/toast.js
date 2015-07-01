@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.Dialog);
+            return root.Toast = factory(root,root.Dialog);
         });
     }else {
         root.Toast = factory(root,root.Dialog);

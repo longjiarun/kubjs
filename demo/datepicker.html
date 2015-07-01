@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>DatePicker Test</title>
     <style type="text/css">
     .wrapper{
@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="../build/css/datepicker.css">
 </head>
 <body>
+<input type="text" id="J_datepicker"/>
 
 <div class="wrapper">
     <div class="datepicker">
@@ -97,56 +98,56 @@
     <div class="datepicker">
         <div class="date-column year" data-type="year">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%>
-                    <li data-value="<%= i%>"><%= i%></li>
+                    <li class="show" data-value="<%= i%>"><%= i%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="date-column month"  data-type="month">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i= 1;i<=12;i++){%>
-                    <li data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="date-column day"  data-type="day">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i= 1;i<=31;i++){%>
-                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="date-column hour"  data-type="hour">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="date-column minute"  data-type="minute">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="date-column second"  data-type="second">
             <ul>
-                <li></li>
+                <li class="show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li></li>
+                <li class="show"></li>
             </ul>
         </div>
         <div class="overlay"></div>
@@ -164,11 +165,12 @@
     
 
 function test(){
-    var datepicker = new DatePicker($("body"),{
+    var datepicker = new DatePicker($("#J_datepicker"),{
         title:"选择时间",
-        confirm:function(e,datepicker){
+        format:"yyyy-MM-dd",
+        /*confirm:function(e,datepicker){
             console.log(datepicker.date)
-        }
+        }*/
     });
 }  
 test();

@@ -30,7 +30,7 @@
 !(function(root, factory) {
     if (typeof define === "function") {
         define(function() {
-            return factory(root);
+            return root.dateHelper = factory(root);
         });
     } else if (typeof exports !== 'undefined') {
         module.exports = factory(root);

@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.jQuery||root.Zepto,root._,root.Hammer,root.Dialog,root.dateHelper);
+            return root.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,root.Dialog,root.dateHelper);
         });
     }else {
         root.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,root.Dialog,root.dateHelper);
@@ -9,12 +9,21 @@
 }(this,function(root,$,_,Hammer,Dialog){
     "use strict";
     var DatePicker = function(element,options){
+        var self =this;
         this.$element = $(element);
         this.options = $.extend({},DatePicker.prototype.defaults,options || {});
-        this._init();
+
+
+        this.$element.on("focus",function(e){
+            !self.completed ? self._init() : self.dialog.show();
+            
+            e.preventDefault();
+            return false;
+        });
+        
     };
 
-    var HEIGHTUNIT = 38,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = $("#J_template").html();
+    var HEIGHTUNIT = 38,DURATION=0.3,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = $("#J_template").html();
     ;(function(){
         this.constructor = DatePicker;
         this.defaults = {
@@ -44,21 +53,24 @@
                 buttons:[{
                     text:Dialog.prototype.i18n[options.locale].ok,
                     handler:function(e,dialog){
-                        self.date = self.getDate().format(options.format);
-                        options.confirm && options.confirm.call(this,e,self);
+                        self.date = self.getDate();
+                        self.formatDate = self.date.format(options.format);
+
+                        options.confirm ? options.confirm.call(this,e,self) : function(){
+                            self.$element.val(self.formatDate);
+                            dialog.hide();
+                        }();
                     }
                 },{
                     text:Dialog.prototype.i18n[options.locale].cancel,
                     handler:function(e,dialog){
-                        options.cancel ? options.cancel.call(this,e,self) : dialog.close();
+                        options.cancel ? options.cancel.call(this,e,self) : dialog.hide();
                     }
                 }]
             });
             self.completed = true;
             return self;
         };
-
-        
 
         this.getRows = function(y,height,maxRows){
             maxRows = maxRows-3;
@@ -69,8 +81,9 @@
 
         this.setTranslate = function($this,y,duration){
             $this.css({
-                "-webkit-transform":"translate(0,"+y+")",
-                "transform":"translate(0,"+y+")",
+                top:y,
+                //"-webkit-transform":"translate(0,"+y+")",
+                //"transform":"translate(0,"+y+")",
                 "-webkit-transition-duration":duration+"s",
                 "transition-duration":duration+"s"
             });
@@ -80,9 +93,19 @@
         this._init = function(){
             var self = this,options = self.options;
 
+
             self.render();
 
-            self.ui = {};
+            self.ui = {
+                year:self.dialog.$element.find(".year"),
+                month:self.dialog.$element.find(".month"),
+                day:self.dialog.$element.find(".day"),
+                hour:self.dialog.$element.find(".hour"),
+                minute:self.dialog.$element.find(".minute"),
+                second:self.dialog.$element.find(".second")
+            };
+
+            self._initUi();
 
             self.ui.columns = self.dialog.$element.find(".date-column");
 
@@ -93,34 +116,66 @@
             });
         };
 
+        this._initUi = function(){
+            var self = this,options = self.options;
+            options.format.indexOf("y") === -1 && self.ui.year.remove();
+            options.format.indexOf("M") === -1 && self.ui.month.remove();
+            options.format.indexOf("d") === -1 && self.ui.day.remove();
+            options.format.indexOf("H") === -1 && self.ui.hour.remove();
+            options.format.indexOf("m") === -1 && self.ui.minute.remove();
+            options.format.indexOf("s") === -1 && self.ui.second.remove();
+            return self;
+        };
+
         this._scroll = function(handler){
             var self = this,options = self.options;
 
             //初始化hammer事件
             var hammer = new Hammer(handler[0]),
-                $valueContainer = handler.find(VALUECONTAINERTAG),rows,
-                y = handler[0].y,height;
-        
+                $valueContainer = handler.find(VALUECONTAINERTAG),rows,timer,
+                y = handler[0].y,height, shouldSetDays = handler.hasClass("month") || handler.hasClass("year");
+            
             //监听拖动开始事件
             hammer.get("pan").set({
                 threshold: 0
             });
             hammer.on("panstart",function(event){
                 rows = 0;
+                y = handler[0].y;
             }).on("panmove",function(event){
-                self.setTranslate($valueContainer, y + event.deltaY  +"px",0.5);
+                self.setTranslate($valueContainer, y + event.deltaY  +"px",0);
+
+
                 event.srcEvent.preventDefault();
                 event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
+                event.returnValue = false;
             }).on("panend",function(event){
-                height = $valueContainer.find(VALUETAG).eq(0).height();
-
-                rows = -self.getRows(y + event.deltaY, height,$valueContainer.find(VALUETAG).length);
-
-                self.setTranslate($valueContainer, rows * height +"px",0.5);
+                rows = -self.getRows(y + event.deltaY, HEIGHTUNIT , $valueContainer.find(".show").length);
+        
+                self.setTranslate($valueContainer, rows * HEIGHTUNIT +"px",DURATION);
 
                 self._storeData(handler,rows);
+
+                shouldSetDays && self._setDays();
+
+
+                event.srcEvent.preventDefault();
+                event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
+                event.returnValue = false;
             });
             return this;
+        };
+
+
+
+
+
+        this._setDays = function(){
+            var self = this,days = self.getDays(self.getValue("year"),self.getValue("month")),day = self.getValue("day"),
+                $lis = self.ui.day.find(VALUETAG);
+
+            $lis.addClass("show").slice(days+1,$lis.length-1).removeClass("show");
+            days < day && self._setTranslateByValue("day",days);
         };
 
         this._storeData = function($this,rows){
@@ -129,8 +184,8 @@
             return this;
         };
 
-        this._setTranslateByValue = function($this,value){
-            var rows, $valueContainer = $this.find(VALUECONTAINERTAG);     
+        this._setTranslateByValue = function(name,value){
+            var $this = this.ui[name], rows, $valueContainer = $this.find(VALUECONTAINERTAG);     
 
             rows = -($valueContainer.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
 
@@ -142,31 +197,34 @@
 
         this.setDate = function(date){
             var self = this,options = self.options;
-
-            self.ui.columns.each(function(){
-                var $this = $(this),type = $this.attr("data-type");
+            ["year","month","day","hour","minute","second"].forEach(function(type){
                 switch(type){
                     case "year":
-                        self._setTranslateByValue($this,date.getFullYear());
+                        self._setTranslateByValue(type,date.getFullYear());
                         break;
                     case "month":
-                        self._setTranslateByValue($this,date.getMonth());
+                        self._setTranslateByValue(type,date.getMonth());
                         break;
                     case "day":
-                        self._setTranslateByValue($this,date.getDate());
+                        self._setTranslateByValue(type,date.getDate());
                         break;
                     case "hour":
-                        self._setTranslateByValue($this,date.getHours());
+                        self._setTranslateByValue(type,date.getHours());
                         break;
                     case "minute":
-                        self._setTranslateByValue($this,date.getMinutes());
+                        self._setTranslateByValue(type,date.getMinutes());
                         break;
                     case "second":
-                        self._setTranslateByValue($this,date.getSeconds());
+                        self._setTranslateByValue(type,date.getSeconds());
                         break;
                 }
             });
             return self;
+        };
+
+        this.getValue = function(name){
+            var $this = this.ui[name];
+            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].rows + 1 ).attr("data-value") ) :0;
         };
 
         this.getDate = function(){
@@ -180,8 +238,7 @@
                     second:0
                 };
             for(var name in values){
-                $this = self.dialog.$element.find("."+name);
-                values[name] = parseInt( $this.find(VALUETAG).eq( $this[0].rows + 1 ).attr("data-value") );
+                values[name] = self.getValue(name);
             }
             return new Date(values.year,values.month,values.day,values.hour,values.minute,values.second);
         };

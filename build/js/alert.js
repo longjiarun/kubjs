@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.Dialog);
+            return root.Alert = factory(root,root.Dialog);
         });
     }else {
         root.Alert = factory(root,root.Dialog);

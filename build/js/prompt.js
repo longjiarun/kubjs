@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root._,root.Dialog);
+            return root.Prompt = factory(root,root._,root.Dialog);
         });
     }else {
         root.Prompt = factory(root,root._,root.Dialog);

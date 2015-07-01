@@ -3,16 +3,17 @@
 @import "spinner";
 @white:#fff;
 @font-color:#333;
-@border-color:#eee;
+@border-color:#f4f4f4;
 @border:1px solid @border-color;
-@font-size:16px;
+@font-size:18px;
 @m-size:0.75em;
+@header-padding-top:0.75em;
 .kub-ofh{
     overflow: hidden;
-    height: 100%;
+    margin:0;
 }
 .dialog-modal{
-    position: fixed;
+    position: absolute;
     top:0;
     bottom: 0;
     left:0;
@@ -23,6 +24,8 @@
 
     display: table;
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .modal{
     background: rgba(0,0,0,0.6);
@@ -45,15 +48,16 @@
     .dialog-button{
         background: none;
         border: none;
-        padding: 0.5em;
+        padding: @header-padding-top 0;
         font-size:100%;
         text-align: center;
         display: inline-block;
     }
     .dialog-header{
-        padding:0.5em @m-size;
+        padding:@header-padding-top @m-size;
         text-align: center;
-        border-bottom: @border;
+        /*border-bottom: @border;*/
+        background: @border-color;
         .dialog-close{
             float: right;
             font-weight: bold;
@@ -68,7 +72,7 @@
         }
     }
     .dialog-body{
-        padding:1.2em @m-size;
+        padding:1.4em @m-size;
         img{
             max-width: 100%;
         }
@@ -108,18 +112,20 @@
     }
 }
 .toast{
-    /*position:fixed;*/
+    position:fixed;
     bottom: auto;
     height: auto;
-    z-index:10001;
-
+    z-index:10003;
     display: block;
-
+    overflow:initial;
+    
     .dialog-wrapper{
         display: block;
     }
     .dialog{
+        border:1px solid rgba(0,0,0,0.1);
         position: absolute;
+        
     }
     .dialog-body{
         padding: 0.5em @m-size;

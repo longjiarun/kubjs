@@ -3,16 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>Dialog Test</title>
 </head>
 <body>
 
+<div style="margin-top:900px;">
+    <button id="J_button">打开弹窗</button>
+</div>
 <style type="text/css">
     body{
-        height: 1000px;
+        height: 10000px;
     }
 </style>
+<script type="text/html" id="J_dialogTemplate">
+    
+    <div class="dialog-modal <%= data.className%> <%if( data.modal ){%> modal <%}%>"> <div class="dialog-wrapper"> <div class="dialog-container"><div class="dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="dialog-button dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="dialog-footer column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>
+</script>
 <link rel="stylesheet" type="text/css" href="../build/css/dialog.css">
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/underscore.js"></script>
@@ -22,14 +29,17 @@
 <script type="text/javascript" src="../build/js/prompt.js"></script>
 <script type="text/javascript" src="../build/js/toast.js"></script>
 <script type="text/javascript" src="../build/js/loader.js"></script>
+
 <script type="text/javascript">
 function test(){
     //loading 弹窗，用于在loading时，阻塞用户行为
-    var loader = new Loader();
+    //var loader = new Loader();
+
+
 
     //3秒以后自动消失
     setTimeout(function(){
-        loader.hide();
+        //loader.hide();
     },3000);
 
     //1.5s以后消失
@@ -38,9 +48,11 @@ function test(){
         delay:1500
     });
 
+    //return false;
+
     //弹窗
     //可定制多个按钮
-    var dialog = new Dialog({
+    /*var dialog = new Dialog({
         message:"这是个弹窗",
         title:"弹窗",
         buttons:[{
@@ -56,20 +68,27 @@ function test(){
             }
         }]
     });
-    console.log(dialog)
+    console.log(dialog)*/
 
-    var alert = new Alert({
-        message:'这是个Alert<img data-src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" data-done="true">',
-        //可定制
-        locale:"en",
-        confirm:function(e,dialog){
-            //可定制确定按钮
-            //如果定制confirm事件，则必须手动关闭对话框
-            //手动关闭对话框
-            dialog.close();
-        }
+    
+
+    $("#J_button").on("click",function(){
+        var alert = new Alert({
+            message:'这是个Alert<img data-src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" data-done="true"><input type="text" style="margin-top:300px;"/>',
+            //可定制
+            locale:"en",
+            confirm:function(e,dialog){
+                //可定制确定按钮
+                //如果定制confirm事件，则必须手动关闭对话框
+                //手动关闭对话框
+                dialog.close();
+            }
+        });
+        console.log(alert);
     });
-    console.log(alert);
+
+    return false
+
 
     var prompt = new Prompt({
         message:"这是个prompt:",

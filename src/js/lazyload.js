@@ -5,7 +5,7 @@
 !(function(root,factory){
     if(typeof define === "function"){
         define(function(){
-            return factory(root,root.jQuery||root.Zepto);
+            return root.LazyLoad=factory(root,root.jQuery||root.Zepto);
         });
     }else{
         root.LazyLoad=factory(root,root.jQuery||root.Zepto);

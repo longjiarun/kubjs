@@ -22,6 +22,7 @@ gulp.task("css",function(){
     return gulp.src([src+"/**/*.less"])
         .pipe(less())
         .pipe(gulp.dest(build))
+        .pipe(minifyCss())
         .on("end",function(){
             
         })
@@ -32,12 +33,8 @@ gulp.task("css",function(){
 
 gulp.task("js",function(){
     return gulp.src([src+"/**/*.js"])
-        .pipe(gulp.dest(build)) 
-        .pipe(uglify())
-        /*.pipe(rename(function(path){
-            path.basename +=".min";
-        }))
-        .pipe(gulp.dest(build))*/
+        //.pipe(uglify())
+        .pipe(gulp.dest(build))
         .on("end",function(){
             
         })
@@ -49,6 +46,7 @@ gulp.task("js",function(){
 gulp.task("default",["css","js"],function(){
 
 });
+
 gulp.task("watch",["default"],function(){
     gulp.watch([src+"/**/*.less"],function(){
         gulp.start("css")

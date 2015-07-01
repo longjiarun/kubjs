@@ -55,7 +55,7 @@
             text-align: left;
             overflow-y: auto;
             overflow-x: hidden;
-        }
+        }   
         ul{
             /*transform: translate(0,1.5em);*/
             /*transition:all 0.5s ease-out;*/
@@ -63,20 +63,27 @@
             transition-property:all;
             -webkit-transition-timing-function:ease-out;
             transition-timing-function:ease-out;
-            -webkit-transition-duration:0.5s;
-            transition-duration:0.5s;
+            -webkit-transition-duration:0s;
+            transition-duration:0s;
+            
+            position: relative;
+            top:0px;
             li{
                 line-height: @height;
                 height:@height;
                 
-                opacity: 0.6;
+                opacity: 0.8;
+                display: none;
+            }
+            .show{
+                display: block;
             }
             .active{
                 opacity: 1;
             }
         }
     }
-    
+
     .year:after{
         content:"年";
     }

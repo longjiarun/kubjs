@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.jQuery||root.Zepto,root._);
+            return root.Dialog = factory(root,root.jQuery||root.Zepto,root._);
         });
     }else {
         root.Dialog = factory(root,root.jQuery||root.Zepto,root._);

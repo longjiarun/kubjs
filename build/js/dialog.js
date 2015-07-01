@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.jQuery||root.Zepto,root._);
+            return root.Dialog = factory(root,root.jQuery||root.Zepto,root._);
         });
     }else {
         root.Dialog = factory(root,root.jQuery||root.Zepto,root._);
@@ -20,7 +20,8 @@
         DIALOGID = "J_dialog" , 
         DIALOGCLOSEID = "J_dialogClose",
         DIALOGBUTTONCLASS = "J_dialogButton",
-        TEMPLATE = '<div class="dialog-modal <%= data.className%> <%if( data.modal ){%> modal <%}%>"> <div class="dialog-wrapper"> <div class="dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="dialog-button dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="dialog-footer column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div> </div>'
+        TEMPLATE = $("#J_dialogTemplate").html();
+        //TEMPLATE = '<div class="dialog-modal <%= data.className%> <%if( data.modal ){%> modal <%}%>"> <div class="dialog-wrapper"> <div class="dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="dialog-button dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="dialog-footer column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div> </div>'
 
     ;(function(){
         this.constructor = Dialog;

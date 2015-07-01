@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root.Dialog);
+            return root.Confirm = factory(root,root.Dialog);
         });
     }else {
         root.Confirm = factory(root,root.Dialog);
@@ -12,13 +12,13 @@
         this.options = $.extend({},this.defaults, options||{});
 
         this.options.buttons = [{
-            text:this.i18n[this.options.locale].ok,
-            handler: this.options.confirm
-        },{
             text:this.i18n[this.options.locale].cancel,
             handler: this.options.cancel || function(e,dialog){
                 dialog.close();
             }
+        },{
+            text:this.i18n[this.options.locale].ok,
+            handler: this.options.confirm
         }];
 
         Dialog.call(this,this.options);

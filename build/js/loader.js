@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root._,root.Dialog);
+            return root.Loader = factory(root,root._,root.Dialog);
         });
     }else {
         root.Loader = factory(root,root._,root.Dialog);
@@ -13,7 +13,7 @@
             showHeader:false,
             buttons:null,
             modal:false,
-            scrollable:true
+            scrollable:false
         });
         
         this.options.message = _.template(TEMPLATE)({data:this.options});
