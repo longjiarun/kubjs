@@ -24,7 +24,8 @@
         height:@height*3 ;
         
         width: 100%;
-        z-index:-1;
+        z-index:0;
+        border:1px solid rgba(0,0,0,0.1);
 
         top:@height;
         height: @height;
@@ -43,6 +44,7 @@
         padding:0 @padding; 
         display: inline-block;
         overflow:hidden;
+        z-index:10;
         &:after{
             position: absolute;
             font-size:0.5em;
@@ -55,19 +57,17 @@
             text-align: left;
             overflow-y: auto;
             overflow-x: hidden;
-        }   
+        }
+        
         ul{
             /*transform: translate(0,1.5em);*/
             /*transition:all 0.5s ease-out;*/
-            -webkit-transition-property:all;
+            /*-webkit-transition-property:all;
             transition-property:all;
             -webkit-transition-timing-function:ease-out;
             transition-timing-function:ease-out;
             -webkit-transition-duration:0s;
-            transition-duration:0s;
-            
-            position: relative;
-            top:0px;
+            transition-duration:0s;*/
             li{
                 line-height: @height;
                 height:@height;
@@ -101,5 +101,10 @@
     }
     .second:after{
         content:"秒";
+    }
+}
+.datepicker-dialog{
+    .dialog-body{
+        padding: 0.75em;
     }
 }

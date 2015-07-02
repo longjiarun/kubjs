@@ -13,7 +13,6 @@
         this.$element = $(element);
         this.options = $.extend({},DatePicker.prototype.defaults,options || {});
 
-
         this.$element.on("click",function(e){
             self.$element[0].blur();
             !self.completed ? self._init() : self.dialog.show();
@@ -21,13 +20,15 @@
         });
     };
 
-    var HEIGHTUNIT = 38,DURATION=0.3,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = $("#J_template").html();
+    var HEIGHTUNIT = 38,DURATION=0.5,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = '<div class="datepicker"> <div class="date-column year" data-type="year"> <ul> <li class="show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column month"  data-type="month"> <ul> <li class="show"></li> <%for(var i= 1;i<=12;i++){%> <li class="show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column day"  data-type="day"> <ul> <li class="show"></li> <%for(var i= 1;i<=31;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column hour"  data-type="hour"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column minute"  data-type="minute"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column second"  data-type="second"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="overlay"></div> </div>';
+
     ;(function(){
         this.constructor = DatePicker;
+
         this.defaults = {
             locale:"zh",
             title:"选择时间",
-            format:"yyyy-MM-dd,HH:mm:ss",
+            format:"yyyy-MM-dd",
             closable:false,
             className:"datepicker-dialog",
             date:new Date(),
@@ -36,19 +37,26 @@
             yearRange:[1970,2100]
         };
 
-        this.render = function(){
+        this._render = function(){
             if(this.completed) return;
             var self = this,options = self.options,
                 html = _.template(TEMPLATE)({
                     data:options
                 });
+
             self.dialog = new Dialog({
                 title:options.title,
                 locale:options.locale,
                 message:html,
                 closable:options.closable,
                 className:options.className,
+                animated:false,
                 buttons:[{
+                    text:Dialog.prototype.i18n[options.locale].cancel,
+                    handler:function(e,dialog){
+                        options.cancel ? options.cancel.call(this,e,self) : dialog.hide();
+                    }
+                },{
                     text:Dialog.prototype.i18n[options.locale].ok,
                     handler:function(e,dialog){
                         self.date = self.getDate();
@@ -59,41 +67,16 @@
                             dialog.hide();
                         }();
                     }
-                },{
-                    text:Dialog.prototype.i18n[options.locale].cancel,
-                    handler:function(e,dialog){
-                        options.cancel ? options.cancel.call(this,e,self) : dialog.hide();
-                    }
                 }]
             });
             self.completed = true;
             return self;
         };
 
-        this.getRows = function(y,height,maxRows){
-            maxRows = maxRows-3;
-            y = y > 0 ? 0 : y;
-            var rows = Math.round(Math.abs(y) / height);
-            return rows > maxRows ? maxRows : rows;
-        };
-
-        this.setTranslate = function($this,y,duration){
-            $this.css({
-                top:y,
-                //"-webkit-transform":"translate(0,"+y+")",
-                //"transform":"translate(0,"+y+")",
-                "-webkit-transition-duration":duration+"s",
-                "transition-duration":duration+"s"
-            });
-            return this;
-        };
-
         this._init = function(){
             var self = this,options = self.options;
 
-
-            self.render();
-
+            self._render();
             self.ui = {
                 year:self.dialog.$element.find(".year"),
                 month:self.dialog.$element.find(".month"),
@@ -102,100 +85,120 @@
                 minute:self.dialog.$element.find(".minute"),
                 second:self.dialog.$element.find(".second")
             };
-
-            self._initUi();
+            self.renderByFormat(options.format);
 
             self.ui.columns = self.dialog.$element.find(".date-column");
 
             self.setDate(options.date);
 
+            //监听每个元素的滚动事件            
             self.ui.columns.each(function(){
-                self._scroll($(this));
+                var $handler = $(this),hammer = new Hammer($handler[0]);
+
+                //监听拖动开始事件
+                hammer.get("pan").set({
+                    threshold: 0
+                });
+                hammer.on("panstart",function(event){
+                    self.$currentScrollHandler = $handler;
+                    event.preventDefault();
+                });
             });
+
+            self._registerDocumentScroll();
         };
 
-        this._initUi = function(){
+        this.renderByFormat = function(format){
             var self = this,options = self.options;
-            options.format.indexOf("y") === -1 && self.ui.year.remove();
-            options.format.indexOf("M") === -1 && self.ui.month.remove();
-            options.format.indexOf("d") === -1 && self.ui.day.remove();
-            options.format.indexOf("H") === -1 && self.ui.hour.remove();
-            options.format.indexOf("m") === -1 && self.ui.minute.remove();
-            options.format.indexOf("s") === -1 && self.ui.second.remove();
+            format.indexOf("y") === -1 && self.ui.year.remove();
+            format.indexOf("M") === -1 && self.ui.month.remove();
+            format.indexOf("d") === -1 && self.ui.day.remove();
+            format.indexOf("H") === -1 && self.ui.hour.remove();
+            format.indexOf("m") === -1 && self.ui.minute.remove();
+            format.indexOf("s") === -1 && self.ui.second.remove();
             return self;
         };
 
-        this._scroll = function(handler){
-            var self = this,options = self.options;
+        this._storeData = function($this,index){
+            $this[0].y = index * HEIGHTUNIT;
+            $this[0].index = Math.abs(index);
+            return this;
+        };
 
-            //初始化hammer事件
-            var hammer = new Hammer(handler[0]),
-                $valueContainer = handler.find(VALUECONTAINERTAG),rows,timer,
-                y = handler[0].y,height, shouldSetDays = handler.hasClass("month") || handler.hasClass("year");
+        this._registerDocumentScroll = function(){
+            var self = this,options = self.options,
+                hammer = new Hammer(self.dialog.$element[0]), $handler, $valueContainer, index, y, shouldSetDays;
             
-
-            
-
-            return false;
-
             //监听拖动开始事件
             hammer.get("pan").set({
                 threshold: 0
             });
+
             hammer.on("panstart",function(event){
-                rows = 0;
-                y = handler[0].y;
+                if(self.$currentScrollHandler !== $handler){
+
+                    $handler = self.$currentScrollHandler;
+
+                    $valueContainer = $handler.find(VALUECONTAINERTAG);
+
+                    shouldSetDays = $handler.hasClass("month") || $handler.hasClass("year");
+
+                    index = 0;
+
+                    y = $handler[0].y;                    
+                }
+                event.preventDefault();
             }).on("panmove",function(event){
-                self.setTranslate($valueContainer, y + event.deltaY  +"px",0);
 
+                $handler && self.setTranslate($valueContainer, y + event.deltaY  +"px",0);
 
-                event.srcEvent.preventDefault();
-                event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
-                event.returnValue = false;
+                event.preventDefault();
             }).on("panend",function(event){
-                rows = -self.getRows(y + event.deltaY, HEIGHTUNIT , $valueContainer.find(".show").length);
+                if($handler){
+                    index = -self.getIndex(y + event.deltaY, HEIGHTUNIT , $handler.find(".show").length);
         
-                self.setTranslate($valueContainer, rows * HEIGHTUNIT +"px",DURATION);
+                    self.setTranslate($valueContainer, index * HEIGHTUNIT +"px",DURATION);
 
-                self._storeData(handler,rows);
+                    self._storeData($handler,index);
 
-                shouldSetDays && self._setDays();
-
-
-                event.srcEvent.preventDefault();
-                event.srcEvent.stopImmediatePropagation && event.srcEvent.stopImmediatePropagation();
-                event.returnValue = false;
+                    shouldSetDays && self.setDays(self.getValue("year"),self.getValue("month"));
+                }
+                
+                self.$currentScrollHandler = $handler = null ;
+                event.preventDefault();
             });
+            return self;
+        };
 
+        this.getIndex = function(y,height,maxRows){
+            maxRows = maxRows-3;
+            y = y > 0 ? 0 : y;
+            var index = Math.round(Math.abs(y) / height);
+            return index > maxRows ? maxRows : index;
+        };
 
-
-
+        this.setTranslate = function($this,y,duration){
+            $this.css({
+                "-webkit-transform": "translate(0,"+y+")",
+                transform: "translate(0,"+y+")"
+            });
             return this;
         };
 
-        this._setDays = function(){
-            var self = this,days = self.getDays(self.getValue("year"),self.getValue("month")),day = self.getValue("day"),
+        this.setDays = function(year,month){
+            var self = this,
+                days = self.getDays(year,month),
+                day = self.getValue("day"),
                 $lis = self.ui.day.find(VALUETAG);
 
             $lis.addClass("show").slice(days+1,$lis.length-1).removeClass("show");
-            days < day && self._setTranslateByValue("day",days);
+            days < day && self.setValue("day",days);
+
+            return self;
         };
 
-        this._storeData = function($this,rows){
-            $this[0].y = rows * HEIGHTUNIT;
-            $this[0].rows = Math.abs(rows);
-            return this;
-        };
-
-        this._setTranslateByValue = function(name,value){
-            var $this = this.ui[name], rows, $valueContainer = $this.find(VALUECONTAINERTAG);     
-
-            rows = -($valueContainer.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
-
-            this.setTranslate($valueContainer, rows * HEIGHTUNIT +"px",0);
-
-            this._storeData($this,rows);
-            return this;
+        this.getDays = function(year,month){
+            return (new Date(year, month + 1, 0)).getDate();
         };
 
         this.setDate = function(date){
@@ -203,53 +206,59 @@
             ["year","month","day","hour","minute","second"].forEach(function(type){
                 switch(type){
                     case "year":
-                        self._setTranslateByValue(type,date.getFullYear());
+                        self.setValue(type,date.getFullYear());
                         break;
                     case "month":
-                        self._setTranslateByValue(type,date.getMonth());
+                        self.setValue(type,date.getMonth());
                         break;
                     case "day":
-                        self._setTranslateByValue(type,date.getDate());
+                        self.setValue(type,date.getDate());
                         break;
                     case "hour":
-                        self._setTranslateByValue(type,date.getHours());
+                        self.setValue(type,date.getHours());
                         break;
                     case "minute":
-                        self._setTranslateByValue(type,date.getMinutes());
+                        self.setValue(type,date.getMinutes());
                         break;
                     case "second":
-                        self._setTranslateByValue(type,date.getSeconds());
+                        self.setValue(type,date.getSeconds());
                         break;
                 }
             });
             return self;
         };
 
-        this.getValue = function(name){
-            var $this = this.ui[name];
-            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].rows + 1 ).attr("data-value") ) :0;
-        };
-
         this.getDate = function(){
             var self = this,options = self.options,$this,
                 values = {
-                    year:0,
-                    month:0,
-                    day:0,
-                    hour:0,
-                    minute:0,
-                    second:0
+                    year:self.getValue("year"),
+                    month:self.getValue("month"),
+                    day:self.getValue("day"),
+                    hour:self.getValue("hour"),
+                    minute:self.getValue("minute"),
+                    second:self.getValue("second")
                 };
-            for(var name in values){
-                values[name] = self.getValue(name);
-            }
             return new Date(values.year,values.month,values.day,values.hour,values.minute,values.second);
         };
 
-        this.getDays = function(year,month){
-            return (new Date(year, month + 1, 0)).getDate();
+
+        this.setValue = function(name,value){
+            var $this = this.ui[name], index, $valueContainer = $this.find(VALUECONTAINERTAG);     
+
+            index = -($this.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
+
+            this.setTranslate($valueContainer, index * HEIGHTUNIT +"px",0);
+
+            this._storeData($this,index);
+            return this;
         };
 
+        this.getValue = function(name){
+            var $this = this.ui[name];
+            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].index + 1 ).attr("data-value") ) :0;
+        };
+
+        
         this.close = function(){
             this.dialog.close();
             return this;

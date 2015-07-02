@@ -315,6 +315,7 @@ a {
 }
 .toast .dialog {
   border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 .toast .dialog-body {
   padding: 0.5em 0.75em;
@@ -363,7 +364,8 @@ a {
   left: 0;
   height: 114px;
   width: 100%;
-  z-index: -1;
+  z-index: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   top: 38px;
   height: 38px;
   box-shadow: 0 0 76px rgba(0, 0, 0, 0.3);
@@ -382,6 +384,7 @@ a {
   padding: 0 0.6em;
   display: inline-block;
   overflow: hidden;
+  z-index: 10;
 }
 .datepicker .date-column:after {
   position: absolute;
@@ -399,14 +402,12 @@ a {
 .datepicker .date-column ul {
   /*transform: translate(0,1.5em);*/
   /*transition:all 0.5s ease-out;*/
-  -webkit-transition-property: all;
-  transition-property: all;
-  -webkit-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-  -webkit-transition-duration: 0s;
-  transition-duration: 0s;
-  position: relative;
-  top: 0px;
+  /*-webkit-transition-property:all;
+            transition-property:all;
+            -webkit-transition-timing-function:ease-out;
+            transition-timing-function:ease-out;
+            -webkit-transition-duration:0s;
+            transition-duration:0s;*/
 }
 .datepicker .date-column ul li {
   line-height: 38px;
@@ -437,4 +438,7 @@ a {
 }
 .datepicker .second:after {
   content: "秒";
+}
+.datepicker-dialog .dialog-body {
+  padding: 0.75em;
 }

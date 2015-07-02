@@ -18,80 +18,10 @@
 </head>
 <body>
 <input type="text" id="J_datepicker"/>
-
+<input type="text" id="J_datepicker2"/>
 <div class="wrapper">
-    <div class="datepicker">
-        <div class="date-column year">
-            <ul>
-                <li data-value="2015">2012</li>
-                <li data-value="2015" class="active">2013</li>
-                <li data-value="2015">2014</li>
-                <li data-value="2015">2015</li>
-                <li data-value="2015">2016</li>
-                <li data-value="2015">2017</li>
-                <li data-value="2015">2018</li>
-            </ul>
-        </div>
-        <div class="date-column month">
-            <ul>
-                <li data-value="2015">04</li>
-                <li data-value="2015" class="active">05</li>
-                <li data-value="2015">06</li>
-                <li data-value="2015">07</li>
-                <li data-value="2015">08</li>
-                <li data-value="2015">09</li>
-                <li data-value="2015">10</li>
-            </ul>
-        </div>
-        <div class="date-column day">
-            <ul>
-                <li data-value="2015">11</li>
-                <li data-value="2015" class="active">12</li>
-                <li data-value="2015">13</li>
-                <li data-value="2015">14</li>
-                <li data-value="2015">15</li>
-                <li data-value="2015">16</li>
-                <li data-value="2015">17</li>
-            </ul>
-        </div>
-        <div class="date-column hour">
-            <ul>
-                <li data-value="2015">11</li>
-                <li data-value="2015" class="active">12</li>
-                <li data-value="2015">13</li>
-                <li data-value="2015">14</li>
-                <li data-value="2015">15</li>
-                <li data-value="2015">16</li>
-                <li data-value="2015">17</li>
-            </ul>
-        </div>
-        <div class="date-column minute">
-            <ul>
-                <li data-value="2015">11</li>
-                <li data-value="2015" class="active">12</li>
-                <li data-value="2015">13</li>
-                <li data-value="2015">14</li>
-                <li data-value="2015">15</li>
-                <li data-value="2015">16</li>
-                <li data-value="2015">17</li>
-            </ul>
-        </div>
-        <div class="date-column second">
-            <ul>
-                <li data-value="2015">11</li>
-                <li data-value="2015" class="active">12</li>
-                <li data-value="2015">13</li>
-                <li data-value="2015">14</li>
-                <li data-value="2015">15</li>
-                <li data-value="2015">16</li>
-                <li data-value="2015">17</li>
-            </ul>
-        </div>
-        <div class="overlay"></div>
-    </div>
+
 </div>
-
-
 
 <script type="text/html" id="J_template">
     
@@ -168,6 +98,14 @@ function test(){
     var datepicker = new DatePicker($("#J_datepicker"),{
         title:"选择时间",
         format:"yyyy-MM-dd",
+        /*confirm:function(e,datepicker){
+            console.log(datepicker.date)
+        }*/
+    });
+
+    var datepicker1 = new DatePicker($("#J_datepicker2"),{
+        title:"选择时间",
+        format:"yyyy-MM-dd,HH:mm:ss",
         /*confirm:function(e,datepicker){
             console.log(datepicker.date)
         }*/

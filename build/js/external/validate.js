@@ -1,7 +1,7 @@
 !(function(root,factory){
     if (typeof define === "function") {
         define(function() {
-            return factory(root,root._);
+            return root.validate = factory(root,root._);
         });
     }else if (typeof exports !== 'undefined') {
         module.exports = factory(root, require('underscore'));

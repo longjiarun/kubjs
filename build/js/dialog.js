@@ -31,7 +31,8 @@
             showHeader:true,
             message:"",
             closable:true,
-            scrollable:false
+            scrollable:true,
+            animated:true
         };
 
         this.i18n = {
@@ -58,7 +59,7 @@
             c.uber = p.prototype;
         };
 
-        this.render = function(data){
+        this._render = function(data){
             if(this.completed){
                 return this;
             }
@@ -72,7 +73,7 @@
             var self = this,options = self.options;
 
             //渲染数据
-            self.render(options);
+            self._render(options);
             this.$dialog = this.$element.find("#"+DIALOGID);
             
             self.show();
@@ -105,16 +106,13 @@
         this.disableScrollbar = function(){
             if(!this.options.scrollable){
                 i == 0 && (scrollTop = $body.scrollTop());
-
-                console.log(scrollTop)
-                $body.addClass(OVERFLOWCLASS) && $html.addClass(OVERFLOWCLASS) && i++;
+                $body.addClass(OVERFLOWCLASS) && $html.addClass(OVERFLOWCLASS);
             }
             return this;
         };
 
         this.enableScrollbar = function(){
             if(!this.options.scrollable){
-                i--;
                 i<1 && $body.removeClass(OVERFLOWCLASS) && $html.removeClass(OVERFLOWCLASS) && (i=0);
                 i == 0 && $body.scrollTop(scrollTop);
             }
@@ -124,18 +122,20 @@
 
         this.show = function(){
             this.disableScrollbar();
+            !this.options.scrollable  && i++;
             this.$element.show();
 
-            this.$dialog.addClass(ZOOMINCLASS);
+            this.options.animated && this.$dialog.addClass(ZOOMINCLASS);
 
             return this;
         };
 
         this.hide = function(){
+            !this.options.scrollable && i--;
             this.enableScrollbar();
 
             this.$element.hide();
-            this.$dialog.removeClass(ZOOMINCLASS);
+            this.options.animated && this.$dialog.removeClass(ZOOMINCLASS);
 
             return this;
         };
