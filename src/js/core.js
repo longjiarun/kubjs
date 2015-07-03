@@ -86,52 +86,61 @@
             c.uber = p.prototype;
         };
 
-
         this.htmlToText = function(value){
-            return value.replace(/<.[^<>]*?>/g, '').replace(/&nbsp;|&#160;/gi, '').replace(/\s/g,"");
-        };
-        
-        this.getUrlWithParams = function(url,params){
-            var flag=false;
-            if(params){
-                if(url.indexOf("?")===-1){
-                    url+="?";
-                    flag=true;
-                }
-                var i=0;        
-                for(var p in params){
-                    if(flag&&i==0){             
-                    }else{
-                        url+="&";               
-                    }
-                    url+=p+"="+params[p]; 
-                    i++;
-                }
-            }
-            return url;
-        };
-        
-        this.getUrlWithoutParams = function(url){
-            if(!url){
-                url=window.location.href;
-            }
-            var i=url.indexOf("?");
-            if(i!==-1){
-                return url.substr(0,i);
-            }
-            return url;
+            //.replace(/&nbsp;|&#160;/gi, '')
+            return value.replace(/<.[^<>]*?>/g, '').replace(/\s/g,"");
         };
 
-        this.getParamsOfUrl = function(url){
-            if(!url){
-                url=window.location.href;
+        this.getOriginUrl = function(url){
+            var matchs;
+            return url && (matchs = url.match(/(^[^\?#]*)/) ) && matchs[1];
+        };
+
+        this.getParamsString = function(url){
+            var matchs;
+            return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/) ) && matchs[1];
+        };
+
+        this.setParams = function(url,params,add){
+            if(this.isObject(url)){
+                add = params;
+                params = url;
+                url = window.location.href;
             }
-            var params={},str=url.substr(url.indexOf("?")+1),
-            str_ary=str.split("&");
-            for(var i=str_ary.length-1;i>=0;i--){
-                var param=str_ary[i].split("=");
-                params[param[0]]=param[1];
+
+            var queryString = this.getParamsString(url), _queryString = queryString || "", f,i=0;
+            
+            function get(name){
+                return params[name] == void 0 ? name : name + "="+ params[name];
             }
+
+            for(var name in params){
+                if(params.hasOwnProperty(name)){
+                    f= false;
+                    i++;
+                    //替换原来的参数
+                    _queryString = _queryString.replace(new RegExp( name + "(=([^&#]*))?","g"),function(a,b,c){
+                        f = true;
+                        return get(name);
+                    });
+                    //如果没有当前参数，则新增参数
+                    add && !f && (_queryString += (i == 0 ? "" : "&") + get(name));
+                }
+            }
+
+            return queryString ? url.replace(queryString , _queryString) : url.replace(/^[^#]*/ , function(url,hash){
+                return url + (_queryString ? "?" + _queryString : _queryString);
+            });
+        };
+
+        this.getParams = function(url){
+            if(!url) url=window.location.href;
+            var params={}, queryString = this.getParamsString(url);
+            
+            queryString && queryString.replace(/([^=&]+)(=([^&#]*))?/g,function(a,name,c,value){
+                params[name] = value;
+            });
+
             return params;
         };
 

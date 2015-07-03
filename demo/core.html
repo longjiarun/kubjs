@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="J_html">
-    <div>123123</div>
+    <div>123&nbsp;123</div>
     <span style="display:block">asdasd<b></b></span>
 </div>
 
@@ -16,9 +16,18 @@
 <script type="text/javascript" src="../build/js/core.js"></script>
 <script type="text/javascript">
 function test(){
-    console.log(core.htmlToText($("#J_html").html()));
+    //console.log(core.htmlToText($("#J_html").html()));
 
-    console.log(core.os);
+    console.log(core.getOriginUrl(location.href))
+
+    console.log(core.setParams({
+        name:12345,
+        age:123,
+        name:1
+    },true));
+
+    console.log(core.getParams());
+
 }
 test();
 
