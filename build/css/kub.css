@@ -349,6 +349,7 @@ a {
 .datepicker-dialog .dialog-body {
   overflow-y: hidden;
   overflow-x: auto;
+  padding: 0.75em;
 }
 .datepicker {
   font-size: 16px;
@@ -362,13 +363,13 @@ a {
   top: 0;
   bottom: 0;
   left: 0;
-  height: 114px;
+  height: 120px;
   width: 100%;
   z-index: 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  top: 38px;
-  height: 38px;
-  box-shadow: 0 0 76px rgba(0, 0, 0, 0.3);
+  top: 40px;
+  height: 40px;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
   border-radius: 6px;
 }
 .datepicker ul,
@@ -377,29 +378,22 @@ a {
   margin: 0;
   padding: 0;
 }
-.datepicker .date-column {
+.datepicker .datepicker-column {
   position: relative;
   top: 0;
-  height: 114px;
+  height: 120px;
   padding: 0 0.6em;
   display: inline-block;
   overflow: hidden;
   z-index: 10;
 }
-.datepicker .date-column:after {
+.datepicker .datepicker-column:after {
   position: absolute;
   font-size: 0.5em;
-  top: 38px;
+  top: 40px;
   right: 0;
 }
-.datepicker .date-column .date-column-scroll {
-  height: 114px;
-  width: 80px;
-  text-align: left;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.datepicker .date-column ul {
+.datepicker .datepicker-column ul {
   /*transform: translate(0,1.5em);*/
   /*transition:all 0.5s ease-out;*/
   /*-webkit-transition-property:all;
@@ -409,16 +403,16 @@ a {
             -webkit-transition-duration:0s;
             transition-duration:0s;*/
 }
-.datepicker .date-column ul li {
-  line-height: 38px;
-  height: 38px;
-  opacity: 0.8;
+.datepicker .datepicker-column ul li {
+  line-height: 40px;
+  height: 40px;
+  opacity: 1;
   display: none;
 }
-.datepicker .date-column ul .show {
+.datepicker .datepicker-column ul .datepicker-show {
   display: block;
 }
-.datepicker .date-column ul .active {
+.datepicker .datepicker-column ul .active {
   opacity: 1;
 }
 .datepicker .year:after {
@@ -439,6 +433,21 @@ a {
 .datepicker .second:after {
   content: "秒";
 }
-.datepicker-dialog .dialog-body {
-  padding: 0.75em;
+.datepicker-en .year:after {
+  content: "y";
+}
+.datepicker-en .month:after {
+  content: "m";
+}
+.datepicker-en .day:after {
+  content: "d";
+}
+.datepicker-en .hour:after {
+  content: "h";
+}
+.datepicker-en .minute:after {
+  content: "min";
+}
+.datepicker-en .second:after {
+  content: "s";
 }

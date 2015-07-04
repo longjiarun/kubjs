@@ -13,14 +13,23 @@
         this.$element = $(element);
         this.options = $.extend({},DatePicker.prototype.defaults,options || {});
 
+        self._init().hide();
+
         this.$element.on("click",function(e){
+            //使输入框失去焦点
             self.$element[0].blur();
-            !self.completed ? self._init() : self.dialog.show();
+            self.dialog.show();
             return false;
         });
     };
 
-    var HEIGHTUNIT = 38,DURATION=0.5,VALUETAG = "li",VALUECONTAINERTAG = "ul",TEMPLATE = '<div class="datepicker"> <div class="date-column year" data-type="year"> <ul> <li class="show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column month"  data-type="month"> <ul> <li class="show"></li> <%for(var i= 1;i<=12;i++){%> <li class="show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column day"  data-type="day"> <ul> <li class="show"></li> <%for(var i= 1;i<=31;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column hour"  data-type="hour"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column minute"  data-type="minute"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="date-column second"  data-type="second"> <ul> <li class="show"></li> <%for(var i= 0;i<=59;i++){%> <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="show"></li> </ul> </div> <div class="overlay"></div> </div>';
+    var HEIGHTUNIT = 40,
+        DURATION = 0.5,
+        SHOWCLASS = "datepicker-show",
+        VALUECOLUMNCLASS = ".datepicker-column",
+        VALUETAG = "li",
+        VALUECONTAINERTAG = "ul",
+        TEMPLATE = '<div class="datepicker"> <div class="datepicker-column year" data-type="year"> <ul> <li class="datepicker-show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column month"  data-type="month"> <ul> <li class="datepicker-show"></li> <%for(var i= 1;i<=12;i++){%> <li class="datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column day"  data-type="day"> <ul> <li class="datepicker-show"></li> <%for(var i= 1;i<=31;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column hour"  data-type="hour"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column minute"  data-type="minute"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column second"  data-type="second"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="overlay"></div> </div>';
 
     ;(function(){
         this.constructor = DatePicker;
@@ -75,8 +84,10 @@
 
         this._init = function(){
             var self = this,options = self.options;
-
+            
+            //创建对话框
             self._render();
+
             self.ui = {
                 year:self.dialog.$element.find(".year"),
                 month:self.dialog.$element.find(".month"),
@@ -85,115 +96,110 @@
                 minute:self.dialog.$element.find(".minute"),
                 second:self.dialog.$element.find(".second")
             };
-            self.renderByFormat(options.format);
+            options.format.indexOf("y") === -1 && self.ui.year.remove();
+            options.format.indexOf("M") === -1 && self.ui.month.remove();
+            options.format.indexOf("d") === -1 && self.ui.day.remove();
+            options.format.indexOf("H") === -1 && self.ui.hour.remove();
+            options.format.indexOf("m") === -1 && self.ui.minute.remove();
+            options.format.indexOf("s") === -1 && self.ui.second.remove();
 
-            self.ui.columns = self.dialog.$element.find(".date-column");
-
-            self.setDate(options.date);
+            //设置本地化
+            self.dialog.$element.addClass("datepicker-"+options.locale);
 
             //监听每个元素的滚动事件            
-            self.ui.columns.each(function(){
-                var $handler = $(this),hammer = new Hammer($handler[0]);
-
+            self.ui.columns = self.dialog.$element.find(VALUECOLUMNCLASS).each(function(){
+                var $handler = $(this), hammer = new Hammer($handler[0]);
                 //监听拖动开始事件
                 hammer.get("pan").set({
                     threshold: 0
                 });
                 hammer.on("panstart",function(event){
-                    self.$currentScrollHandler = $handler;
+                    self.ui.currentScrollHandler = $handler;
                     event.preventDefault();
                 });
             });
 
-            self._registerDocumentScroll();
-        };
+            HEIGHTUNIT = self.ui.columns.find(VALUETAG).eq(0).height();
 
-        this.renderByFormat = function(format){
-            var self = this,options = self.options;
-            format.indexOf("y") === -1 && self.ui.year.remove();
-            format.indexOf("M") === -1 && self.ui.month.remove();
-            format.indexOf("d") === -1 && self.ui.day.remove();
-            format.indexOf("H") === -1 && self.ui.hour.remove();
-            format.indexOf("m") === -1 && self.ui.minute.remove();
-            format.indexOf("s") === -1 && self.ui.second.remove();
+            //设置默认时间
+            self.setDate(options.date);
+
+            //注册全局拖动事件，注册在每一列，会导致拖动不流畅
+            self._registerGlobalScroll();
+
             return self;
         };
 
-        this._storeData = function($this,index){
+        this._cacheData = function($this,index){
             $this[0].y = index * HEIGHTUNIT;
             $this[0].index = Math.abs(index);
             return this;
         };
 
-        this._registerDocumentScroll = function(){
-            var self = this,options = self.options,
-                hammer = new Hammer(self.dialog.$element[0]), $handler, $valueContainer, index, y, shouldSetDays;
+        this._registerGlobalScroll = function(){
+            var self = this,
+                options = self.options,
+                hammer = new Hammer(self.dialog.$element[0]),
+                $handler, index, y, shouldSetDays;
             
             //监听拖动开始事件
             hammer.get("pan").set({
                 threshold: 0
             });
-
             hammer.on("panstart",function(event){
-                if(self.$currentScrollHandler !== $handler){
-
-                    $handler = self.$currentScrollHandler;
-
-                    $valueContainer = $handler.find(VALUECONTAINERTAG);
-
+                if(self.ui.currentScrollHandler !== $handler){
+                    $handler = self.ui.currentScrollHandler;
+                    //决定是否设置天数，由于年份与月份决定每月的天数
                     shouldSetDays = $handler.hasClass("month") || $handler.hasClass("year");
-
                     index = 0;
-
                     y = $handler[0].y;                    
                 }
                 event.preventDefault();
             }).on("panmove",function(event){
-
-                $handler && self.setTranslate($valueContainer, y + event.deltaY  +"px",0);
-
+                $handler && self.setTranslate($handler, 0, y + event.deltaY  +"px",0);
                 event.preventDefault();
             }).on("panend",function(event){
                 if($handler){
-                    index = -self.getIndex(y + event.deltaY, HEIGHTUNIT , $handler.find(".show").length);
-        
-                    self.setTranslate($valueContainer, index * HEIGHTUNIT +"px",DURATION);
+                    index = -self._getIndex(y + event.deltaY, HEIGHTUNIT, $handler.find("."+SHOWCLASS).length);
+            
+                    self._cacheData($handler,index);
 
-                    self._storeData($handler,index);
+                    self.setTranslate($handler, 0, $handler[0].y +"px", DURATION);
 
-                    shouldSetDays && self.setDays(self.getValue("year"),self.getValue("month"));
+                    shouldSetDays && self._setDays(self.getValue("year"), self.getValue("month"));
                 }
-                
-                self.$currentScrollHandler = $handler = null ;
+                //结束以后将当前滚动元素至空
+                self.ui.currentScrollHandler = $handler = null ;
                 event.preventDefault();
             });
             return self;
         };
 
-        this.getIndex = function(y,height,maxRows){
-            maxRows = maxRows-3;
+        this._getIndex = function(y,height,max){
+            //去掉空白的两行
+            max = max-3;
             y = y > 0 ? 0 : y;
             var index = Math.round(Math.abs(y) / height);
-            return index > maxRows ? maxRows : index;
+            return index > max ? max : index;
         };
 
-        this.setTranslate = function($this,y,duration){
-            $this.css({
+        this.setTranslate = function($this,x,y,duration){
+            ($this[0].$container ? $this[0].$container : ( $this[0].$container = $this.find(VALUECONTAINERTAG))).css({
                 "-webkit-transform": "translate(0,"+y+")",
                 transform: "translate(0,"+y+")"
             });
             return this;
         };
 
-        this.setDays = function(year,month){
+        this._setDays = function(year,month){
             var self = this,
                 days = self.getDays(year,month),
                 day = self.getValue("day"),
-                $lis = self.ui.day.find(VALUETAG);
+                $valueTags = self.ui.day.find(VALUETAG);
 
-            $lis.addClass("show").slice(days+1,$lis.length-1).removeClass("show");
+            //移除不在本月的日期
+            $valueTags.addClass(SHOWCLASS).slice(days+1, $valueTags.length-1).removeClass(SHOWCLASS);
             days < day && self.setValue("day",days);
-
             return self;
         };
 
@@ -202,7 +208,7 @@
         };
 
         this.setDate = function(date){
-            var self = this,options = self.options;
+            var self = this;
             ["year","month","day","hour","minute","second"].forEach(function(type){
                 switch(type){
                     case "year":
@@ -229,7 +235,8 @@
         };
 
         this.getDate = function(){
-            var self = this,options = self.options,$this,
+            var self = this,
+                options = self.options,
                 values = {
                     year:self.getValue("year"),
                     month:self.getValue("month"),
@@ -241,24 +248,19 @@
             return new Date(values.year,values.month,values.day,values.hour,values.minute,values.second);
         };
 
-
         this.setValue = function(name,value){
-            var $this = this.ui[name], index, $valueContainer = $this.find(VALUECONTAINERTAG);     
-
+            var $this = this.ui[name], index;  
             index = -($this.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
-
-            this.setTranslate($valueContainer, index * HEIGHTUNIT +"px",0);
-
-            this._storeData($this,index);
+            this._cacheData($this,index);
+            this.setTranslate($this, 0,$this[0].y +"px",0);
             return this;
         };
 
         this.getValue = function(name){
             var $this = this.ui[name];
-            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].index + 1 ).attr("data-value") ) :0;
+            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].index + 1 ).attr("data-value") ) : 0;
         };
 
-        
         this.close = function(){
             this.dialog.close();
             return this;

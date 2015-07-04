@@ -17,73 +17,71 @@
     <link rel="stylesheet" type="text/css" href="../build/css/datepicker.css">
 </head>
 <body>
-<input type="text" id="J_datepicker"/>
-<input type="text" id="J_datepicker2"/>
+<div><input type="text" id="J_datepicker"/></div>
+<div><input type="text" id="J_datepicker1"/></div>
+<div><input type="text" id="J_datepicker2"/></div>
 <div class="wrapper">
 
 </div>
 
 <script type="text/html" id="J_template">
-    
     <div class="datepicker">
-        <div class="date-column year" data-type="year">
+        <div class="datepicker-column year" data-type="year">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%>
-                    <li class="show" data-value="<%= i%>"><%= i%></li>
+                    <li class="datepicker-show" data-value="<%= i%>"><%= i%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
-        <div class="date-column month"  data-type="month">
+        <div class="datepicker-column month"  data-type="month">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i= 1;i<=12;i++){%>
-                    <li class="show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
-        <div class="date-column day"  data-type="day">
+        <div class="datepicker-column day"  data-type="day">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i= 1;i<=31;i++){%>
-                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
-        <div class="date-column hour"  data-type="hour">
+        <div class="datepicker-column hour"  data-type="hour">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
-        <div class="date-column minute"  data-type="minute">
+        <div class="datepicker-column minute"  data-type="minute">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
-        <div class="date-column second"  data-type="second">
+        <div class="datepicker-column second"  data-type="second">
             <ul>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="show"></li>
+                <li class="datepicker-show"></li>
             </ul>
         </div>
         <div class="overlay"></div>
     </div>
-
-
 </script>
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/underscore.js"></script>
@@ -92,23 +90,32 @@
 <script type="text/javascript" src="../build/js/date.js"></script>
 <script type="text/javascript" src="../build/js/datepicker.js"></script>
 <script type="text/javascript">
-    
-
 function test(){
-    var datepicker = new DatePicker($("#J_datepicker"),{
-        title:"选择时间",
-        format:"yyyy-MM-dd",
-        /*confirm:function(e,datepicker){
-            console.log(datepicker.date)
-        }*/
+
+    //采用默认的format yyyy-MM-dd
+    var datepicker = new DatePicker($("#J_datepicker"));
+
+    //采用默认的format yyyy-MM-dd
+    //可配置title 与 本地化
+    var datepicker = new DatePicker($("#J_datepicker1"),{
+        title:"Date Picker",
+        locale:"en"
     });
 
+    //自定义format 
     var datepicker1 = new DatePicker($("#J_datepicker2"),{
         title:"选择时间",
         format:"yyyy-MM-dd,HH:mm:ss",
-        /*confirm:function(e,datepicker){
+        confirm:function(e,datepicker){
+            //格式化后的date
+            console.log(datepicker.formatDate)
+            
+            //原始时间
             console.log(datepicker.date)
-        }*/
+
+            //手动关闭选择器
+            datepicker.hide();
+        }
     });
 }  
 test();

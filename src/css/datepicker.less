@@ -1,13 +1,14 @@
 @import "animate";
 @import "common";
 
-@height:38px;
+@height:40px;
 @padding:0.6em;
 @font-size:16px;
 .datepicker-dialog{
     .dialog-body{
         overflow-y: hidden;
         overflow-x: auto;
+        padding: 0.75em;
     }
 }
 .datepicker{
@@ -37,7 +38,7 @@
         margin:0;
         padding: 0;
     }
-    .date-column {
+    .datepicker-column {
         position: relative;
         top:0;
         height: @height * 3;
@@ -51,14 +52,6 @@
             top:@height;
             right:0
         } 
-        .date-column-scroll{
-            height: @height * 3;
-            width:80px;
-            text-align: left;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        
         ul{
             /*transform: translate(0,1.5em);*/
             /*transition:all 0.5s ease-out;*/
@@ -72,10 +65,10 @@
                 line-height: @height;
                 height:@height;
                 
-                opacity: 0.8;
+                opacity: 1;
                 display: none;
             }
-            .show{
+            .datepicker-show{
                 display: block;
             }
             .active{
@@ -83,7 +76,7 @@
             }
         }
     }
-
+    
     .year:after{
         content:"年";
     }
@@ -103,8 +96,23 @@
         content:"秒";
     }
 }
-.datepicker-dialog{
-    .dialog-body{
-        padding: 0.75em;
+.datepicker-en{
+    .year:after{
+        content:"y";
+    }
+    .month:after{
+        content:"m";
+    }
+    .day:after{
+        content:"d";
+    }
+    .hour:after{
+        content:"h";
+    }
+    .minute:after{
+        content:"min";
+    }
+    .second:after{
+        content:"s";
     }
 }
