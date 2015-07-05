@@ -40,20 +40,20 @@
             var self = this;
             this.started = true;
             //监听url改变事件
-            if (window.history.replaceState) {
+            if (history.replaceState) {
                 this._event = "popstate";
             } else if ('onhashchange' in window) {
                 this._event = "hashchange";
             } else{
                 throw new Error("Sorrry,your browser is not supported.");
             }
-            this._checkUrl = function(){
-                self.checkUrl.apply(self,arguments);
+            this._checkUrl = function(event){
+                return self.navigate(self.getHash(event.target.location.hash));
             };
-            //this._event="hashchange"
+            this._event = "hashchange"
             window.addEventListener(this._event, this._checkUrl);
 
-            self.navigate(self.getHash(window.location.href));
+            self.navigate(self.getHash(location.href));
             return self;
         };
 
@@ -62,10 +62,6 @@
             this.started = false;
             return this;
         };
-
-        this.checkUrl = function(event){
-            return this.navigate(this.getHash(event.target.location.hash));
-        }
 
         var optionalParam = /\((.*?)\)/g;
         var namedParam = /(\(\?)?:\w+/g;
@@ -92,45 +88,41 @@
 
         this.navigate = function(route,opts){
             var self = this, f = true;
-            opts = _.extend({},opts||{},{
+            opts = _.extend({
                 trigger:true,
                 replace:false
-            });
+            },opts||{});
             //1、解决重复执行问题
             //2、主要是解决不支持replaceState方法的浏览器
             if(this.currentRoute == route) return this;
-            self.currentRoute = route;
 
             if(!this.options.beforeRouteChange || 
                 this.currentRoute == void 0 || 
                 this.options.beforeRouteChange.call(this,route) !== false){
-
                 opts.trigger && _.each(this.routes,function(value){
-
                     if(value.route.test(route)){
-                        value.callback(self._extractParameters(value.route,route));
-                        
+                        value.callback.apply(self,self._extractParameters(value.route,route));
                         f = false;
                     }
                 });
-
                 f ? this.options.defaultRoute && (location.hash = "#"+this.options.defaultRoute) : 
                     self._updateHash(route, opts.replace);
             }
-
+            self.currentRoute = route;
             return this;
         };
 
-        this._updateHash = function(fragment, replace) {
-            var url = window.location.href.replace(/#(.*)$/, "#"+fragment);
+        this._updateHash = function(route, replace) {
+            var url = location.href.replace(/#(.*)$/, "#"+route);
+            
             if(this._event == "popstate"){
-                window.history[replace ? 'replaceState' : 'pushState']({}, document.title, url);
+                history[replace ? 'replaceState' : 'pushState']({}, document.title, url);
             }else{
                 if (replace) {
-                    window.location.replace(url);
+                    location.replace(url);
                 } else {
                     // Some browsers require that `hash` contains a leading #.
-                    window.location.hash = '#' + fragment;
+                    location.hash = '#' + route;
                 }
             }
             return this;
@@ -138,7 +130,6 @@
 
         this.route = this.add = function(route,callback){
             if (!_.isRegExp(route)) route = this._routeToRegExp(route);
-
             this.routes.unshift({
                 route:route,
                 callback:callback
@@ -152,7 +143,7 @@
         this.remove = function(route,callback){
             if(route){
                 this.routes = _.filter(this.routes,function(value){
-                    return !value.route.test(route);
+                    return !(callback && _.isFunction(callback) ? value.route.test(route) && callback === value.callback : value.route.test(route));
                 });
             }
             return this;

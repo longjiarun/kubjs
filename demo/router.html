@@ -23,6 +23,7 @@
     router 5
 </div>
 
+<a href="#route2">route 2</a>
 <button id="J_route">测试路由</button>
 
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
@@ -31,40 +32,53 @@
 <script type="text/javascript">
 function test(){
     var router = new Router({
-        defaultRoute:"route1",
+        defaultRoute:"/",
         beforeRouteChange:function(route){
             console.log(route,"beforeRouteChange");
             return true;
         }
     });
-    
-
-    router.route("route1",function(name){
+    var route4 = function(){
+        $(".router").hide();
+        $("#J_router4").show()
+        console.log(arguments,"route4-0")
+    }
+    router.route("route1/:name/:age",function(name,age){
+        console.log(name,age)
         $(".router").hide();
         $("#J_router1").show();
         console.log(arguments,"route1")
 
-    }).route("route2",function(name){
+    })
+    .route("route2",function(name){
         $(".router").hide();
         $("#J_router2").show()
         console.log(arguments,"route2")
 
-    }).route("route3",function(name){
+    })
+    .route("route3",function(name){
         $(".router").hide();
         $("#J_router3").show()
         console.log(arguments,"route3")
 
-    }).route("route4",function(name){
+    })
+    .route("route4",route4)
+    .route("route4",function(name){
         $(".router").hide();
         $("#J_router4").show()
-        console.log(arguments,"route4")
-
-    }).remove("route4")
-
-    router.start();
+        console.log(arguments,"route4-1")
+    })
+    .route("/",function(name){
+        $(".router").show();
+        console.log("defaultRoute")
+    })
+    .remove("route4",route4)
+    .start();
 
     $("#J_route").on("click",function(){
-        router.navigate("route3")
+        router.navigate("route3",{
+            replace:true
+        })
     });
 }
 test();
