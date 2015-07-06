@@ -11,9 +11,17 @@
     function Router(options){
         this.options = _.extend({
             defaultRoute:"/",
-            routes:[],
+            routes:{},
             beforeRouteChange:null
         },options||{});
+
+        var routes = this.options.routes || {};
+        for(var name in routes){
+            if(routes.hasOwnProperty(name)){
+                this.route(name,routes[name]);
+            }
+        }
+        
     }
     ;(function(){
         this.constructor = Router;
@@ -29,6 +37,10 @@
         this.getHash = function(url) {
             var match = url.match(/#(.*)$/);
             return match ? match[1] : '';
+        };
+
+        this.updateHash = function(url,route){
+            return url && url.replace(/#(.*)$/, "#"+route);
         };
 
         this.getCurrentRoute = function(){
@@ -48,12 +60,16 @@
                 throw new Error("Sorrry,your browser is not supported.");
             }
             this._checkUrl = function(event){
-                return self.navigate(self.getHash(event.target.location.hash));
+                return self.navigate(self.getHash(event.target.location.hash),{
+                    updateHash:false
+                });
             };
-            this._event = "hashchange"
+            //this._event = "hashchange"
             window.addEventListener(this._event, this._checkUrl);
 
-            self.navigate(self.getHash(location.href));
+            self.navigate(self.getHash(location.href),{
+                updateHash:false
+            });
             return self;
         };
 
@@ -87,33 +103,40 @@
         };
 
         this.navigate = function(route,opts){
-            var self = this, f = true;
-            opts = _.extend({
-                trigger:true,
-                replace:false
-            },opts||{});
+            var self = this, options = self.options, f = true;
             //1、解决重复执行问题
             //2、主要是解决不支持replaceState方法的浏览器
-            if(this.currentRoute == route) return this;
+            if(self.currentRoute == route) return self;
 
-            if(!this.options.beforeRouteChange || 
-                this.currentRoute == void 0 || 
-                this.options.beforeRouteChange.call(this,route) !== false){
-                opts.trigger && _.each(this.routes,function(value){
+            opts = _.extend({
+                trigger:true,
+                updateHash:true,
+                replace:false
+            },opts||{});
+            
+            //缓存当前route
+            self.currentRoute = route;
+            if(!options.beforeRouteChange || 
+                self.currentRoute == void 0 || 
+                options.beforeRouteChange.call(self,route) !== false){
+                opts.trigger && _.each(self.routes,function(value){
                     if(value.route.test(route)){
                         value.callback.apply(self,self._extractParameters(value.route,route));
                         f = false;
                     }
                 });
-                f ? this.options.defaultRoute && (location.hash = "#"+this.options.defaultRoute) : 
-                    self._updateHash(route, opts.replace);
+
+                //如果当前route没有在route 中，则将其重定向到默认route中。
+                //替换会出现一个问题，就是当前路由后续路由都会被替换。造成无法回退上以前的历史记录
+                //如果使用location.hash，则会出现后退按钮会一直无效
+                f && opts.trigger ? options.defaultRoute && location.replace(self.updateHash(location.href,options.defaultRoute)) 
+                  : opts.updateHash && self._updateHash(route, opts.replace);
             }
-            self.currentRoute = route;
-            return this;
+            return self;
         };
 
         this._updateHash = function(route, replace) {
-            var url = location.href.replace(/#(.*)$/, "#"+route);
+            var url = this.updateHash(location.href,route);
             
             if(this._event == "popstate"){
                 history[replace ? 'replaceState' : 'pushState']({}, document.title, url);
