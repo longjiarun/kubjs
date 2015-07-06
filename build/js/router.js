@@ -40,7 +40,7 @@
         };
 
         this.updateHash = function(url,route){
-            return url && url.replace(/#(.*)$/, "#"+route);
+            return url && url.replace(/#(.*)$/, "")+"#"+route;
         };
 
         this.getCurrentRoute = function(){
