@@ -34,7 +34,7 @@
         if (wp) os.wp = true, os.version = wp[1];
 
         os.mobile = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
-        os.tablet = !os.mobile && ( os.android || os.ios || /window/i.test(ua) && /phone/i.test(ua) ) ? true : false;
+        os.tablet = !os.mobile && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
         
         this.os = os;
 
