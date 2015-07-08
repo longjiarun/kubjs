@@ -11,9 +11,7 @@
         var self = this;
         this.options = $.extend({},this.defaults, options||{},{
             showHeader:false,
-            buttons:null,
-            modal:false,
-            scrollable:false
+            buttons:null
         });
         
         this.options.message = _.template(TEMPLATE)({data:this.options});
@@ -29,9 +27,10 @@
         this.constructor = Loader;
         this.defaults = {
             showHeader:false,
+            scrollable:true,
             closable:false,
             className:"loader",
-            modal:false,
+            modal:true,
             message:"Loading..."
         };
 

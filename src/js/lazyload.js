@@ -15,7 +15,7 @@
     var LazyLoad = function(element,options){
         this.$element = $(element);
 
-        this.options=$.extend({},this.defaults,options||{});
+        this.options=$.extend({},LazyLoad.prototype.defaults,options||{});
         this.$window= $(window);
         this.$container = (this.options.container === undefined ||
                       this.options.container === window) ? (this.containerIsWindow=true,this.$window) : ($(this.options.container));
