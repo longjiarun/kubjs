@@ -96,12 +96,13 @@
                 minute:self.dialog.$element.find(".minute"),
                 second:self.dialog.$element.find(".second")
             };
-            options.format.indexOf("y") === -1 && self.ui.year.remove();
-            options.format.indexOf("M") === -1 && self.ui.month.remove();
-            options.format.indexOf("d") === -1 && self.ui.day.remove();
-            options.format.indexOf("H") === -1 && self.ui.hour.remove();
-            options.format.indexOf("m") === -1 && self.ui.minute.remove();
-            options.format.indexOf("s") === -1 && self.ui.second.remove();
+
+            options.format.indexOf("y") === -1 && (self.ui.year.empty().remove());
+            options.format.indexOf("M") === -1 && (self.ui.month.empty().remove());
+            options.format.indexOf("d") === -1 && (self.ui.day.empty().remove());
+            options.format.indexOf("H") === -1 && (self.ui.hour.empty().remove());
+            options.format.indexOf("m") === -1 && (self.ui.minute.empty().remove());
+            options.format.indexOf("s") === -1 && (self.ui.second.empty().remove());
 
             //设置本地化
             self.dialog.$element.addClass("datepicker-"+options.locale);
@@ -245,20 +246,24 @@
                     minute:self.getValue("minute"),
                     second:self.getValue("second")
                 };
+
             return new Date(values.year,values.month,values.day,values.hour,values.minute,values.second);
         };
 
         this.setValue = function(name,value){
-            var $this = this.ui[name], index;  
+            var $this = this.ui[name], index;
+
             index = -($this.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
             this._cacheData($this,index);
             this.setTranslate($this, 0,$this[0].y +"px",0);
+
             return this;
         };
 
         this.getValue = function(name){
-            var $this = this.ui[name];
-            return $this.length ? parseInt( $this.find(VALUETAG).eq( $this[0].index + 1 ).attr("data-value") ) : 0;
+            var $this = this.ui[name], $valueTags = $this.find(VALUETAG);
+
+            return $valueTags.length ? parseInt( $valueTags.eq( $this[0].index + 1 ).attr("data-value") ) : 0;
         };
 
         this.close = function(){
