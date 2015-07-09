@@ -17,71 +17,75 @@
     <link rel="stylesheet" type="text/css" href="../build/css/datepicker.css">
 </head>
 <body>
+时间选择器1
 <div><input type="text" id="J_datepicker"/></div>
+时间选择器2
 <div><input type="text" id="J_datepicker1"/></div>
+时间选择器3
 <div><input type="text" id="J_datepicker2"/></div>
 <div class="wrapper">
 
 </div>
 
 <script type="text/html" id="J_template">
-    <div class="datepicker">
-        <div class="datepicker-column year" data-type="year">
+    <div class="kub-datepicker">
+        <div class="kub-datepicker-column year" data-type="year">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%>
-                    <li class="datepicker-show" data-value="<%= i%>"><%= i%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i%>"><%= i%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="datepicker-column month"  data-type="month">
+        <div class="kub-datepicker-column month"  data-type="month">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i= 1;i<=12;i++){%>
-                    <li class="datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="datepicker-column day"  data-type="day">
+        <div class="kub-datepicker-column day"  data-type="day">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i= 1;i<=31;i++){%>
-                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="datepicker-column hour"  data-type="hour">
+        <div class="kub-datepicker-column hour"  data-type="hour">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="datepicker-column minute"  data-type="minute">
+        <div class="kub-datepicker-column minute"  data-type="minute">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="datepicker-column second"  data-type="second">
+        <div class="kub-datepicker-column second"  data-type="second">
             <ul>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
                 <%for(var i= 0;i<=59;i++){%>
-                    <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
+                    <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li>
                 <%}%>
-                <li class="datepicker-show"></li>
+                <li class="kub-datepicker-show"></li>
             </ul>
         </div>
-        <div class="overlay"></div>
+        <div class="kub-overlay"></div>
     </div>
+
 </script>
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/underscore.js"></script>
@@ -93,17 +97,17 @@
 function test(){
 
     //采用默认的format yyyy-MM-dd
-    var datepicker = new DatePicker($("#J_datepicker"));
+    var datepicker = new Kub.DatePicker($("#J_datepicker"));
 
     //采用默认的format yyyy-MM-dd
     //可配置title 与 本地化
-    var datepicker = new DatePicker($("#J_datepicker1"),{
+    var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
         title:"Date Picker",
         locale:"en"
     });
 
     //自定义format 
-    var datepicker1 = new DatePicker($("#J_datepicker2"),{
+    var datepicker2 = new Kub.DatePicker($("#J_datepicker2"),{
         title:"选择时间",
         format:"yyyy-MM-dd,HH:mm:ss",
         confirm:function(e,datepicker){

@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,root.Dialog,root.dateHelper);
+            return Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
         });
     }else {
-        root.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,root.Dialog,root.dateHelper);
+        Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
     }
 }(this,function(root,$,_,Hammer,Dialog){
     "use strict";
@@ -25,11 +26,11 @@
 
     var HEIGHTUNIT = 40,
         DURATION = 0.5,
-        SHOWCLASS = "datepicker-show",
-        VALUECOLUMNCLASS = ".datepicker-column",
+        SHOWCLASS = "kub-datepicker-show",
+        VALUECOLUMNCLASS = ".kub-datepicker-column",
         VALUETAG = "li",
         VALUECONTAINERTAG = "ul",
-        TEMPLATE = '<div class="datepicker"> <div class="datepicker-column year" data-type="year"> <ul> <li class="datepicker-show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column month"  data-type="month"> <ul> <li class="datepicker-show"></li> <%for(var i= 1;i<=12;i++){%> <li class="datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column day"  data-type="day"> <ul> <li class="datepicker-show"></li> <%for(var i= 1;i<=31;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column hour"  data-type="hour"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column minute"  data-type="minute"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="datepicker-column second"  data-type="second"> <ul> <li class="datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="datepicker-show"></li> </ul> </div> <div class="overlay"></div> </div>';
+        TEMPLATE = '<div class="kub-datepicker"> <div class="kub-datepicker-column year" data-type="year"> <ul> <li class="kub-datepicker-show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column month"  data-type="month"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 1;i<=12;i++){%> <li class="kub-datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column day"  data-type="day"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 1;i<=31;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column hour"  data-type="hour"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column minute"  data-type="minute"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column second"  data-type="second"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-overlay"></div> </div>';
 
     ;(function(){
         this.constructor = DatePicker;
@@ -39,7 +40,7 @@
             title:"选择时间",
             format:"yyyy-MM-dd",
             closable:false,
-            className:"datepicker-dialog",
+            className:"kub-datepicker-dialog",
             date:new Date(),
             confirm:null,
             cancel:null,
@@ -105,7 +106,7 @@
             options.format.indexOf("s") === -1 && (self.ui.second.empty().remove());
 
             //设置本地化
-            self.dialog.$element.addClass("datepicker-"+options.locale);
+            self.dialog.$element.addClass("kub-datepicker-"+options.locale);
 
             //监听每个元素的滚动事件            
             self.ui.columns = self.dialog.$element.find(VALUECOLUMNCLASS).each(function(){

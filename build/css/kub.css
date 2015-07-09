@@ -141,7 +141,7 @@ a {
   -webkit-animation-name: kubZoomIn;
   animation-name: kubZoomIn;
 }
-@-webkit-keyframes stretch {
+@-webkit-keyframes kubStretch {
   0%,
   40%,
   100% {
@@ -151,7 +151,7 @@ a {
     -webkit-transform: scaleY(1);
   }
 }
-@keyframes stretch {
+@keyframes kubStretch {
   0%,
   40%,
   100% {
@@ -164,41 +164,41 @@ a {
   }
 }
 .kub-stretch {
-  -webkit-animation-name: stretch;
-  animation-name: stretch;
+  -webkit-animation-name: kubStretch;
+  animation-name: kubStretch;
 }
-.spinner {
+.kub-spinner {
   margin: 0 auto;
   width: 60px;
   height: 60px;
   text-align: center;
   font-size: 10px;
 }
-.spinner > div {
+.kub-spinner > div {
   background-color: #ff0000;
   height: 100%;
   width: 6px;
   display: inline-block;
-  -webkit-animation: stretch 1.2s infinite ease-in-out;
-  animation: stretch 1.2s infinite ease-in-out;
+  -webkit-animation: kubStretch 1.2s infinite ease-in-out;
+  animation: kubStretch 1.2s infinite ease-in-out;
 }
-.spinner .rect1 {
+.kub-spinner .rect1 {
   -webkit-animation-delay: -1.2s;
   animation-delay: -1.2s;
 }
-.spinner .rect2 {
+.kub-spinner .rect2 {
   -webkit-animation-delay: -1.1s;
   animation-delay: -1.1s;
 }
-.spinner .rect3 {
+.kub-spinner .rect3 {
   -webkit-animation-delay: -1s;
   animation-delay: -1s;
 }
-.spinner .rect4 {
+.kub-spinner .rect4 {
   -webkit-animation-delay: -0.9s;
   animation-delay: -0.9s;
 }
-.spinner .rect5 {
+.kub-spinner .rect5 {
   -webkit-animation-delay: -0.8s;
   animation-delay: -0.8s;
 }
@@ -207,7 +207,7 @@ a {
   height: 100%;
   margin: 0;
 }
-.dialog-modal {
+.kub-dialog-modal {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -219,19 +219,19 @@ a {
   overflow-x: hidden;
   overflow-y: auto;
 }
-.modal {
+.kub-modal {
   background: rgba(0, 0, 0, 0.6);
 }
-.dialog-wrapper {
+.kub-dialog-wrapper {
   display: table;
   width: 100%;
   height: 100%;
 }
-.dialog-wrapper .dialog-container {
+.kub-dialog-wrapper .kub-dialog-container {
   display: table-cell;
   vertical-align: middle;
 }
-.dialog {
+.kub-dialog {
   width: 86%;
   margin: 0 7%;
   /*position: absolute;*/
@@ -242,7 +242,7 @@ a {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border: 1px solid #f4f4f4;
 }
-.dialog .dialog-button {
+.kub-dialog .kub-dialog-button {
   background: none;
   border: none;
   padding: 0.75em 0;
@@ -250,13 +250,13 @@ a {
   text-align: center;
   display: inline-block;
 }
-.dialog .dialog-header {
+.kub-dialog .kub-dialog-header {
   padding: 0.75em 0.75em;
   text-align: center;
   /*border-bottom: @border;*/
   background: #f4f4f4;
 }
-.dialog .dialog-header .dialog-close {
+.kub-dialog .kub-dialog-header .kub-dialog-close {
   float: right;
   font-weight: bold;
   line-height: 1;
@@ -265,23 +265,23 @@ a {
   padding: 5px;
   margin: -5px -5px 0 0;
 }
-.dialog .dialog-header:hover {
+.kub-dialog .kub-dialog-header:hover {
   color: #333333;
 }
-.dialog .dialog-body {
+.kub-dialog .kub-dialog-body {
   padding: 1.4em 0.75em;
 }
-.dialog .dialog-body img {
+.kub-dialog .kub-dialog-body img {
   max-width: 100%;
 }
-.dialog .dialog-footer {
+.kub-dialog .kub-dialog-footer {
   border-top: 1px solid #f4f4f4;
 }
-.dialog .dialog-footer .dialog-button {
+.kub-dialog .kub-dialog-footer .kub-dialog-button {
   width: 100%;
   position: relative;
 }
-.dialog .dialog-footer .dialog-button:after {
+.kub-dialog .kub-dialog-footer .kub-dialog-button:after {
   position: absolute;
   content: "";
   display: block;
@@ -291,36 +291,37 @@ a {
   bottom: 0;
   height: 100%;
 }
-.dialog .dialog-footer .dialog-button:last-child:after {
+.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child:after {
   display: none;
 }
-.dialog .column2 .dialog-button {
+.kub-dialog .kub-column2 .kub-dialog-button {
   width: 50%;
 }
-.dialog .column3 .dialog-button {
+.kub-dialog .kub-column3 .kub-dialog-button {
   width: 33.33%;
 }
-.dialog .column4 .dialog-button {
+.kub-dialog .kub-column4 .kub-dialog-button {
   width: 25%;
 }
-.dialog .column5 .dialog-button {
+.kub-dialog .kub-column5 .kub-dialog-button {
   width: 20%;
 }
-.toast {
+.kub-toast {
   position: fixed;
   bottom: auto;
   height: auto;
   z-index: 10003;
   overflow: initial;
 }
-.toast .dialog {
+.kub-toast .kub-dialog {
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: rgba(0, 0, 0, 0.7);
 }
-.toast .dialog-body {
+.kub-toast .kub-dialog-body {
   padding: 0.5em 0.75em;
+  color: #ffffff;
 }
-.prompt .prompt-input {
+.kub-prompt .kub-prompt-input {
   font-size: 100%;
   margin-top: 0.2em;
   width: 96%;
@@ -328,37 +329,37 @@ a {
   padding: 0.3em 2%;
   background: #ffffff;
 }
-.loader {
+.kub-loader {
   z-index: 10002;
 }
-.loader .dialog {
+.kub-loader .kub-dialog {
   width: 36%;
   margin: 0 32%;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 0.8em;
   border: none;
 }
-.loader .dialog .loader-message {
+.kub-loader .kub-dialog .kub-loader-message {
   color: #ffffff;
   text-align: center;
   padding-top: 0.2em;
 }
-.loader .dialog .dialog-body {
+.kub-loader .kub-dialog .kub-dialog-body {
   padding: 0.75em;
 }
-.datepicker-dialog .dialog-body {
+.kub-datepicker-dialog .kub-dialog-body {
   overflow-y: hidden;
   overflow-x: auto;
   padding: 0.75em;
 }
-.datepicker {
+.kub-datepicker {
   font-size: 16px;
   position: relative;
   color: #333;
   text-align: center;
   white-space: nowrap;
 }
-.datepicker .overlay {
+.kub-datepicker .kub-overlay {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -372,13 +373,13 @@ a {
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
   border-radius: 6px;
 }
-.datepicker ul,
-.datepicker li {
+.kub-datepicker ul,
+.kub-datepicker li {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.datepicker .datepicker-column {
+.kub-datepicker .kub-datepicker-column {
   position: relative;
   top: 0;
   height: 120px;
@@ -387,67 +388,57 @@ a {
   overflow: hidden;
   z-index: 10;
 }
-.datepicker .datepicker-column:after {
+.kub-datepicker .kub-datepicker-column:after {
   position: absolute;
   font-size: 0.5em;
   top: 40px;
   right: 0;
 }
-.datepicker .datepicker-column ul {
-  /*transform: translate(0,1.5em);*/
-  /*transition:all 0.5s ease-out;*/
-  /*-webkit-transition-property:all;
-            transition-property:all;
-            -webkit-transition-timing-function:ease-out;
-            transition-timing-function:ease-out;
-            -webkit-transition-duration:0s;
-            transition-duration:0s;*/
-}
-.datepicker .datepicker-column ul li {
+.kub-datepicker .kub-datepicker-column ul li {
   line-height: 40px;
   height: 40px;
   opacity: 1;
   display: none;
 }
-.datepicker .datepicker-column ul .datepicker-show {
+.kub-datepicker .kub-datepicker-column ul .kub-datepicker-show {
   display: block;
 }
-.datepicker .datepicker-column ul .active {
+.kub-datepicker .kub-datepicker-column ul .kub-datepicker-active {
   opacity: 1;
 }
-.datepicker .year:after {
+.kub-datepicker .year:after {
   content: "年";
 }
-.datepicker .month:after {
+.kub-datepicker .month:after {
   content: "月";
 }
-.datepicker .day:after {
+.kub-datepicker .day:after {
   content: "日";
 }
-.datepicker .hour:after {
+.kub-datepicker .hour:after {
   content: "时";
 }
-.datepicker .minute:after {
+.kub-datepicker .minute:after {
   content: "分";
 }
-.datepicker .second:after {
+.kub-datepicker .second:after {
   content: "秒";
 }
-.datepicker-en .year:after {
+.kub-datepicker-en .year:after {
   content: "y";
 }
-.datepicker-en .month:after {
+.kub-datepicker-en .month:after {
   content: "m";
 }
-.datepicker-en .day:after {
+.kub-datepicker-en .day:after {
   content: "d";
 }
-.datepicker-en .hour:after {
+.kub-datepicker-en .hour:after {
   content: "h";
 }
-.datepicker-en .minute:after {
+.kub-datepicker-en .minute:after {
   content: "min";
 }
-.datepicker-en .second:after {
+.kub-datepicker-en .second:after {
   content: "s";
 }

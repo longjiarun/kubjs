@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Alert = factory(root,root.Dialog);
+            return Kub.Alert = factory(root,Kub.Dialog);
         });
     }else {
-        root.Alert = factory(root,root.Dialog);
+        Kub.Alert = factory(root,Kub.Dialog);
     }
 }(this,function(root,Dialog){
     var Alert = function(options){
@@ -21,9 +22,6 @@
         Dialog.call(this,this.options);
     };
 
-    //Alert.defaults = 
-    
-
     Dialog.prototype.inherit(Alert,Dialog);
 
     ;(function(){
@@ -33,7 +31,7 @@
             confirm:null,
             showHeader:false,
             closable:false,
-            className:"alert",
+            className:"kub-alert",
             locale:"zh",
             modal:true
         };

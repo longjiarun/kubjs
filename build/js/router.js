@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Router = factory(root,root._);
+            return Kub.Router = factory(root,root._);
         });
     } else {
-        root.Router = factory(root,root._);
+        Kub.Router = factory(root,root._);
     }
 }(this,function(root,_){
     'use strict';

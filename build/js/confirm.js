@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Confirm = factory(root,root.Dialog);
+            return Kub.Confirm = factory(root,Kub.Dialog);
         });
     }else {
-        root.Confirm = factory(root,root.Dialog);
+        Kub.Confirm = factory(root,Kub.Dialog);
     }
 }(this,function(root,Dialog){
     var Confirm = function(options){
@@ -23,8 +24,6 @@
 
         Dialog.call(this,this.options);
     };
-
-    
     
     Dialog.prototype.inherit(Confirm,Dialog);
 
@@ -35,7 +34,7 @@
             cancel:null,
             showHeader:false,
             closable:false,
-            className:"confirm",
+            className:"kub-confirm",
             locale:"zh",
             modal:true
         };

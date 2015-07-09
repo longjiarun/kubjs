@@ -18,7 +18,6 @@
 </style>
 <script type="text/html" id="J_dialogTemplate">
     
-    <div class="dialog-modal <%= data.className%> <%if( data.modal ){%> modal <%}%>"> <div class="dialog-wrapper"><div class="dialog-container"> <div class="dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="dialog-button dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="dialog-footer column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>
 </script>
 <link rel="stylesheet" type="text/css" href="../build/css/dialog.css">
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
@@ -32,8 +31,16 @@
 
 <script type="text/javascript">
 function test(){
+
+    new Kub.Confirm({
+        message:"这是一个confirm",
+        confirm:function(){
+            //监听确认事件，需要手动关闭对话框
+        }
+    });
+
     //loading 弹窗，用于在loading时，阻塞用户行为
-    var loader = new Loader();
+    var loader = new Kub.Loader();
 
     //3秒以后自动消失
     setTimeout(function(){
@@ -41,16 +48,16 @@ function test(){
     },3000);
 
     //1.5s以后消失
-    var toast = new Toast({
+    var toast = new Kub.Toast({
         message:"Loading",
-        delay:1500000
+        delay:1500
     });
 
     //return false;
 
     //弹窗
     //可定制多个按钮
-    var dialog = new Dialog({
+    var dialog = new Kub.Dialog({
         message:"这是个弹窗",
         title:"弹窗",
         buttons:[{
@@ -61,17 +68,15 @@ function test(){
         },{
             text:"取消",
             handler:function(e,dialog){
-                //返回 event 与 dialog对象
+                //返回 event 与 kub-dialog对象
                 dialog.close();
             }
         }]
     });
     console.log(dialog)
 
-    
-
     $("#J_button").on("click",function(){
-        var alert = new Alert({
+        var alert = new Kub.Alert({
             message:'这是个Alert<img data-src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg" data-done="true"><input type="text" style="margin-top:200px;"/>',
             //可定制
             locale:"en",
@@ -85,25 +90,23 @@ function test(){
         console.log(alert);
     });
 
-    return false
-
-
-    var prompt = new Prompt({
+    
+    var prompt = new Kub.Prompt({
         message:"这是个prompt:",
         placeholder:"输入提示文字",
         inputType:"tel",//定制输入类型
-        defaultValue:"这是默认值",
+        defaultValue:"",
         cancel:function(){
             //可定制取消按钮事件
         },
         confirm:function(e,dialog){
-            //输入值被绑定在dialog中
+            //输入值被绑定在kub-dialog中
             console.log(dialog.value);
 
             //可定制确定按钮
             //如果定制confirm事件，则必须手动关闭对话框
             //手动关闭对话框
-            new Alert({
+            new Kub.Alert({
                 message:dialog.value,
                 confirm:function(e,dialog){
                     prompt.close();

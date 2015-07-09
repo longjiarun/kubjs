@@ -4,20 +4,20 @@
 @height:40px;
 @padding:0.6em;
 @font-size:16px;
-.datepicker-dialog{
-    .dialog-body{
+.kub-datepicker-dialog{
+    .kub-dialog-body{
         overflow-y: hidden;
         overflow-x: auto;
         padding: 0.75em;
     }
 }
-.datepicker{
+.kub-datepicker{
     font-size:@font-size;
     position: relative;
     color:#333;
     text-align: center;
     white-space:nowrap;
-    .overlay{
+    .kub-overlay{
         position: absolute;
         top:0;
         bottom:0;
@@ -38,7 +38,7 @@
         margin:0;
         padding: 0;
     }
-    .datepicker-column {
+    .kub-datepicker-column {
         position: relative;
         top:0;
         height: @height * 3;
@@ -53,14 +53,6 @@
             right:0
         } 
         ul{
-            /*transform: translate(0,1.5em);*/
-            /*transition:all 0.5s ease-out;*/
-            /*-webkit-transition-property:all;
-            transition-property:all;
-            -webkit-transition-timing-function:ease-out;
-            transition-timing-function:ease-out;
-            -webkit-transition-duration:0s;
-            transition-duration:0s;*/
             li{
                 line-height: @height;
                 height:@height;
@@ -68,10 +60,10 @@
                 opacity: 1;
                 display: none;
             }
-            .datepicker-show{
+            .kub-datepicker-show{
                 display: block;
             }
-            .active{
+            .kub-datepicker-active{
                 opacity: 1;
             }
         }
@@ -96,7 +88,7 @@
         content:"秒";
     }
 }
-.datepicker-en{
+.kub-datepicker-en{
     .year:after{
         content:"y";
     }

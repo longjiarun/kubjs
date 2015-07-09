@@ -13,7 +13,7 @@
     height: 100%;
     margin:0;
 }
-.dialog-modal{
+.kub-dialog-modal{
     position:fixed;
     top:0;
     bottom: 0;
@@ -26,20 +26,20 @@
     overflow-x: hidden;
     overflow-y: auto;
 }
-.modal{
+.kub-modal{
     background: rgba(0,0,0,0.6);
 }
-.dialog-wrapper{
+.kub-dialog-wrapper{
     display: table;
     width: 100%;
     height: 100%;
 
-    .dialog-container{
+    .kub-dialog-container{
         display: table-cell;
         vertical-align: middle;
     }
 }
-.dialog{
+.kub-dialog{
     width:86%;
     margin:0 7%;
     /*position: absolute;*/
@@ -50,7 +50,7 @@
     color:@font-color;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: @border;
-    .dialog-button{
+    .kub-dialog-button{
         background: none;
         border: none;
         padding: @header-padding-top 0;
@@ -58,12 +58,12 @@
         text-align: center;
         display: inline-block;
     }
-    .dialog-header{
+    .kub-dialog-header{
         padding:@header-padding-top @m-size;
         text-align: center;
         /*border-bottom: @border;*/
         background: @border-color;
-        .dialog-close{
+        .kub-dialog-close{
             float: right;
             font-weight: bold;
             line-height: 1;
@@ -76,15 +76,15 @@
             color:@font-color;
         }
     }
-    .dialog-body{
+    .kub-dialog-body{
         padding:1.4em @m-size;
         img{
             max-width: 100%;
         }
     }
-    .dialog-footer{
+    .kub-dialog-footer{
         border-top: @border;
-        .dialog-button{
+        .kub-dialog-button{
             width: 100%;
             position: relative;
             &:after{
@@ -103,38 +103,39 @@
         }
     }
 
-    .column2 .dialog-button{
+    .kub-column2 .kub-dialog-button{
         width: 50%;
     }
-    .column3 .dialog-button{
+    .kub-column3 .kub-dialog-button{
         width: 33.33%;
     }
-    .column4 .dialog-button{
+    .kub-column4 .kub-dialog-button{
         width: 25%;
     }
-    .column5 .dialog-button{
+    .kub-column5 .kub-dialog-button{
         width: 20%;
     }
 }
-.toast{
+.kub-toast{
     position:fixed;
     bottom: auto;
     height: auto;
     z-index:10003;
     overflow:initial;
     
-    .dialog-wrapper{
+    .kub-dialog-wrapper{
     }
-    .dialog{
+    .kub-dialog{
         border:1px solid rgba(0,0,0,0.1);
         background-color:rgba(0,0,0,0.7);
         
     }
-    .dialog-body{
+    .kub-dialog-body{
         padding: 0.5em @m-size;
+        color:@white;
     }
 }
-.prompt .prompt-input{
+.kub-prompt .kub-prompt-input{
     font-size:100%;
     margin-top:0.2em;
     width: 96%;
@@ -143,20 +144,20 @@
     background: @white;
 }
 
-.loader{
+.kub-loader{
     z-index:10002;
-    .dialog{
+    .kub-dialog{
         width:36%;
         margin:0 32%;
         background-color:rgba(0,0,0,0.7);
         border-radius: 0.8em;
         border:none;
-        .loader-message{
+        .kub-loader-message{
             color:@white;
             text-align: center;
             padding-top:0.2em;
         }
-        .dialog-body{
+        .kub-dialog-body{
             padding:@m-size;
         }
     }

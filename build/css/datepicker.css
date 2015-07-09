@@ -28,7 +28,7 @@
   -webkit-animation-name: kubZoomIn;
   animation-name: kubZoomIn;
 }
-@-webkit-keyframes stretch {
+@-webkit-keyframes kubStretch {
   0%,
   40%,
   100% {
@@ -38,7 +38,7 @@
     -webkit-transform: scaleY(1);
   }
 }
-@keyframes stretch {
+@keyframes kubStretch {
   0%,
   40%,
   100% {
@@ -51,8 +51,8 @@
   }
 }
 .kub-stretch {
-  -webkit-animation-name: stretch;
-  animation-name: stretch;
+  -webkit-animation-name: kubStretch;
+  animation-name: kubStretch;
 }
 /*common css*/
 .clearfix {
@@ -63,19 +63,19 @@
   content: " ";
   clear: both;
 }
-.datepicker-dialog .dialog-body {
+.kub-datepicker-dialog .kub-dialog-body {
   overflow-y: hidden;
   overflow-x: auto;
   padding: 0.75em;
 }
-.datepicker {
+.kub-datepicker {
   font-size: 16px;
   position: relative;
   color: #333;
   text-align: center;
   white-space: nowrap;
 }
-.datepicker .overlay {
+.kub-datepicker .kub-overlay {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -89,13 +89,13 @@
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
   border-radius: 6px;
 }
-.datepicker ul,
-.datepicker li {
+.kub-datepicker ul,
+.kub-datepicker li {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.datepicker .datepicker-column {
+.kub-datepicker .kub-datepicker-column {
   position: relative;
   top: 0;
   height: 120px;
@@ -104,67 +104,57 @@
   overflow: hidden;
   z-index: 10;
 }
-.datepicker .datepicker-column:after {
+.kub-datepicker .kub-datepicker-column:after {
   position: absolute;
   font-size: 0.5em;
   top: 40px;
   right: 0;
 }
-.datepicker .datepicker-column ul {
-  /*transform: translate(0,1.5em);*/
-  /*transition:all 0.5s ease-out;*/
-  /*-webkit-transition-property:all;
-            transition-property:all;
-            -webkit-transition-timing-function:ease-out;
-            transition-timing-function:ease-out;
-            -webkit-transition-duration:0s;
-            transition-duration:0s;*/
-}
-.datepicker .datepicker-column ul li {
+.kub-datepicker .kub-datepicker-column ul li {
   line-height: 40px;
   height: 40px;
   opacity: 1;
   display: none;
 }
-.datepicker .datepicker-column ul .datepicker-show {
+.kub-datepicker .kub-datepicker-column ul .kub-datepicker-show {
   display: block;
 }
-.datepicker .datepicker-column ul .active {
+.kub-datepicker .kub-datepicker-column ul .kub-datepicker-active {
   opacity: 1;
 }
-.datepicker .year:after {
+.kub-datepicker .year:after {
   content: "年";
 }
-.datepicker .month:after {
+.kub-datepicker .month:after {
   content: "月";
 }
-.datepicker .day:after {
+.kub-datepicker .day:after {
   content: "日";
 }
-.datepicker .hour:after {
+.kub-datepicker .hour:after {
   content: "时";
 }
-.datepicker .minute:after {
+.kub-datepicker .minute:after {
   content: "分";
 }
-.datepicker .second:after {
+.kub-datepicker .second:after {
   content: "秒";
 }
-.datepicker-en .year:after {
+.kub-datepicker-en .year:after {
   content: "y";
 }
-.datepicker-en .month:after {
+.kub-datepicker-en .month:after {
   content: "m";
 }
-.datepicker-en .day:after {
+.kub-datepicker-en .day:after {
   content: "d";
 }
-.datepicker-en .hour:after {
+.kub-datepicker-en .hour:after {
   content: "h";
 }
-.datepicker-en .minute:after {
+.kub-datepicker-en .minute:after {
   content: "min";
 }
-.datepicker-en .second:after {
+.kub-datepicker-en .second:after {
   content: "s";
 }

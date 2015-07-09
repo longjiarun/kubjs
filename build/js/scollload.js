@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
         define(function(){
-            return root.ScollLoad=factory(root, root.jQuery||root.Zepto, root.core, root.LazyLoad);
+            return Kub.ScollLoad=factory(root, root.jQuery||root.Zepto, Kub.core, Kub.LazyLoad);
         });
     }else{
-        root.ScollLoad=factory(root, root.jQuery||root.Zepto, root.core, root.LazyLoad);
+        Kub.ScollLoad=factory(root, root.jQuery||root.Zepto, Kub.core, Kub.LazyLoad);
     }
 }(this,function(root, $, core, LazyLoad){
     'use strict';
@@ -31,10 +32,10 @@
             callback : null
         };
         
-        this.load = function(){
+        this.load = function($this){
             var self = this,options = this.options;
             
-            options.callback && options.callback.apply(self);
+            options.callback && options.callback.call(self,$this);
 
             return self;
         };     

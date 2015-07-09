@@ -1,10 +1,12 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
+
     if (typeof define === "function") {
         define(function() {
-            return root.Dialog = factory(root,root.jQuery||root.Zepto,root._);
+            return Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
         });
     }else {
-        root.Dialog = factory(root,root.jQuery||root.Zepto,root._);
+        Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
     }
 }(this,function(root,$,_){
     var Dialog = function(options){
@@ -13,14 +15,16 @@
         //最大可包含5个按钮
         this.options.buttons && this.options.buttons.length > 5 && (this.options.buttons.length = 5);
         this._init();
-    },$body = $("body"),$html = $body.parent();
+    },
+    $body = $("body"),
+    $html = $body.parent();
 
     var ZOOMINCLASS = "kub-animated kub-zoomIn",
         OVERFLOWCLASS =  "kub-ofh",
         DIALOGID = "J_dialog" , 
         DIALOGCLOSEID = "J_dialogClose",
         DIALOGBUTTONCLASS = "J_dialogButton",
-        TEMPLATE = '<div class="dialog-modal <%= data.className%> <%if( data.modal ){%> modal <%}%>"> <div class="dialog-wrapper"><div class="dialog-container"> <div class="dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="dialog-button dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="dialog-footer column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>'
+        TEMPLATE = '<div class="kub-dialog-modal <%= data.className%> <%if( data.modal ){%> kub-modal <%}%>"> <div class="kub-dialog-wrapper"><div class="kub-dialog-container"> <div class="kub-dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="kub-dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="kub-dialog-button kub-dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="kub-dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="kub-dialog-footer kub-column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="kub-dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>'
 
     ;(function(){
         this.constructor = Dialog;
@@ -119,14 +123,13 @@
             return this;
         };
 
-
         this.show = function(){
             this.disableScrollbar();
+
             !this.options.scrollable  && i++;
             this.$element.show();
 
             this.options.animated && this.$dialog.addClass(ZOOMINCLASS);
-
             return this;
         };
 
@@ -153,6 +156,5 @@
         };
 
     }).call(Dialog.prototype);
-
     return Dialog;
 }));

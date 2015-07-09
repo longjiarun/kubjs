@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Prompt = factory(root,root._,root.Dialog);
+            return Kub.Prompt = factory(root,root._,Kub.Dialog);
         });
     }else {
-        root.Prompt = factory(root,root._,root.Dialog);
+        Kub.Prompt = factory(root,root._,Kub.Dialog);
     }
 }(this,function(root,_,Dialog){
     var Prompt = function(options){
@@ -28,10 +29,8 @@
 
         Dialog.call(this,this.options);
     };
-    var INPUTID = "J_input" ,TEMPLATE = '<%= data.message%><div class="prompt-input-wrapper"><input placeholder="<%= data.placeholder%>" type="<%= data.inputType%>" id="J_input" value="<%= data.defaultValue%>" class="prompt-input"/></div>';
+    var INPUTID = "J_input" ,TEMPLATE = '<%= data.message%><div class="kub-prompt-input-wrapper"><input placeholder="<%= data.placeholder%>" type="<%= data.inputType%>" id="J_input" value="<%= data.defaultValue%>" class="kub-prompt-input"/></div>';
 
-    
-    
     Dialog.prototype.inherit(Prompt,Dialog);
 
     ;(function(){
@@ -42,7 +41,7 @@
             cancel:null,
             showHeader:false,
             closable:false,
-            className:"prompt",
+            className:"kub-prompt",
             locale:"zh",
             modal:true,
             inputType:"text",

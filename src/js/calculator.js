@@ -7,17 +7,17 @@
  *
  *     a.toFixed2(2) //默认四舍五入
  *     a.toFixed2(2,true) 不进行四舍五入
- * author : longjia@koudai.com
  */
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.calculator = factory(root);
+            return Kub.calculator = factory(root);
         });
     }else if (typeof exports !== 'undefined') {
         module.exports = factory(root);
     } else {
-        root.calculator = factory(root);
+        Kub.calculator = factory(root);
     }
 }(this,function(root){
     'use strict';

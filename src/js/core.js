@@ -1,12 +1,13 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
         define(function(){
-            return root.core = factory(root);
+            return Kub.core = factory(root);
         });
     }else if (typeof exports !== 'undefined') {
-        exports = factory(root);
+        module.exports = factory(root);
     } else{
-        root.core = factory(root);
+        Kub.core = factory(root);
     }
 }(this,function(root){
     var Core = function(){

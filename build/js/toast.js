@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Toast = factory(root,root.Dialog);
+            return Kub.Toast = factory(root,Kub.Dialog);
         });
     }else {
-        root.Toast = factory(root,root.Dialog);
+        Kub.Toast = factory(root,Kub.Dialog);
     }
 }(this,function(root,Dialog){
     var Toast = function(options){
@@ -24,8 +25,6 @@
         },this.options.delay);
     };
 
-    
-    
     Dialog.prototype.inherit(Toast,Dialog);
 
     ;(function(){
@@ -33,7 +32,7 @@
         this.defaults = {
             showHeader:false,
             closable:false,
-            className:"toast",
+            className:"kub-toast",
             modal:false,
             top:50,
             delay:2000

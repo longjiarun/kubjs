@@ -28,14 +28,15 @@
  * author : longjia@koudai.com
  */
 !(function(root, factory) {
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.dateHelper = factory(root);
+            return Kub.dateHelper = factory(root);
         });
     } else if (typeof exports !== 'undefined') {
         module.exports = factory(root);
     } else {
-        root.dateHelper = factory(root);
+        Kub.dateHelper = factory(root);
     }
 }(this, function(root) {
     'use strict';

@@ -3,12 +3,13 @@
  * var lazyload = new LazyLoad($("img"));
  */
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
         define(function(){
-            return root.LazyLoad=factory(root,root.jQuery||root.Zepto);
+            return Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
         });
     }else{
-        root.LazyLoad=factory(root,root.jQuery||root.Zepto);
+        Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
     }
 }(this,function(root,$){
     'use strict';

@@ -1,10 +1,11 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.Loader = factory(root,root._,root.Dialog);
+            return Kub.Loader = factory(root,root._,Kub.Dialog);
         });
     }else {
-        root.Loader = factory(root,root._,root.Dialog);
+        Kub.Loader = factory(root,root._,Kub.Dialog);
     }
 }(this,function(root,_,Dialog){
     var Loader = function(options){
@@ -19,7 +20,7 @@
         Dialog.call(this,this.options);
     };
 
-    var TEMPLATE = '<div class="spinner"> <div class="rect1"></div> <div class="rect2"></div> <div class="rect3"></div> <div class="rect4"></div> <div class="rect5"></div> </div> <div class="loader-message"><%= data.message%></div>'
+    var TEMPLATE = '<div class="kub-spinner"> <div class="rect1"></div> <div class="rect2"></div> <div class="rect3"></div> <div class="rect4"></div> <div class="rect5"></div> </div> <div class="kub-loader-message"><%= data.message%></div>'
 
     Dialog.prototype.inherit(Loader,Dialog);
 
@@ -29,9 +30,9 @@
             showHeader:false,
             scrollable:true,
             closable:false,
-            className:"loader",
+            className:"kub-loader",
             modal:true,
-            message:"Loading..."
+            message:"加载中..."
         };
 
      }).call(Loader.prototype);
