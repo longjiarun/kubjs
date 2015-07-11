@@ -3,7 +3,8 @@ var gulp = require("gulp"),
     uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
     rename = require("gulp-rename"),
-    del = require('del');
+    del = require('del'),
+    jsdoc = require("gulp-jsdoc");
 
 var src = "src", build = "build";
 
@@ -41,6 +42,11 @@ gulp.task("js",function(){
         .on("error",function(err){
             err && console.log(err.message);
         });
+});
+
+gulp.task("doc",function(){
+    gulp.src(build+"/**/*.js")
+      .pipe(jsdoc("docs"))
 });
 
 gulp.task("default",["css","js"],function(){
