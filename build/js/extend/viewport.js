@@ -12,21 +12,17 @@
     <script type="text/javascript" src="js/lib/viewport.js"></script>
  */
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
-        define("viewport",function() {
-            return factory(root);
+        define(function() {
+            return  Kub.viewport = factory(root);
         });
     } else {
-        root.viewport = factory(root);
+        Kub.viewport = factory(root);
     }
 }(this,function(root){
     var Viewport=function(options){
-        if(Viewport.prototype.instance && Viewport.prototype.instance instanceof Viewport){
-            return Viewport.prototype.instance;
-        }
-
-        this.options = this.extend(this.defaults,options||{});
-
+        this.options = this.extend(Viewport.prototype.defaults,options||{});
         this._init();
     };
     
@@ -258,6 +254,5 @@
         };
 
     }).call(Viewport.prototype);
-    Viewport.prototype.instance = new Viewport();
-    return Viewport.prototype.instance;
+    return new Viewport();
 }));

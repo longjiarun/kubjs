@@ -95,6 +95,7 @@ input,
 img {
   vertical-align: middle;
 }
+button:focus,
 input:focus,
 a:focus {
   outline: none;

@@ -1,12 +1,13 @@
 !(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return root.validate = factory(root,root._);
+            return Kub.validate = factory(root,root._);
         });
     }else if (typeof exports !== 'undefined') {
         module.exports = factory(root, require('underscore'));
     }else {
-        root.validate = factory(root,root._);
+        Kub.validate = factory(root,root._);
     }
 }(this,function(root,_){
     function Validate(){
@@ -15,12 +16,6 @@
     
     Validate.prototype={
         constructor : Validate,
-        isUsername : function(value){
-            return !!(value && /^[a-zA-Z]{1}\w{3,19}$/.test(value));
-        },
-        isPassword :function(value){
-            return !!(value && /^\w{6,20}$/.test(value));
-        },
         isEmail : function(value){
             return !!(value && /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i.test(value));
         },

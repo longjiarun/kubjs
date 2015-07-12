@@ -11,9 +11,7 @@
     }
 }(this,function(root){
     var Core = function(){
-        if(Core.prototype.instance && Core.prototype.instance instanceof Core){
-            return Core.prototype.instance;
-        }
+        
     };
     var toString = Object.prototype.toString;
 
@@ -34,9 +32,9 @@
         if (ipod) os.ios = os.ipod = true, os.version = ipod[3] ? ipod[3].replace(/_/g, '.') : null;
         if (wp) os.wp = true, os.version = wp[1];
 
-        os.mobile = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
-        os.tablet = !os.mobile && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
-        
+        os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
+        os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
+        os.mobile = os.phone || os.tablet;
         this.os = os;
 
         // extend function like $.extend()
@@ -147,5 +145,5 @@
 
     }).call(Core.prototype);
 
-    return (Core.prototype.instance = new Core());
+    return new Core();
 }));

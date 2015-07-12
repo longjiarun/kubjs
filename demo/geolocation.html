@@ -7,33 +7,26 @@
     <title>Core Test</title>
 </head>
 <body>
-<div id="J_html">
-    <div>123&nbsp;123</div>
-    <span style="display:block">asdasd<b></b></span>
-</div>
+    
+<div id="J_address"></div>
 
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
-<script type="text/javascript" src="../build/js/core.js"></script>
+<script type="text/javascript" src="../build/js/cookie.js"></script>
 <script type="text/javascript" src="../build/js/extend/geolocation.js"></script>
-
 <script type="text/javascript">
 function test(){
-    //console.log(core.htmlToText($("#J_html").html()));
+    //设置参数
+    $.extend(Kub.geolocation.options,{
+        geoWaitTime:0
+    });
 
-    console.log(Kub.core.getOriginUrl(location.href))
-
-    console.log(Kub.core.setParams({
-        name:12345,
-        age:123,
-        name:1
-    },true));
-
-    console.log(Kub.core.getParams());
-
+    Kub.geolocation.getAddressByPosition(function(address){
+        $("#J_address").html(JSON.stringify(address))
+    },function(){
+        console.log(arguments)
+    });
 }
 test();
-
-
 </script>
 </body>
 </html>

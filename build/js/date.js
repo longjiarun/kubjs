@@ -41,12 +41,7 @@
 }(this, function(root) {
     'use strict';
     var DateHelper = function() {
-        var i = DateHelper.prototype.instance;
-        if (i && i instanceof DateHelper) {
-            return i;
-        } else {
-            DateHelper.prototype.instance = this;
-        }
+
     };
 
     (function() {
