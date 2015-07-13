@@ -10,7 +10,7 @@
 }(this,function(root,Dialog){
     var Toast = function(options){
         var self = this;
-        this.options = $.extend({},this.defaults, options||{},{
+        this.options = $.extend({},Toast.prototype.defaults, options||{},{
             showHeader:false,
             buttons:null,
             modal:false,

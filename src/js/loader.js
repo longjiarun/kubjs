@@ -10,7 +10,7 @@
 }(this,function(root,_,Dialog){
     var Loader = function(options){
         var self = this;
-        this.options = $.extend({},this.defaults, options||{},{
+        this.options = $.extend({},Loader.prototype.defaults, options||{},{
             showHeader:false,
             buttons:null
         });

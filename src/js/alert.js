@@ -10,7 +10,7 @@
 }(this,function(root,Dialog){
     var Alert = function(options){
 
-        this.options = $.extend({},this.defaults, options||{});
+        this.options = $.extend({},Alert.prototype.defaults, options||{});
 
         this.options.buttons = [{
             text:this.i18n[this.options.locale].ok,
