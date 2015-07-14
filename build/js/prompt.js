@@ -10,7 +10,7 @@
 }(this,function(root,_,Dialog){
     var Prompt = function(options){
         var self = this;
-        this.options = $.extend({},this.defaults, options||{});
+        this.options = $.extend({},Prompt.prototype.defaults, options||{});
 
         this.options.buttons = [{
             text:this.i18n[this.options.locale].ok,

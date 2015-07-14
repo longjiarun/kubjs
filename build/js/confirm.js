@@ -10,7 +10,7 @@
 }(this,function(root,Dialog){
     var Confirm = function(options){
 
-        this.options = $.extend({},this.defaults, options||{});
+        this.options = $.extend({},Confirm.prototype.defaults, options||{});
 
         this.options.buttons = [{
             text:this.i18n[this.options.locale].cancel,

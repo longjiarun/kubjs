@@ -14,4 +14,4 @@
         $this.focus();
         return this;
     };
-}.call(this);
+}(this);
