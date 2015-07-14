@@ -7,15 +7,19 @@
     <title>Core Test</title>
 </head>
 <body>
-<div id="J_html">
+<div id="J_html" >
     <div>123&nbsp;123</div>
     <span style="display:block">asdasd<b></b></span>
 </div>
 
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/core.js"></script>
-<script type="text/javascript" src="../build/js/extend/geolocation.js"></script>
-
+<script type="text/javascript" src="../build/js/extend/fn.js"></script>
+<style type="text/css">
+    body{
+        height: 500px;
+    }
+</style>
 <script type="text/javascript">
 function test(){
     //console.log(core.htmlToText($("#J_html").html()));
@@ -29,6 +33,10 @@ function test(){
     },true));
 
     console.log(Kub.core.getParams());
+
+
+    console.log($("#J_html").isVisible());
+
 
 }
 test();

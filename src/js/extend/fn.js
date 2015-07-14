@@ -14,4 +14,16 @@
         $this.focus();
         return this;
     };
+    /**
+     * 解决zepto下没有方法判断是否显示会隐藏方法
+     * @return {Boolean} [description]
+     */
+    $.fn.isHidden = function(){
+        var elem = this.eq(0)[0];
+        return elem.offsetWidth <= 0 && elem.offsetHeight <= 0;
+    };
+    $.fn.isVisible = function(){
+        return ! this.isHidden();
+    }
+    
 }(this);
