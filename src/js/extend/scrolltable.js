@@ -13,7 +13,7 @@
         
         this.options = $.extend({},options,ScrollTable.prototype.defaults,options||{});
 
-        this.$list = $(options.list);
+        this.$list = $(options.listSelector);
         this.$loading = $(options.loadingTemplate).appendTo($(element));
 
         if(!this.$loading.length) return;
@@ -36,14 +36,15 @@
             url:"",
             type:"get",
             dataType:"jsonp",
-            list:"ul",
+            listSelector:"ul",
+            itemSelector:".J_scrollTable",
             loadingTemplate : '',
             noDataTemplate:'',
             completedTempalte:'',
             template:'',
             success:null,
             error:null,
-            defaultPage:1,
+            defaultPage:0,
             pageSize:10,
             countKey:"count",
             resultKey:"result",
@@ -75,10 +76,27 @@
             });
         };
 
+        this.refresh = function(){
+
+            this.$list.empty();
+            this.$loading.show();
+            this.$loading[0].loaded=false;
+
+            this.$complete && this.$complete.remove();
+            this.$nodata && this.$nodata.remove();
+
+            this.completed = false;
+            this.page = 0;
+            this.pages = null;
+            this.load();
+            return this;
+        };
+
         this.load = function(){
             var self = this,options = this.options,page = self.page+1;
 
-            if(self.$loading.offset().top <= 0){
+            //如果加载图片被隐藏，或者加载已完成则不进行加载
+            if(self.$loading[0].offsetWidth <= 0 && self.$loading[0].offsetHeight <= 0 || self.completed){
                 return self;
             }
             // return;
@@ -94,11 +112,7 @@
 
                     //如果没有数据
                     if(data[options.countKey] == 0 && self.page == 1){
-                        self.$loading.remove();
-                        self.$loading[0].loaded=true;
-                        $(options.noDataTemplate).appendTo(self.$element);
-                        //销毁对象
-                        self.destory();
+                        self.setNoDataStatus();
                         return self;
                     }
 
@@ -109,32 +123,27 @@
                     self.$container.trigger("scroll");
                 });
             }else{
-                //加载完成
-                self.$loading.remove();
-                self.$loading[0].loaded=true;
-                $(options.completedTempalte).appendTo(self.$element);
-                //销毁对象
-                self.destory();
+                self.setCompletedStatus();
             }
             return self;
         };
 
-        this._complete = function(){
+        this.setCompletedStatus = function(flag){
             //加载完成
-            this.$loading.remove();
+            this.$loading.hide();
             this.$loading[0].loaded=true;
-            $(this.options.completedTempalte).appendTo(this.$element);
-            //销毁对象
-            this.destory();
+            this.$complete = $(this.options.completedTempalte).appendTo(this.$element);
+                        
+            this.completed = true;
             return this;
         };
 
-        this._noData = function(){
-            this.$loading.remove();
+        this.setNoDataStatus = function(){
+            this.$loading.hide();
             this.$loading[0].loaded=true;
-            $(this.options.noDataTemplate).appendTo(this.$element);
-            //销毁对象
-            this.destory();
+            this.$nodata = $(this.options.noDataTemplate).appendTo(this.$element);
+                        
+            this.completed = true;
             return this;
         };
 
@@ -152,6 +161,9 @@
             var self = this,options = this.options,html;
 
             self.data = self.data.concat(data);
+
+            self.data.length > 0 && self.$nodata && self.$nodata.remove();
+
             html = self.getRenderHtml(data);
             $(html).appendTo(self.$list);
             return self;
@@ -161,9 +173,11 @@
             var self = this,options = this.options,html;
 
             self.data = data.concat(self.data);
+
+            self.data.length > 0 && self.$nodata && self.$nodata.remove();
+
             html = self.getRenderHtml(data);
             $(html).prependTo(self.$list);
-            
             return self;
         };
 
@@ -172,6 +186,10 @@
                 for (var i = 0; i < length; i++) {
                     if (this.data[i] == data){
                         this.data.splice(i,1);
+                        this.$element.find(this.options.itemSelector+data.id).remove();
+
+                        this.data.length == 0 && !self.completed && this.$complete && this.$complete.remove() && this.setNoDataStatus();
+
                         return this;
                     }
                 }
@@ -182,6 +200,7 @@
         this.getById = function(id,name){
             var data, name = name ? name :"id", param = {};
             param[name] = id;
+
             return (data = this.filter(param)) ? data[0] :null;
         };
 
@@ -194,6 +213,10 @@
                 for (var i = 0; i < length; i++) {
                     if (this.data[i][name] == id){
                         this.data.splice(i,1);
+                        this.$element.find(this.options.itemSelector+id).remove();
+
+                        this.data.length == 0 && !self.completed && this.$complete && this.$complete.remove() && this.setNoDataStatus();
+                        
                         return this;
                     }
                 }
@@ -203,6 +226,7 @@
 
         this.filter = function(params){
             var length,d,_datas=[];
+
             if(this.data&&(length=this.data.length)){
                 for(var i=0;i<length;i++){
                     var d=this.data[i],flag=true;
@@ -217,6 +241,7 @@
                     }               
                 }
             }
+
             return _datas;
         };
 
