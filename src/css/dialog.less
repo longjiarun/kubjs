@@ -3,11 +3,14 @@
 @import "spinner";
 @white:#fff;
 @font-color:#333;
+@border-radius:6px;
 @border-color:#f4f4f4;
-@border:1px solid @border-color;
+@border:2px solid @border-color;
 @font-size:18px;
 @m-size:0.75em;
-@header-padding-top:0.75em;
+@header-padding-top:1em;
+
+
 .kub-ofh{
     overflow: hidden;
     height: 100%;
@@ -39,6 +42,8 @@
         vertical-align: middle;
     }
 }
+
+
 .kub-dialog{
     width:86%;
     margin:0 7%;
@@ -46,7 +51,7 @@
     
     font-size:@font-size;
     background: @white;
-    border-radius: 6px;
+    border-radius: @border-radius;
     color:@font-color;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: @border;
@@ -59,7 +64,10 @@
         display: inline-block;
     }
     .kub-dialog-header{
-        padding:@header-padding-top @m-size;
+        border-radius: @border-radius @border-radius 0 0;
+
+        padding: (@header-padding-top + 0.1) @m-size;
+
         text-align: center;
         /*border-bottom: @border;*/
         background: @border-color;
@@ -77,7 +85,8 @@
         }
     }
     .kub-dialog-body{
-        padding:1.4em @m-size;
+        line-height: 1.5;
+        padding:(@header-padding-top + 0.3) @m-size;
         img{
             max-width: 100%;
         }
@@ -100,6 +109,9 @@
             &:last-child:after {
                 display: none;
             }
+        }
+        .kub-dialog-button:nth-child(2){
+            color:#1c7cd3;
         }
     }
 
@@ -139,8 +151,8 @@
     font-size:100%;
     margin-top:0.2em;
     width: 96%;
-    border:@border;
-    padding: 0.3em 2%;
+    border:1px solid @border-color;
+    padding: 0.5em 2%;
     background: @white;
 }
 

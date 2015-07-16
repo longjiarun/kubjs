@@ -97,7 +97,8 @@ img {
 }
 button:focus,
 input:focus,
-a:focus {
+a:focus,
+textarea:focus {
   outline: none;
 }
 a {

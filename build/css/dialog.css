@@ -136,18 +136,19 @@
   border-radius: 6px;
   color: #333333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border: 1px solid #f4f4f4;
+  border: 2px solid #f4f4f4;
 }
 .kub-dialog .kub-dialog-button {
   background: none;
   border: none;
-  padding: 0.75em 0;
+  padding: 1em 0;
   font-size: 100%;
   text-align: center;
   display: inline-block;
 }
 .kub-dialog .kub-dialog-header {
-  padding: 0.75em 0.75em;
+  border-radius: 6px 6px 0 0;
+  padding: 1.1em 0.75em;
   text-align: center;
   /*border-bottom: @border;*/
   background: #f4f4f4;
@@ -165,13 +166,14 @@
   color: #333333;
 }
 .kub-dialog .kub-dialog-body {
-  padding: 1.4em 0.75em;
+  line-height: 1.5;
+  padding: 1.3em 0.75em;
 }
 .kub-dialog .kub-dialog-body img {
   max-width: 100%;
 }
 .kub-dialog .kub-dialog-footer {
-  border-top: 1px solid #f4f4f4;
+  border-top: 2px solid #f4f4f4;
 }
 .kub-dialog .kub-dialog-footer .kub-dialog-button {
   width: 100%;
@@ -181,7 +183,7 @@
   position: absolute;
   content: "";
   display: block;
-  border-right: 1px solid #f4f4f4;
+  border-right: 2px solid #f4f4f4;
   right: 0;
   top: 0;
   bottom: 0;
@@ -189,6 +191,9 @@
 }
 .kub-dialog .kub-dialog-footer .kub-dialog-button:last-child:after {
   display: none;
+}
+.kub-dialog .kub-dialog-footer .kub-dialog-button:nth-child(2) {
+  color: #1c7cd3;
 }
 .kub-dialog .kub-column2 .kub-dialog-button {
   width: 50%;
@@ -222,7 +227,7 @@
   margin-top: 0.2em;
   width: 96%;
   border: 1px solid #f4f4f4;
-  padding: 0.3em 2%;
+  padding: 0.5em 2%;
   background: #ffffff;
 }
 .kub-loader {
