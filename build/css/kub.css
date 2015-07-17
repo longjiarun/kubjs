@@ -242,7 +242,6 @@ a {
   border-radius: 6px;
   color: #333333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border: 2px solid #f4f4f4;
 }
 .kub-dialog .kub-dialog-button {
   background: none;
@@ -256,7 +255,6 @@ a {
   border-radius: 6px 6px 0 0;
   padding: 1.1em 0.75em;
   text-align: center;
-  /*border-bottom: @border;*/
   background: #f4f4f4;
 }
 .kub-dialog .kub-dialog-header .kub-dialog-close {
