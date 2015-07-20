@@ -53,9 +53,6 @@
             },
             formatAjaxData:function(data){
                 return data;
-            },
-            render : function(){
-
             }
         }
 
@@ -66,9 +63,13 @@
         //获取页数
         this.getPages = function(total,pageSize){
             var p = total / pageSize,  _p = parseInt(p);
-            return p > _p ? _p + 1 : _p;
+            return p !== _p ? _p + 1 : _p;
         }
 
+        /**
+         * 继承自LazyLoad，不对外提供接口
+         * @return {Element} 返回还未加载的节点
+         */
         this.getUnloadedElements = function(){
             var self =this;
             return self.$loading.filter(function(index){
@@ -76,9 +77,13 @@
             });
         };
 
+        /**
+         * 重新刷新table
+         */
         this.refresh = function(){
 
             this.$list.empty();
+
             this.$loading.show();
             this.$loading[0].loaded=false;
 
@@ -88,10 +93,14 @@
             this.completed = false;
             this.page = 0;
             this.pages = null;
+
             this.load();
             return this;
         };
 
+        /**
+         * 加载下一页数据
+         */
         this.load = function(){
             var self = this,options = this.options,page = self.page+1;
 
@@ -99,7 +108,7 @@
             if(self.$loading[0].offsetWidth <= 0 && self.$loading[0].offsetHeight <= 0 || self.completed){
                 return self;
             }
-            // return;
+
             self.page = page;
             
             if(self.pages == void 0 || self.page <= self.pages){
@@ -108,7 +117,7 @@
                     page:self.page,
                     pagesize:options.pageSize
                 },function(data){
-                    data = options.format(data);
+                    data = options.format ? options.format(data) : data;
 
                     //如果没有数据
                     if(data[options.countKey] == 0 && self.page == 1){
@@ -120,6 +129,8 @@
 
                     self.add(data[options.resultKey]);
 
+                    //判断数据是否加载完成
+                    self.page <= self.pages && self.setCompletedStatus();
                     self.$container.trigger("scroll");
                 });
             }else{
@@ -128,7 +139,7 @@
             return self;
         };
 
-        this.setCompletedStatus = function(flag){
+        this.setCompletedStatus = function(){
             //加载完成
             this.$loading.hide();
             this.$loading[0].loaded=true;
@@ -149,7 +160,7 @@
 
         this.getRenderHtml = function(data){
             var length =data.length,html="";
-            for(var i=0; i<length ;i++){
+            for(var i=0; i<length; i++){
                 html += template.compile(this.options.template)({
                     data:data[i]
                 });
@@ -157,7 +168,11 @@
             return html;
         }
 
-        this.add = this.push = function(data){
+        /**
+         * 往后添加数据
+         * @param  {Array} data   需要被添加的数据数组
+         */
+        this.add = this.append = function(data){
             var self = this,options = this.options,html;
 
             self.data = self.data.concat(data);
@@ -169,7 +184,11 @@
             return self;
         };
 
-        this.unshift = function(data){
+        /**
+         * 往前添加数据
+         * @param  {Array} data   需要被添加的数据数组
+         */
+        this.preappend = function(data){
             var self = this,options = this.options,html;
 
             self.data = data.concat(self.data);
@@ -181,10 +200,15 @@
             return self;
         };
 
+        /**
+         * 删除数据
+         * @param  {Object} data   被删除的数据
+         */
         this.remove = function(data){
             if (data) {
                 for (var i = 0; i < length; i++) {
                     if (this.data[i] == data){
+
                         this.data.splice(i,1);
                         this.$element.find(this.options.itemSelector+data.id).remove();
 
@@ -197,6 +221,12 @@
             return this;
         };
 
+        /**
+         * 通过ID获取数据
+         * @param  {Number} id   需要被删除的数据ID
+         * @param  {String} name ID名称，有可能Id名称不一定是 ”id“
+         * @return {Object}      筛选出来的数据
+         */
         this.getById = function(id,name){
             var data, name = name ? name :"id", param = {};
             param[name] = id;
@@ -204,10 +234,14 @@
             return (data = this.filter(param)) ? data[0] :null;
         };
 
+        /**
+         * 通过ID移除数据
+         * @param  {Number} id   需要被删除的数据ID
+         * @param  {String} name ID名称，有可能Id名称不一定是 ”id“
+         */
         this.removeById = function(id,name){
             var length, 
-                name = name ? name :"id", 
-                param = {};
+                name = name ? name :"id";
 
             if (this.data && (length = this.data.length)) {
                 for (var i = 0; i < length; i++) {
@@ -224,27 +258,38 @@
             return this;
         };
 
+        /**
+         * 筛选数据方法
+         * @param  {Object} params 参数
+         * @return {Array}         返回筛选出来的方法
+         */
         this.filter = function(params){
             var length,d,_datas=[];
 
-            if(this.data&&(length=this.data.length)){
-                for(var i=0;i<length;i++){
-                    var d=this.data[i],flag=true;
-                    for(var name in params){
-                        if(params[name]!==d[name]){
-                            flag=false;
+            if (this.data && (length = this.data.length)) {
+                for (var i = 0; i < length; i++) {
+                    d = this.data[i], flag = true;
+                    for (var name in params) {
+                        if (params[name] !== d[name]) {
+                            flag = false;
                             break;
                         }
                     }
-                    if(flag){
+                    if (flag) {
                         _datas.push(d);
-                    }               
+                    }
                 }
             }
 
             return _datas;
         };
 
+        /**
+         * 获取数据方法
+         * @param  {Object} data    Ajax请求参数
+         * @param  {Function} success 请求成功以后回调
+         * @param  {Function} error   请求失败以后回调
+         */
         this.getData = function(data,success,error){
             var self = this,options = self.options;
             $.ajax({
@@ -261,7 +306,6 @@
                     error && error.apply(this,arguments);
                 }
             });
-
             return self;
         };
 
