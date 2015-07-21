@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiper Test</title>
+</head>
+<body>
+<style type="text/css">
+.swiper-wraper{
+    width:500px;
+    height: 400px;
+    overflow: hidden;
+}
+.swiper{
+    width:400%;
+    display: table;
+    content:" ";
+}
+.slide{
+    float:left;
+    width:25%;
+    height: 400px;
+
+}
+.slide1{
+    background: #f00;
+}
+.slide1{
+    background: #0f0;
+}
+.slide1{
+    background: #00f;
+}
+.slide1{
+    background: #000;
+}
+</style>
+//横向滚动
+<div class="swiper-wraper" id="J_swiperWrapper">
+    <div class="swiper">
+        <div class="slide slide1">
+            
+        </div>
+        <div class="slide slide2">
+            
+        </div>
+        <div class="slide slide3">
+            
+        </div>
+        <div class="slide slide4">
+            
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../build/js/lib/zepto.js"></script>
+<script type="text/javascript" src="../build/js/lib/hammer.js"></script>
+
+<script type="text/javascript" src="../build/js/swiper.js"></script>
+<script type="text/javascript">
+function test(){
+    new Kub.Swiper($("#J_swiperWrapper .swiper"),{
+
+    });
+
+}
+test();
+</script>
+</body>
+</html>

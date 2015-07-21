@@ -127,10 +127,11 @@
 
                     self.pages = self.getPages(data[options.countKey],options.pageSize);
 
+
                     self.add(data[options.resultKey]);
 
                     //判断数据是否加载完成
-                    self.page <= self.pages && self.setCompletedStatus();
+                    self.page == self.pages && self.setCompletedStatus();
                     self.$container.trigger("scroll");
                 });
             }else{
