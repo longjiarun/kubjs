@@ -1,48 +1,52 @@
 
 /*
 解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，默认等待1500ms会重刷页面
-safeDomain： 安全域名，根据需求进行改变
+safeDomains： 安全域名，根据需求进行改变
 waitTime:    延迟刷新时间
 
 validateVar：验证变量是否存在，同样根据需求进行改变
 使用方法：
 建议放在head标签内
-<script type="text/javascript" src="../../common/js/lib/reporterror.js"></script>
+<script type="text/javascript" src="js/lib/kub/extend/monitor.js"></script>
 <script type="text/javascript">
-    //some settings
-    !window.reportError && (function(){
-        var script = document.createElement('script'), head = document.getElementsByTagName('head')[0];
-        script.type='text/javascript';
-        script.defer=true;
-        script.async=true;
-        script.src='js/lib/reporterror.js';
-        head.appendChild(script);
-    })();
+    new Kub.Monitor();
 </script>
 */
 !(function(root, factory) {
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         //加上模块名称，防止在require,加载完毕以后加载该js,出现的错误
-        define("reporterror",function() {
-            return Kub.reportError = factory(root);
+        define(function() {
+            return Kub.Monitor = factory(root);
         });
     } else {
-        Kub.reportError = factory(root);
+        Kub.Monitor = factory(root);
     }
 }(this, function(root) {
     'use strict';
-    function ReportError(){
-        this.options = ReportError.prototype.defaults;
-
+    function Monitor(opts){
+        var defaults = Monitor.prototype.defaults,options = {};
+        if(opts){
+            for(var name in defaults){
+                if(defaults.hasOwnProperty(name)){
+                    opts[name] == undefined ? options[name] = defaults[name] : options[name] = opts[name];
+                }
+            }
+        }else{
+            options = defaults;
+        }
+        this.options = options;
         this._init();
     }
 
-    ReportError.prototype = {
-        constructor:ReportError,
+    Monitor.prototype = {
+        constructor:Monitor,
         defaults: {
             waitTime: 500,
-            safeDomain: ['koudai.com', 'vdian.com', 'weidian.com', '10.1.22.40']
+            safeDomains: ['koudai.com', 'vdian.com', 'weidian.com', '10.1.22.40'],
+            validateVar: function() {
+                return !!((root.Zepto || root.jQuery) && root.requirejs && root._paq);
+            }
         },
         _init: function() {
             var self = this;
@@ -117,29 +121,34 @@ validateVar：验证变量是否存在，同样根据需求进行改变
             href = href.replace(new RegExp((hash ? hash : "#") + "$"), "");
             //将_r=1 参数添加到地址后
             href.indexOf("?") != -1 ? (href += "&_r=1") : (href += "?_r=1")
+            //由于文件劫持立即刷新依旧会被劫持，所以有一个延迟时间
             setTimeout(function() {
                 root.location.replace(href + hash);
             }, self.options.waitTime);
         },
-        //验证变量
-        //错误：false
+        /**
+         * 验证变量是否存在 根据项目情况进行修改
+         * @return {Boolean} 错误 false 正确 true
+         */
         validateVar: function() {
-            return !!((root.Zepto || root.jQuery) && root.requirejs && root._paq);
+            return this.options.validateVar ? this.options.validateVar.call(this) : true;
         },
         //是否在安全的域名内
         isSafeDomain: function(src) {
             var self = this;
-            for (var i = 0, j = self.options.safeDomain.length; i < j; i++) {
+            for (var i = 0, j = self.options.safeDomains.length; i < j; i++) {
 
-                //if (src.indexOf(self.options.safeDomain[i]) != -1) {
-                if ((new RegExp("http.*"+self.options.safeDomain[i],"gi")).test(src)) {
+                //if (src.indexOf(self.options.safeDomains[i]) != -1) {
+                if ((new RegExp("http.*"+self.options.safeDomains[i],"gi")).test(src)) {
                     return true;
                 }
             }
             return false;
         },
-        //验证script是否包含外部文件
-        //错误：false
+        /**
+         * 验证script是否包含外部文件
+         * @return {Boolean} 错误 false 正确 true
+         */
         validateScript: function() {
             var self = this,
                 scripts = document.getElementsByTagName("script"),
@@ -153,5 +162,5 @@ validateVar：验证变量是否存在，同样根据需求进行改变
         }
     };
 
-    return new ReportError();
+    return Monitor;
 }));
