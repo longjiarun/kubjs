@@ -15,12 +15,25 @@
 <script type="text/javascript" src="../build/js/extend/geolocation.js"></script>
 <script type="text/javascript">
 function test(){
-    //设置参数
-    $.extend(Kub.geolocation.options,{
-        geoWaitTime:0
+    var geolocation = new Kub.Geolocation({
     });
 
-    Kub.geolocation.getAddressByPosition(function(address){
+    //通过Ip获取地址信息
+    geolocation.getAddressByIp(function(address){
+        $("#J_address").html(JSON.stringify(address))
+    },function(){
+        console.log(arguments)
+    });
+
+    //通过HTML5提供的经纬度获取地址信息
+    geolocation.getAddressByPosition(function(address){
+        $("#J_address").html(JSON.stringify(address))
+    },function(){
+        console.log(arguments)
+    });
+
+    //首先通过经纬度获取位置信息，经纬度出现问题。紧接着使用Ip获取地址位置
+    geolocation.getAddress(function(address){
         $("#J_address").html(JSON.stringify(address))
     },function(){
         console.log(arguments)

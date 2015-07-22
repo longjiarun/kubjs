@@ -2,10 +2,10 @@
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
         define(function(){
-            return Kub.geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
+            return Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
         });
     }else{
-        Kub.geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
+        Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
     }
 }(this,function(root,$,cookie){
     /**
@@ -14,9 +14,10 @@
      * 由于html5获取经纬度接口，会请求Google服务，在国内基本不行，使用时请注意
      */
     function Geolocation(options){
-        this.options = $.extend({
-
-        },options,Geolocation.prototype.defaults);
+        if(Geolocation.prototype.instance) return Geolocation.prototype.instance;
+        Geolocation.prototype.instance = this;
+        
+        this.options = $.extend({},options,Geolocation.prototype.defaults);
     }
 
     Geolocation.prototype={
@@ -24,7 +25,7 @@
         defaults:{
             ipUrl:"http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js", //通过ip获取位置的url
             positionUrl:"http://activity.koudai.com/utils/getAddress",//通过经纬度获取位置的url
-            expires:86400000, // 一天，单位：秒。位置cookie 超时时间
+            expires:86400000, // 一天，单位：毫秒。位置cookie 超时时间
             cookieName:"geo",
             enableHighAcuracy: false,// 指示浏览器获取高精度的位置，默认为false
             timeout: 4000,//单位为毫秒 指定获取地理位置的超时时间，默认不限时，单位为毫秒
@@ -246,5 +247,5 @@
             return self;
         }
     }
-    return new Geolocation();
+    return Geolocation;
 }));
