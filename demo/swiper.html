@@ -8,63 +8,137 @@
 </head>
 <body>
 <style type="text/css">
-.swiper-wraper{
-    width:500px;
-    height: 400px;
+
+.horizontal .swiper-wraper{
+    width:100%;
+    height: 200px;
     overflow: hidden;
 }
-.swiper{
+.horizontal .swiper{
     width:400%;
     display: table;
     content:" ";
 }
-.slide{
+
+.horizontal .slide{
     float:left;
     width:25%;
-    height: 400px;
-
+    height: 200px;
 }
+
 .slide1{
     background: #f00;
 }
-.slide1{
+.slide2{
     background: #0f0;
 }
-.slide1{
+.slide3{
     background: #00f;
 }
-.slide1{
+.slide4{
     background: #000;
 }
+
+
+.vertical{
+
+}
+.vertical .swiper-wraper{
+    height: 200px;
+    margin: 0;
+    overflow:hidden;
+}
+.vertical .swiper{
+    height: 400%;
+}
+.vertical .slide{
+    height: 25%;
+}
 </style>
-//横向滚动
-<div class="swiper-wraper" id="J_swiperWrapper">
-    <div class="swiper">
-        <div class="slide slide1">
-            
-        </div>
-        <div class="slide slide2">
-            
-        </div>
-        <div class="slide slide3">
-            
-        </div>
-        <div class="slide slide4">
-            
+<div class="J_horizontal horizontal">
+    //横向滚动
+    <div class="swiper-wraper">
+        <div class="swiper">
+            <div class="slide slide1">
+                1
+            </div>
+            <div class="slide slide2">
+                2
+            </div>
+            <div class="slide slide3">
+                3
+            </div>
+            <div class="slide slide4">
+                4
+            </div>
         </div>
     </div>
+    <ul class="pagination">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+    </ul>
+    <button class="prev-button" >上一张</button>
+    <button class="next-button" >下一张</button>
+</div>
+    //垂直滚动
+
+<div class="J_vertical vertical">
+    <div class="swiper-wraper">
+        <div class="swiper">
+            <div class="slide slide1">
+                1
+            </div>
+            <div class="slide slide2">
+                2
+            </div>
+            <div class="slide slide3">
+                3
+            </div>
+            <div class="slide slide4">
+                4
+            </div>
+        </div>
+    </div>
+    <ul class="pagination">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+    </ul>
+    <button class="prev-button" >上一张</button>
+    <button class="next-button" >下一张</button>
 </div>
 
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
 <script type="text/javascript" src="../build/js/lib/hammer.js"></script>
-
 <script type="text/javascript" src="../build/js/swiper.js"></script>
 <script type="text/javascript">
 function test(){
-    new Kub.Swiper($("#J_swiperWrapper .swiper"),{
 
+    var $swiperWrap = $(".J_horizontal");
+    new Kub.Swiper($swiperWrap.find(".swiper"),{
+        slideSelector:$swiperWrap.find(".slide"),
+        slideActiveClass:"active",
+        paginationSelector:$swiperWrap.find(".pagination li"),
+        paginationActiveClass:"pagination-active",
+        nextButton:$swiperWrap.find(".next-button"),
+        prevButton:$swiperWrap.find(".prev-button"),
+        initialSlide:1
     });
 
+    var $swiperWrap1 = $(".J_vertical");
+    new Kub.Swiper($swiperWrap1.find(".swiper"),{
+        direction:"vertical",
+        slideSelector:$swiperWrap1.find(".slide"),
+        slideActiveClass:"active",
+        paginationSelector:$swiperWrap1.find(".pagination li"),
+        paginationActiveClass:"pagination-active",
+        nextButton:$swiperWrap1.find(".next-button"),
+        prevButton:$swiperWrap1.find(".prev-button"),
+        initialSlide:1
+    });
 }
 test();
 </script>

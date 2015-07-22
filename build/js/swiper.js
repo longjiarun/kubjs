@@ -19,37 +19,33 @@
             prevButton:$(options.prevButton)
         };
 
+        this.length = this.ui.slides.length;
 
-        this.activeIndex = 0;
+        this.activeIndex = this.options.initialSlide || 0;
+
+        this.slideTo(this.activeIndex,0);
         init.call(this);
-
     };
 
     function init(){
         var self = this,options = self.options,ui = self.ui;
 
         var hammer = new Hammer(self.$element[0]),x,y;
-
         //监听拖动开始事件
         hammer.get("pan").set({
             threshold: 0
         });
-
         hammer.on("panstart",function(event){
-
             var w, h;
-
             if(options.direction === "horizontal"){
                 w = ui.slides.eq(0).width();
-                x = self.activeIndex * w;
+                x = -self.activeIndex * w;
             }else{
                 h = ui.slides.eq(0).height();
-                y = self.activeIndex * h;
+                y = -self.activeIndex * h;
             }
             event.preventDefault();
-
         }).on("panmove",function(event){
-
             if(x != void 0){
                 //横向
                 self.setTranslate(x + event.deltaX + "px", 0,0);
@@ -57,25 +53,35 @@
                 //垂直
                 self.setTranslate(0,y + event.deltaY + "px",0);
             }
-
             event.preventDefault();
         }).on("panend",function(event){
-            var distance = event.distance;
-            console.log(distance)
+            var distance;
+            x != void 0 ? (distance = Math.abs(event.deltaX)) : (distance = Math.abs(event.deltaY));
+            
             if(distance > options.threshold){
-
+                if(x != void 0){
+                    //横向
+                    event.deltaX < 0 ? self.slideNext(options.speed) : self.slidePrev(options.speed);
+                }else{
+                    event.deltaY < 0 ? self.slideNext(options.speed) : self.slidePrev(options.speed);
+                }
+            }else{
+                self.slideTo(self.activeIndex,options.speed)
             }
-
-
             event.preventDefault();
         });
 
+
         options.nextButton && ui.nextButton.on("click",function(){
-            self.slideNext();
+            self.slideNext(options.speed);
+        });
+        options.prevButton && ui.prevButton.on("click",function(){
+            self.slidePrev(options.speed);
         });
 
-        options.prevButton && ui.prevButton.on("click",function(){
-            self.slidePrev();
+        self.$element.css({
+            "-webkit-transition-property": "-webkit-transform",
+            "transition-property":"transform"
         });
     };
 
@@ -99,14 +105,16 @@
         };
 
         this.getActualIndex = function(index){
-            var _i = index % this.length;
-            return _i > 0 ? _i : _i + this.length;
+            return index < 0 ? 0 : index >= this.length ? this.length-1 : index;
         };
 
-        this.setTranslate = function(x,y){
+        this.setTranslate = function(x,y,speed){
+            speed = speed || 0;
             this.$element.css({
-                "-webkit-transform": "translate("+x+","+y+")",
-                transform: "translate("+x+","+y+")"
+                "-webkit-transform": "translate3d("+x+","+y+",0)",
+                "transform": "translate3d("+x+","+y+",0)",
+                "-webkit-transition-duration":speed +"ms",
+                "transition-duration":speed +"ms"
             });
             return this;
         };
@@ -115,12 +123,14 @@
             var self = this,options = self.options;
 
             self.activeIndex = index = self.getActualIndex(index);
+
             //横向
             if(options.direction === "horizontal"){
-                self.setTranslate(100/self.length * index + "%",0,speed);
+                self.setTranslate(-100/self.length * index + "%",0,speed);
             }else{
                 //垂直
-                self.setTranslate(0,index * 100 + "%",speed);
+                //self.setTranslate(0,-index * 100 + "%",speed);
+                self.setTranslate(0,-100/self.length * index + "%",speed);
             }
 
             self.ui.slides.removeClass(options.slideActiveClass).eq(index).addClass(options.slideActiveClass);
@@ -128,12 +138,12 @@
             return self;
         };
 
-        this.slideNext = function(){
-            return this.slideTo(this.getActualIndex(this.activeIndex++));
+        this.slideNext = function(speed){
+            return this.slideTo(++this.activeIndex,speed);
         };
 
-        this.slidePrev = function(){
-            return this.slideTo(this.getActualIndex(this.activeIndex--));
+        this.slidePrev = function(speed){
+            return this.slideTo(--this.activeIndex,speed);
         };
 
     }).call(Swiper.prototype);
