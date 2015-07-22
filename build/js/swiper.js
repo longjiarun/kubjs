@@ -46,13 +46,17 @@
             }
             event.preventDefault();
         }).on("panmove",function(event){
-            if(x != void 0){
-                //横向
-                self.setTranslate(x + event.deltaX + "px", 0,0);
-            }else{
-                //垂直
-                self.setTranslate(0,y + event.deltaY + "px",0);
+            
+            if(options.touchMove){
+                if(x != void 0){
+                    //横向
+                    self.setTranslate(x + event.deltaX + "px", 0,0);
+                }else{
+                    //垂直
+                    self.setTranslate(0,y + event.deltaY + "px",0);
+                }
             }
+
             event.preventDefault();
         }).on("panend",function(event){
             var distance;
@@ -79,10 +83,27 @@
             self.slidePrev(options.speed);
         });
 
-        self.$element.css({
-            "-webkit-transition-property": "-webkit-transform",
-            "transition-property":"transform"
-        });
+        self.$element.css(options.style.swiper);
+
+        if(options.direction === "horizontal"){
+            self.$element.css({
+                width:self.length * 100 +"%",
+                display:"table",
+                content:" "
+            });
+            ui.slides.css({
+                float:"left",
+                width:100/self.length +"%"
+            });
+        }else{
+            self.$element.css({
+                height:self.length * 100 +"%"
+            });
+
+            ui.slides.css({
+                height:100/self.length +"%"
+            });
+        }
     };
 
     ;(function(){
@@ -91,17 +112,25 @@
         this.defaults = {
             direction:"horizontal",     //vertical
             threshold:50,
-            loop: false,
             speed : 300,
-            autoplay: false,
-            delay:3000,
+            touchMove:false,
             initialSlide:0,
             slideSelector:"",
             slideActiveClass:"",
             paginationSelector:"",
             paginationActiveClass:"",
             nextButton:"",
-            prevButton:""
+            prevButton:"",
+            style:{
+                swiper:{
+                    "-webkit-transition-property": "-webkit-transform",
+                    "transition-property":"transform",
+                    "overflow":"hidden"
+                },
+                slide:{
+
+                }
+            }
         };
 
         this.getActualIndex = function(index){
