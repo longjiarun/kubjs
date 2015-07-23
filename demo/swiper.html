@@ -18,12 +18,13 @@
     /*width:400%;
     display: table;
     content:" ";*/
+    height: 100%;
 }
 
 .horizontal .slide{
     /*float:left;
     width:25%;*/
-    height: 200px;
+    height: 100%;
 }
 
 .slide1{
@@ -83,8 +84,8 @@
     <button class="prev-button" >上一张</button>
     <button class="next-button" >下一张</button>
 </div>
-    //垂直滚动
 
+//垂直滚动
 <div class="J_vertical vertical">
     <div class="swiper-wraper">
         <div class="swiper">
@@ -132,6 +133,7 @@ function test(){
     var $swiperWrap1 = $(".J_vertical");
     new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
+        touchMove:true,
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap1.find(".pagination li"),

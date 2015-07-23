@@ -35,7 +35,9 @@
         hammer.get("pan").set({
             threshold: 0
         });
+        var time;
         hammer.on("panstart",function(event){
+            time = (new Date()).getTime();
             var w, h;
             if(options.direction === "horizontal"){
                 w = ui.slides.eq(0).width();
@@ -46,8 +48,9 @@
             }
             event.preventDefault();
         }).on("panmove",function(event){
-            
+            //是否跟随手指滑动
             if(options.touchMove){
+
                 if(x != void 0){
                     //横向
                     self.setTranslate(x + event.deltaX + "px", 0,0);
@@ -59,15 +62,15 @@
 
             event.preventDefault();
         }).on("panend",function(event){
-            var distance;
+            var distance,momentum = options.speed;
             x != void 0 ? (distance = Math.abs(event.deltaX)) : (distance = Math.abs(event.deltaY));
             
             if(distance > options.threshold){
                 if(x != void 0){
                     //横向
-                    event.deltaX < 0 ? self.slideNext(options.speed) : self.slidePrev(options.speed);
+                    event.deltaX < 0 ? self.slideNext(momentum) : self.slidePrev(momentum);
                 }else{
-                    event.deltaY < 0 ? self.slideNext(options.speed) : self.slidePrev(options.speed);
+                    event.deltaY < 0 ? self.slideNext(momentum) : self.slidePrev(momentum);
                 }
             }else{
                 self.slideTo(self.activeIndex,options.speed)
@@ -83,8 +86,9 @@
             self.slidePrev(options.speed);
         });
 
-        self.$element.css(options.style.swiper);
 
+        //set style
+        self.$element.css(options.style.swiper);
         if(options.direction === "horizontal"){
             self.$element.css({
                 width:self.length * 100 +"%",
@@ -113,7 +117,6 @@
             direction:"horizontal",     //vertical
             threshold:50,
             speed : 300,
-            touchMove:false,
             initialSlide:0,
             slideSelector:"",
             slideActiveClass:"",
@@ -126,9 +129,6 @@
                     "-webkit-transition-property": "-webkit-transform",
                     "transition-property":"transform",
                     "overflow":"hidden"
-                },
-                slide:{
-
                 }
             }
         };
@@ -138,10 +138,15 @@
         };
 
         this.setTranslate = function(x,y,speed){
+            var self = this,
+                options = self.options,
+                es = self.$element[0].style;
+
             speed = speed || 0;
-            this.$element.css({
-                "-webkit-transform": "translate3d("+x+","+y+",0)",
-                "transform": "translate3d("+x+","+y+",0)",
+            //es.webkitTransitionDuration = es.transitionDuration = (speed / 1000) + 's';
+            self.$element.css({
+                "-webkit-transform": "translate("+x+","+y+")",
+                "transform": "translate("+x+","+y+")",
                 "-webkit-transition-duration":speed +"ms",
                 "transition-duration":speed +"ms"
             });
@@ -152,18 +157,23 @@
             var self = this,options = self.options;
 
             self.activeIndex = index = self.getActualIndex(index);
-
-            //横向
+            
             if(options.direction === "horizontal"){
+                //横向
                 self.setTranslate(-100/self.length * index + "%",0,speed);
             }else{
                 //垂直
-                //self.setTranslate(0,-index * 100 + "%",speed);
                 self.setTranslate(0,-100/self.length * index + "%",speed);
             }
-
             self.ui.slides.removeClass(options.slideActiveClass).eq(index).addClass(options.slideActiveClass);
             self.ui.paginations.removeClass(options.paginationActiveClass).eq(index).addClass(options.paginationActiveClass);
+            if(speed == 0){
+                options.slide && options.slide.call(this);
+            }else{
+                options.slide && setTimeout(function(){
+                    options.slide.call(this);
+                },speed);
+            }
             return self;
         };
 
