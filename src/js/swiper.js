@@ -8,6 +8,7 @@
         Kub.Swiper = factory(root, root.jQuery || root.Zepto);
     }
 }(this,function(root,$){
+
     var Swiper = function(element,options){
         this.options = $.extend({},Swiper.prototype.defaults, options||{});
         this.$element = $(element);

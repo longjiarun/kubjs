@@ -1,4 +1,4 @@
-//copy fromt zepto.cookie.js
+//copy from zepto.cookie.js
 //将 expires 单位改为毫秒
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};

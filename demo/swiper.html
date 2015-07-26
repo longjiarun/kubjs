@@ -144,6 +144,26 @@ function test(){
     });
 }
 test();
+
+
+
+function a(options){
+    console.log(this)
+    a.options = options;
+    return a;
+}
+
+(function(){
+    this.getName = function(){
+        console.log("name",this,this.options)
+    };
+}).call(a);
+
+var a1 = a({
+    name:"asd"
+})
+a1.getName();
+
 </script>
 </body>
 </html>

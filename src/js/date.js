@@ -25,7 +25,6 @@
 *     
 *     //格式化日期
 *     (new Date()).format("yyyy-MM-dd,hh:mm:ss");
- * author : longjia@koudai.com
  */
 !(function(root, factory) {
     var Kub = root.Kub = root.Kub ? root.Kub : {};
