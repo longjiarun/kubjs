@@ -1,12 +1,3 @@
-/*
-使用方法：
-    在head标签内插入
-    <meta name="viewport" content="width=device-width,user-scalable=no">
-    <script type="text/javascript" src="js/lib/kub/extend/rem.js"></script>
-    <script type="text/javascript">
-        new Kub.Rem();
-    </script>
- */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {

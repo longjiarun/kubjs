@@ -1,20 +1,3 @@
-/*
-说明：
-    适配方案，采用scale进行适配。目前已兼容ios、android，其余设备保证正常使用。
-    注意：平板下，保证页面在640宽度。让其两侧留有空白，由于放大后，页面相当模糊，影响使用。
-    此适配方案已兼容公司所有测试机，含android2.3。尚未全面使用，在等待用户的反馈。
-    发现问题，可及时向我反馈 longjia@koudai.com
-问题:
-    1、在横竖屏切换时，会出现页面放大或缩小。（浏览器无法触发事件，浏览器bug。设备较少，可采取监控机制解决，但开销太大，没必要。）
-    2、点击链接或者前进后退，页面放大或缩小。（浏览器本身问题，后续采用rem适配方案可解决）
-    3、当改变viewport值时，有些浏览器有时候并不会生效
-使用方法：
-    引入如下js，无需插入meta标签
-    <script type="text/javascript" src="js/lib/kub/extend/viewport.js"></script>
-    <script type="text/javascript">
-        new Kub.Viewport();
-    </script>
- */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {

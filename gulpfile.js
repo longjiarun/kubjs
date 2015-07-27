@@ -50,7 +50,7 @@ gulp.task("doc",function(){
 });
 
 gulp.task("default",["css","js"],function(){
-    
+
 });
 
 gulp.task("watch",["default"],function(){
