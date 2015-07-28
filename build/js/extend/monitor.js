@@ -1,16 +1,8 @@
-
 /*
-解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，默认等待1500ms会重刷页面
+解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，默认等待500ms会重刷页面
 safeDomains： 安全域名，根据需求进行改变
 waitTime:    延迟刷新时间
-
 validateVar：验证变量是否存在，同样根据需求进行改变
-使用方法：
-建议放在head标签内
-<script type="text/javascript" src="js/lib/kub/extend/monitor.js"></script>
-<script type="text/javascript">
-    new Kub.Monitor();
-</script>
 */
 !(function(root, factory) {
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -25,6 +17,9 @@ validateVar：验证变量是否存在，同样根据需求进行改变
 }(this, function(root) {
     'use strict';
     function Monitor(opts){
+        if(Monitor.prototype.instance) return Monitor.prototype.instance;
+        Monitor.prototype.instance = this;
+        
         var defaults = Monitor.prototype.defaults,options = {};
         if(opts){
             for(var name in defaults){

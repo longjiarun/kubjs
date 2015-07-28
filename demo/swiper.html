@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>Swiper Test</title>
 </head>
 <body>
@@ -118,29 +118,39 @@
 <script type="text/javascript" src="../build/js/swiper.js"></script>
 <script type="text/javascript">
 function test(){
-
+    //横向滚动
     var $swiperWrap = $(".J_horizontal");
     new Kub.Swiper($swiperWrap.find(".swiper"),{
+        //是否跟随手指滑动
+        followFinger:true,
         slideSelector:$swiperWrap.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap.find(".pagination li"),
         paginationActiveClass:"pagination-active",
         nextButton:$swiperWrap.find(".next-button"),
         prevButton:$swiperWrap.find(".prev-button"),
-        initialSlide:1
+        //滚动时触发slide事件
+        slide:function(index){
+            console.log("slide:"+index)
+        }
     });
 
+    //纵向滚动
     var $swiperWrap1 = $(".J_vertical");
     new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
-        touchMove:true,
+        //followFinger:true,
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap1.find(".pagination li"),
         paginationActiveClass:"pagination-active",
         nextButton:$swiperWrap1.find(".next-button"),
         prevButton:$swiperWrap1.find(".prev-button"),
-        initialSlide:1
+        //默认滚动位置
+        initialSlide:1,
+        slide:function(index){
+            console.log("slide:"+index)
+        }
     });
 }
 test();

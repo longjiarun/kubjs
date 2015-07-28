@@ -1,4 +1,9 @@
 /*reset css*/
+html {
+    font-family: sans-serif;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td,section,article,aside,header,footer,nav,dialog,figure,hgroup {
     margin: 0;
     padding: 0
@@ -43,19 +48,18 @@ address,caption,cite,code,dfn,em,th,var {
     font-weight: 500
 }
 
-img {
-    border: 0;
-    max-width: 100%
+a {
+    text-decoration: none;
+    background-color: transparent;
 }
 
 input,img {
     vertical-align: middle
 }
 
-button:focus,input:focus,a:focus,textarea:focus {
-    outline: none
+img {
+    max-width: 100%
 }
-
-a {
-    text-decoration: none
+button:focus,input:focus,a:focus,a:active,a:hover,textarea:focus {
+    outline: 0
 }
