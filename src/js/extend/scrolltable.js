@@ -227,12 +227,15 @@
         };
 
         this.getRenderHtml = function(data){
-            var length =data.length,html="";
-            for(var i=0; i<length; i++){
-                html += template.compile(this.options.template)({
-                    data:data[i]
-                });
+            var length,html="";
+            if(data && (length =data.length)){
+                for(var i=0; i<length; i++){
+                    html += template.compile(this.options.template)({
+                        data:data[i]
+                    });
+                }
             }
+            
             return html;
         }
 
@@ -285,7 +288,8 @@
          * @return {instance} 当前实例
          */
         this.remove = function(data){
-            if (data) {
+            var length;
+            if (this.data && (length = this.data.length)) {
                 for (var i = 0; i < length; i++) {
                     if (this.data[i] == data){
 

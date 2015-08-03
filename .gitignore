@@ -9,3 +9,5 @@ node_modules/*
 docs/
 docs/*
 *.log
+gulp.publish.js
+*.sh
