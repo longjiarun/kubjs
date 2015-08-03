@@ -8,8 +8,8 @@
 </head>
 <body>
 <div id="J_html" >
-    <div>123&nbsp;123</div>
-    <span style="display:block">asdasd<b></b></span>
+    <div>123&nbsp;123   </div>
+    <span style="display:block">asdasd<b>  </b></span>
 </div>
 
 <script type="text/javascript" src="../build/js/lib/zepto.js"></script>
@@ -22,9 +22,11 @@
 </style>
 <script type="text/javascript">
 function test(){
-    //console.log(core.htmlToText($("#J_html").html()));
 
-    console.log(Kub.core.getOriginUrl(location.href))
+    console.log($("#J_html").html());
+
+    console.log(Kub.core.htmlToText($("#J_html").html()));
+
 
     console.log(Kub.core.setParams({
         name:12345,

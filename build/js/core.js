@@ -128,7 +128,7 @@
          */
         this.htmlToText = function(value){
             //.replace(/&nbsp;|&#160;/gi, '')
-            return value.replace(/<.[^<>]*?>/g, '').replace(/\s/g,"");
+            return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g,"");
         };
 
         this.getOriginUrl = function(url){
