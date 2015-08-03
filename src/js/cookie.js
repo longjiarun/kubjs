@@ -1,5 +1,8 @@
-//copy from zepto.cookie.js
-//将 expires 单位改为毫秒
+/**
+ * # Kub.cookie
+ * 
+ * copy from `zepto.cookie.js`，将 expires 单位改为毫秒。
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
@@ -10,6 +13,14 @@
         Kub.cookie = factory(root);
     }
 }(this,function(root){
+    /**
+     * ##cookie方法
+     * 
+     * @param {String} key key值，
+     * @param {String} value   设置值，如果未传递，则表示取值
+     * @param {Object} options 配置项
+     * @return {String}  如果未取值，则返回取到的值，如果未赋值，则返回空。
+     */
     return function (key, value, options) {
         var days, time, result, decode;
 

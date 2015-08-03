@@ -1,3 +1,12 @@
+/**
+ * # Kub.Geolocation
+ *
+ * 获取地址信息，推荐使用 `getAddress` 方法 与 `getAddressByIp`。
+ * 
+ * 由于地址信息接口数据不统一，目前暂时只包含了 `{country: "中国", province: "浙江", city: "杭州"}`。
+ * 
+ * 由于html5获取经纬度接口，会请求Google服务，在国内基本不行，使用时请注意。
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
@@ -8,10 +17,20 @@
         Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
     }
 }(this,function(root,$,cookie){
+
     /**
-     * 获取地址信息，推荐使用 getAddress 方法 与 getAddressByIp
-     * 由于地址信息接口数据不统一，目前暂时只包含了 {country: "中国", province: "浙江", city: "杭州"}
-     * 由于html5获取经纬度接口，会请求Google服务，在国内基本不行，使用时请注意
+     * ## Geolocation Constructor
+     *
+     * Geolocation类，全局只会初始化一个实例对象。第一次初始化以后，第二次会返回上一次初始化的实例
+     *
+     * 使用方法：
+     * ```js
+     * var geolocation = new Kub.Geolocation();
+     *
+     * geolocation.getAddress(function(address){
+     *     console.log(address);
+     * });
+     * ```
      */
     function Geolocation(options){
         if(Geolocation.prototype.instance) return Geolocation.prototype.instance;
@@ -22,15 +41,39 @@
 
     Geolocation.prototype={
         constructor:Geolocation,
+
+        /**
+         * ## defaults
+         *
+         * `Geolocation`默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `ipUrl`: 通过ip获取位置的url。
+         * 
+         * * `positionUrl`: //通过经纬度获取位置的url
+         * 
+         * * `expires`: 一天，单位：毫秒。位置cookie 超时时间
+         *
+         * * `cookieName`: 设置cookie的名称
+         * 
+         * * `enableHighAcuracy`: 指示浏览器获取高精度的位置，默认为false
+         * 
+         * * `timeout`: 单位为毫秒 指定获取地理位置的超时时间，默认不限时，单位为毫秒
+         * 
+         * * `geoWaitTime`: 单位为毫秒  指定 geo 等待超时时间
+         * 
+         * * `maximumAge`: 一天 单位为毫秒 最长有效期，在重复获取地理位置时，此参数指定多久再次获取位置。
+         */
         defaults:{
-            ipUrl:"http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js", //通过ip获取位置的url
-            positionUrl:"http://activity.koudai.com/utils/getAddress",//通过经纬度获取位置的url
-            expires:86400000, // 一天，单位：毫秒。位置cookie 超时时间
+            ipUrl:"http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js", 
+            positionUrl:"http://activity.koudai.com/utils/getAddress",
+            expires:86400000, 
             cookieName:"geo",
-            enableHighAcuracy: false,// 指示浏览器获取高精度的位置，默认为false
-            timeout: 4000,//单位为毫秒 指定获取地理位置的超时时间，默认不限时，单位为毫秒
-            geoWaitTime :5000, //单位为毫秒  指定 geo 等待超时时间
-            maximumAge: 86400000 //一天 单位为毫秒 最长有效期，在重复获取地理位置时，此参数指定多久再次获取位置。
+            enableHighAcuracy: false,
+            timeout: 4000,
+            geoWaitTime :5000, 
+            maximumAge: 86400000 
         },
         log:function(){
             console && console.log && console.log.apply(root.console,arguments);
@@ -45,6 +88,14 @@
             }
             return address;
         },
+
+        /**
+         * ## removeStoredAddress
+         *
+         * 移除缓存到cookie中的地理信息
+         * 
+         * @return {[type]} [description]
+         */
         removeStoredAddress:function(){
             var self = this,options = self.options;
 
@@ -53,6 +104,15 @@
             });
             return self;
         },
+
+        /**
+         * ## storeAddress
+         *
+         * 缓存地理信息到cookie中
+         * 
+         * @param {Object} address 地理信息
+         * @return {instance} 当前实例
+         */
         storeAddress : function(address){
             var self = this,options = self.options,
                 address = address && JSON.stringify(address);
@@ -62,6 +122,14 @@
             });
             return self;
         },
+
+        /**
+         * ## getStoredAddress
+         *
+         * 返回缓存到cookie中的地址信息
+         * 
+         * @return {Object} 地址信息
+         */
         getStoredAddress : function(){
             var self = this,options = self.options,
                 address = cookie(options.cookieName);
@@ -70,10 +138,15 @@
 
             return address;
         },
+
         /**
+         * ## getCurrentPosition
+         * 
          * 通过HTML5获取地址经纬度信息
-         * @param  {Function} success  获取成功以后回调，返回HTML5默认的position属性
-         * @param  {Function} _error   失败以后回调
+         * 
+         * @param {Function} success  获取成功以后回调，返回HTML5默认的position属性
+         * @param {Function} _error   失败以后回调
+         * @return {instance} 当前实例对象
          */
         getCurrentPosition:function(success,_error,_options){
             var self=this,options=self.options,settings,error;
@@ -128,9 +201,13 @@
             return self;
         },
         /**
+         * ## getAddress
+         * 
          * 首先通过经纬度获取位置信息，经纬度出现问题。紧接着使用Ip获取地址位置
-         * @param  {Function} callback 成功以后回调，返回address对象
-         * @param  {[Function]}   error 失败以后回调，超时也会触发该回调
+         * 
+         * @param {Function} callback 成功以后回调，返回address对象
+         * @param {Function}   error 失败以后回调，超时也会触发该回调
+         * @return {instance} 当前实例对象
          */
         getAddress : function(callback,error){
             var self=this,options = self.options,city,timer,flag,address;
@@ -149,10 +226,15 @@
 
             return self;
         },
+
         /**
+         * ## getAddressByPosition
+         * 
          * 通过经纬度获取位置信息
-         * @param  {Function} callback 成功以后回调，返回address对象
-         * @param  {[Function]}   error 失败以后回调，超时也会触发该回调
+         * 
+         * @param {Function} callback 成功以后回调，返回address对象
+         * @param {Function}   error 失败以后回调，超时也会触发该回调
+         * @return {instance} 当前实例对象
          */
         getAddressByPosition : function(callback,error){
             var self=this,options=self.options,address,timer,flag;
@@ -213,10 +295,14 @@
             });
             return self;
         },
+
         /**
+         * ## getAddressByIp
+         * 
          * 通过第三方接口获取城市信息
-         * @param  {Function} callback 成功以后回调，返回address对象
-         * @param  {[Function]}   error 失败以后回调
+         * @param {Function} callback 成功以后回调，返回address对象
+         * @param {Function}   error 失败以后回调
+         * @return {instance} 当前实例对象
          */
         getAddressByIp:function(callback,error){
             var self=this,options=self.options,address,
@@ -237,6 +323,7 @@
                 return self;
             }
 
+            //请求远程IP地址查询接口
             $.ajax({
                 url:options.ipUrl,
                 type:"get",

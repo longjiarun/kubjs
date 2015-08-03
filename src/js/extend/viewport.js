@@ -1,3 +1,9 @@
+/**
+ * # Kub.Viewport
+ *
+ * 页面scale适配方案，详见[移动端适配](http://10.1.3.35:8080/hz-front/viewport)。
+ * 
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
@@ -28,6 +34,18 @@
     os.tablet = os.android && !/mobile/i.test(ua) || os.ipad || os.windowsTablet;
     os.mobile = os.android || os.ios || os.windowsPhone;
 
+    /**
+     * ## Viewport Constructor
+     *
+     * Viewport 类，全局只会初始化一个实例对象。第一次初始化以后，第二次会返回上一次初始化的实例
+     *
+     * 使用方法：
+     * ```js
+     * 
+     * new Kub.Viewport();
+     *
+     * ```
+     */
     var Viewport=function(opts){
         var defaults = Viewport.prototype.defaults,options = {};
         
@@ -60,7 +78,19 @@
 
         this.constructor = Viewport;
 
-        //default settings
+        /**
+         * ## defaults
+         *
+         * `Viewport`默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `width`: 页面宽度。
+         * 
+         * * `delay`: 横竖屏切换时，延迟设置时间。
+         *
+         * * `limit`: 是否限制宽度。true：当窗口大于`width`时，不做放大处理。false：当窗口大于`width`时，进行放大处理。
+         */
         this.defaults = {
             width:640,      //页面宽度
             delay:150,
@@ -68,7 +98,10 @@
         };
 
         /**
-         * create meta viewport tag
+         * ## createViewportElement
+         * 
+         * 创建meta标签
+         * 
          * @return {Element} viewport elment
          */
         this.createViewportElement = function(value){
@@ -81,9 +114,13 @@
         };
 
         /**
-         * set meta viewport content value
+         * ## setViewportValue
+         * 设置 meta 标签值
+         * 
          * 如果页面默认开始就设置了 viewport，则在有些浏览器，后面修改也无法改变 viewport
+         * 
          * @param {String} value content value
+         * @return {instance} 当前实例
          */
         this.setViewportValue = function(value){
             var viewport = document.getElementById(viewportId);
@@ -92,7 +129,10 @@
         };
 
         /**
-         * get the actual width of window , actually is the device-width
+         * ## getDeviceWidth
+         * 
+         * 获取设备的物理像素宽
+         * 
          * @return {Number} width
          */
         this.getDeviceWidth = function(){
@@ -117,7 +157,10 @@
         };
 
         /**
-         * get the window orientation 
+         * ## getOrientation
+         * 
+         * 获取窗口横竖屏状态
+         * 
          * @return {Number} direction 1 : 横屏 0 : 竖屏
          */
         this.getOrientation = function(){
@@ -127,9 +170,14 @@
         };
 
         /**
-         * 监听浏览器横竖屏
-         * 有些浏览器修改 viewport 不会起作用,会存在bug
-         * 有些浏览器并不需要重新设置viewport ,浏览器会自动适应
+         * ## handleOrientationChange
+         * 
+         * 处理横竖屏切换事件，如果没有横竖屏事件，则监听 resize 事件。
+         * 
+         * 有些浏览器修改 viewport 不会起作用,会存在bug。
+         * 
+         * 有些浏览器并不需要重新设置viewport ,浏览器会自动适应。
+         * @return {instance} 当前实例
          */
         this.handleOrientationChange = function(){
             var self=this,
@@ -148,12 +196,19 @@
             }
 
             window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", handler, false);
+            return self;
         };
 
         /**
-         * device-width * default-scale(1) = options.width * scale
+         * ## getViewportScale
          *
+         * 获取缩放比
+         * 
+         * 原理：device-width * default-scale(1) = options.width * scale
+         * 
          * 0表示不进行缩放
+         * 
+         * @return {Number} 缩放比
          */
         this.getViewportScale = function(){
             var self=this,options = self.options,scale,w;
@@ -166,9 +221,12 @@
         };
 
         /**
-         * set viewport value by scale
-         * Android IOS 未考虑 window phone
+         * ## setViewportByScale
+         * 
+         * 通过scale设置viewport值
+         * 
          * @param {Number} scale 
+         * @return {instance} 当前实例
          */
         this.setViewportByScale = function(scale){
             var self=this,options = self.options;

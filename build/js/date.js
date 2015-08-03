@@ -1,31 +1,47 @@
 /**
- * 日期格式化组件,提供parseDate与format方法
+ * # Kub.dateHelper
+ * 
+ * 日期格式化组件。
+ * 
  * 格式化字符:
+ * 
     yyyy : 四位年。例如：2015
+
     yy   : 二位年份，最后两位。例如 15
+
     MMMM : 全称月份。例如 January
+
     MMM  : 简称月份。例如 Jan
+
     MM   : 两位月份，小于10显示03。例如：11
+
     M    : 一位月份，小于10显示3.例如：3或者11
+
     dddd : 全称星期。例如：星期一，Sunday
+
     ddd  : 简称星期。例如：一，Sun
+
     dd   : 两位天数。类似于MM
+
     d    : 一位天数。类似于M
+
     HH   : 两位小时。类似于MM
+
     H    : 一位小时。类似于M
+
     mm   : 两位分钟。类似于MM
+
     m    : 一位分钟。类似于M
+
     ss   : 两位秒数。类似于MM
+
     s    : 一位秒数。类似于M
+
     aa   : 全称上午或者下午。例如A.M.，P.M.
+
     a    : 简称上午或者下午。例如AM.
- * 使用：
-*     //String to Date
-*     "2015-05-20".parseDate("yyyy-MM-dd");
-*     
-*     //格式化日期
-*     (new Date()).format("yyyy-MM-dd,hh:mm:ss");
- */
+
+*/
 !(function(root, factory) {
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
@@ -39,6 +55,21 @@
     }
 }(this, function(root) {
     'use strict';
+
+    /**
+     * ## DateHelper Constructor
+     *
+     * DateHelper 对外提供的是实例化以后的对象。
+     *
+     * 使用：
+     * ```js
+     * //String to Date
+     * "2015-05-20".parseDate("yyyy-MM-dd");
+     *     
+     * //格式化日期
+     * (new Date()).format("yyyy-MM-dd,hh:mm:ss");
+     * ```
+     */
     var DateHelper = function() {
 
     };
@@ -46,7 +77,7 @@
     (function() {
         this.constructor = DateHelper;
 
-        //本地化，目前包含中文与英文
+        //本地化，目前包含`en`与`zh`
         this.i18n = {
             en: {
                 month: {
@@ -82,7 +113,10 @@
         this.locale = "zh";
 
         /**
+         * ## addLocale
+         * 
          * 添加本地化
+         * 
          * @param {String} name  本地化名称
          * @param {Object} locale 本地化数据
          */
@@ -92,7 +126,10 @@
         };
 
         /**
+         * ## setLocale
+         * 
          * 设置默认本地化
+         * 
          * @param {String} name 本地化名称
          */
         this.setLocale = function(name) {
@@ -139,7 +176,10 @@
         };
 
         /**
+         * ## format
+         * 
          * 格式化日期
+         * 
          * @param  {Date} date     日期
          * @param  {String} format 日期格式
          * @return {String}        格式化以后的日期
@@ -157,10 +197,23 @@
         };
 
         /**
+         * ## parse
+         * 
          * 转换日期
-         * 此方法存在一个BUG
-         * 例如：dateHelper.parse("2015-1112","yyyy-MMdd");//1112会被计算在MM内。
-         * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：dateHelper.parse("2015-11-12","yyyy-MM-dd");
+         * 
+         * 此方法存在一个BUG，例如：
+         * 
+         * ```js
+         * //1112会被计算在MM内。
+         * dateHelper.parse("2015-1112","yyyy-MMdd");
+         * ```
+         * 
+         * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
+         * 
+         * ```js
+         * dateHelper.parse("2015-11-12","yyyy-MM-dd");
+         * ```
+         * 
          * @param  {String} input  字符串
          * @param  {String} format 格式化字符串
          * @return {Date}          格式化的日期
@@ -194,12 +247,13 @@
 
     var dateHelper = new DateHelper();
 
-    // 将 parseDate 方法绑定在String原型上
+
+    // 将 parseDate 方法绑定在 `String` 原型上
     String.prototype.parseDate = function(format){
         return dateHelper.parse(this,format);
     };
 
-    // 将 format 方法绑定在Date原型上
+    // 将 format 方法绑定在 `Date` 原型上
     Date.prototype.format = function(format){
         return dateHelper.format(this,format);
     };

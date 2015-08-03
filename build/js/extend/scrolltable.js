@@ -1,3 +1,8 @@
+/**
+ * # Kub.ScrollTable
+ *
+ * 滚动分页
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
@@ -8,6 +13,19 @@
         Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
     }
 }(this,function(root,$,template, core, LazyLoad){
+
+    /**
+     * ## ScrollTable Constructor
+     *
+     * ScrollTable 类
+     *
+     * 使用方法：
+     * ```js
+     * 
+     * new Kub.ScrollTable();
+     *
+     * ```
+     */
     function ScrollTable(element,options){
         var self = this;
         
@@ -32,6 +50,47 @@
     ;(function(){
         this.constructor = ScrollTable;
 
+        /**
+         * ## defaults
+         *
+         * `defaults`默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `url`: url地址
+         * 
+         * * `type`: 请求类型
+         * 
+         * * `dataType`: 数据类型
+         * 
+         * * `listSelector`: 列表选择器
+         * 
+         * * `itemSelector`: item选择器，用于删除
+         * 
+         * * `loadingTemplate`: loading 图标模板
+         * 
+         * * `noDataTemplate`: 无数据模板
+         * 
+         * * `completedTempalte`: 数据加载以后模板
+         * 
+         * * `template`: item模板
+         * 
+         * * `success`: 成功回调函数
+         * 
+         * * `error`: 失败回调函数
+         * 
+         * * `defaultPage`: 默认页数
+         * 
+         * * `pageSize`: 页面大小
+         * 
+         * * `countKey`: 总数的key
+         * 
+         * * `resultKey`: 数据结果的key
+         * 
+         * * `format`: 格式化后端数据方法，由于每个请求过来的数据可能不一致，所以需要手动格式化。
+         * 
+         * * `formatAjaxData`: 格式化Ajax请求参数，由于每个请求发送的数据格式可能不一致，所以需要手动格式化。
+         */
         this.defaults = {
             url:"",
             type:"get",
@@ -78,7 +137,11 @@
         };
 
         /**
+         * ## refresh
+         * 
          * 重新刷新table
+         * 
+         * @return {instance} 当前实例
          */
         this.refresh = function(){
 
@@ -99,7 +162,11 @@
         };
 
         /**
+         * ## load
+         * 
          * 加载下一页数据
+         * 
+         * @return {instance} 当前实例
          */
         this.load = function(){
             var self = this,options = this.options,page = self.page+1;
@@ -170,8 +237,12 @@
         }
 
         /**
+         * ## add/append
+         * 
          * 往后添加数据
-         * @param  {Array} data   需要被添加的数据数组
+         * 
+         * @param {Array} data   需要被添加的数据数组
+         * @return {instance} 当前实例
          */
         this.add = this.append = function(data){
             var self = this,options = this.options,html;
@@ -186,8 +257,12 @@
         };
 
         /**
+         * ## preappend
+         * 
          * 往前添加数据
-         * @param  {Array} data   需要被添加的数据数组
+         * 
+         * @param {Array} data   需要被添加的数据数组
+         * @return {instance} 当前实例
          */
         this.preappend = function(data){
             var self = this,options = this.options,html;
@@ -202,8 +277,12 @@
         };
 
         /**
+         * ## remove
+         * 
          * 删除数据
-         * @param  {Object} data   被删除的数据
+         * 
+         * @param {Object} data   被删除的数据
+         * @return {instance} 当前实例
          */
         this.remove = function(data){
             if (data) {
@@ -223,9 +302,12 @@
         };
 
         /**
+         * ## getById
+         * 
          * 通过ID获取数据
-         * @param  {Number} id   需要被删除的数据ID
-         * @param  {String} name ID名称，有可能Id名称不一定是 ”id“
+         * 
+         * @param {Number} id   需要被删除的数据ID
+         * @param {String} name ID名称，有可能Id名称不一定是 ”id“
          * @return {Object}      筛选出来的数据
          */
         this.getById = function(id,name){
@@ -236,9 +318,13 @@
         };
 
         /**
+         * ## removeById
+         * 
          * 通过ID移除数据
-         * @param  {Number} id   需要被删除的数据ID
-         * @param  {String} name ID名称，有可能Id名称不一定是 ”id“
+         * 
+         * @param {Number} id   需要被删除的数据ID
+         * @param {String} name ID名称，有可能Id名称不一定是 ”id“
+         * @return {instance} 当前实例
          */
         this.removeById = function(id,name){
             var length, 
@@ -260,8 +346,11 @@
         };
 
         /**
+         * ## filter
+         * 
          * 筛选数据方法
-         * @param  {Object} params 参数
+         * 
+         * @param {Object} params 参数
          * @return {Array}         返回筛选出来的方法
          */
         this.filter = function(params){
@@ -286,10 +375,14 @@
         };
 
         /**
-         * 获取数据方法
-         * @param  {Object} data    Ajax请求参数
-         * @param  {Function} success 请求成功以后回调
-         * @param  {Function} error   请求失败以后回调
+         * ## getData
+         * 
+         * 获取数据
+         * 
+         * @param {Object} data    Ajax请求参数
+         * @param {Function} success 请求成功以后回调
+         * @param {Function} error   请求失败以后回调
+         * @return {instance} 当前实例
          */
         this.getData = function(data,success,error){
             var self = this,options = self.options;

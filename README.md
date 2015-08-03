@@ -43,15 +43,42 @@
 </pre>
 
 ### 关于测试
+
 预计采用Jasmine
 
 ### 关于发布
+
 1、前期跟随项目文件走
 
 2、后期稳定以后，发布到cdn
 
 ### 关于文档
-API文档采用jsdoc生成，API文档写在js中
+
+API文档写在js中，采用 [Docker](https://github.com/jbt/docker) 生成文档。语法可参照文档。
+
+文档地址：http://test.hd.koudai.com/api/kub/
+
+>   1、安装 Docker，参照 Docker 文档。
+
+<pre>
+    npm install -g docker
+</pre>
+
+>   2、运行下面命名，监听js并生成文档。
+
+<pre>
+    //生成文档
+    docker -i src/js -o docs/html/kub -x lib
+
+    //监听并生成文档
+    docker -i src/js -o docs/html/kub -x lib -w
+</pre>
+
+>   3、运行下面命名发布文档。
+
+<pre>
+    gulp publishdoc;
+</pre>
 
 ### 使用
 <pre>

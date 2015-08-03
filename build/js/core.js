@@ -1,3 +1,8 @@
+/**
+ * # Kub.core
+ *
+ * kubjs 核心模块，该模块只提供最基础的方法。
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if(typeof define === "function"){
@@ -10,6 +15,19 @@
         Kub.core = factory(root);
     }
 }(this,function(root){
+
+     /**
+     * ## Core Constructor
+     *
+     * Core 类，对外提供的是实例化的对象。
+     *
+     * 使用方法：
+     * ```js
+     * //获取url参数
+     * var params = Kub.core.getParams();
+     * 
+     * ```
+     */
     var Core = function(){
         
     };
@@ -19,7 +37,7 @@
         var proto = this,ua = navigator.userAgent,os;
         this.constructor = Core;
 
-        //设备检测,只检测Android 与 IOS, window phone（window phone 未进行完全测试）
+        
         var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
             ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
             ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
@@ -35,9 +53,16 @@
         os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
         os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
         os.mobile = os.phone || os.tablet;
+
+        /**
+         * ##os
+         * 
+         * 检测系统类型与版本，包含系统类型与版本信息
+         *
+         * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
+         */
         this.os = os;
 
-        // extend function like $.extend()
         this.extend = function(target,source){
             var deep,args = Array.prototype.slice.call(arguments,1),length;
             if(typeof target === "boolean"){
@@ -77,6 +102,14 @@
             return toString.call(obj) === "[object Function]" || toString.call(obj) === "[object Object]";
         };
 
+        /**
+         * ## inherit
+         *
+         * 类的继承
+         * 
+         * @param {Class} c 子类
+         * @param {Class} p 父类
+         */
         this.inherit = function(c,p){
             var F = function(){};
             F.prototype = p.prototype;
@@ -85,6 +118,14 @@
             c.uber = p.prototype;
         };
 
+        /**
+         * ## htmlToText
+         * 
+         * 将html转换为text
+         * 
+         * @param {String} value html
+         * @return {String} 处理以后的文本
+         */
         this.htmlToText = function(value){
             //.replace(/&nbsp;|&#160;/gi, '')
             return value.replace(/<.[^<>]*?>/g, '').replace(/\s/g,"");
@@ -92,14 +133,44 @@
 
         this.getOriginUrl = function(url){
             var matchs;
+            url = url || window.location.href;
             return url && (matchs = url.match(/(^[^\?#]*)/) ) && matchs[1];
         };
 
+        /**
+         * ## getParamsString
+         *
+         * 获取 params string
+         * @param {String} url url地址，未传值取 `window.location.href`。
+         * @return {String} params string
+         */
         this.getParamsString = function(url){
             var matchs;
+            url = url || window.location.href;
             return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/) ) && matchs[1];
         };
 
+        /**
+         * ## setParams
+         *
+         * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href` 的值。
+         *
+         * 使用：
+         * ```js
+         * //设置当前地址参数
+         * Kub.core.setParams({
+         *     name:"kubjs"
+         * });
+         * //追加参数
+         * Kub.core.setParams({
+         *     name:"kubjs"
+         * },true);
+         * ```
+         * 
+         * @param {String} url    [description]
+         * @param {[type]} params [description]
+         * @param {[type]} add    [description]
+         */
         this.setParams = function(url,params,add){
             if(this.isObject(url)){
                 add = params;
@@ -132,6 +203,16 @@
             });
         };
 
+        /**
+         * ## getParams
+         *
+         * 获取url中的参数。
+         * 
+         * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
+         * 
+         * @param {String} url url地址，未传值取 `window.location.href`。
+         * @return {Object} 返回参数对象
+         */
         this.getParams = function(url){
             if(!url) url=window.location.href;
             var params={}, queryString = this.getParamsString(url);

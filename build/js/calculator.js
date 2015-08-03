@@ -1,11 +1,8 @@
 /**
- * 解决数字计算问题,没有对参数进行校验，会影响效率，所以保证传入到方法中的参数为数值型
- * 使用：
- *     var a = 0.1,b=0.2;
- *     a.add(b).add(a);
- *
- *     a.toFixed2(2) //默认四舍五入
- *     a.toFixed2(2,true) 不进行四舍五入
+ * # Kub.calculator
+ * 
+ * 数值计算，解决浮点数不精确问题。提供加减乘除方法。
+ *     
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -20,27 +17,37 @@
     }
 }(this,function(root){
     'use strict';
+
+    /**
+     * ## Calculator Constructor
+     *
+     * Calculator类，对外提供的是实例化的对象。
+     *
+     * 使用方法：
+     * ```js
+     * var a = 0.1,b=0.2;
+     * a.add(b).add(a);
+     *  
+     * a.toFixed2(2) //默认四舍五入
+     *  
+     * a.toFixed2(2,true) //不进行四舍五入
+     * ```
+     */
+    
     var Calculator = function(){
-        var i = Calculator.prototype.instance;
-        if( i && i instanceof Calculator){
-            return i;
-        }else{
-            Calculator.prototype.instance = this;
-        }
+
     };
 
     (function(){
         this.constructor = Calculator;
 
-        //未排除 NaN
-        this.isNumber = function(value){
-            return Object.prototype.toString.call(value) === "[object Number]";
-        };
-
         /**
-         * 得到数值的小数点位数
-         * @param  {Number} value
-         * @return {Number}        位数
+         * ## getDecimalDigit
+         * 
+         * 得到数值的小数点位数。
+         * 
+         * @param {Number} value 
+         * @return {Number} 位数
          */
         this.getDecimalDigit = function(value){
             value = Math.abs(value);
@@ -49,8 +56,12 @@
         };
 
         /**
-         * 通过正则匹配得到数值的小数点位数，效率没有上面方法高
-         * @param  {Number} value
+         * ## _getDecimalDigit
+         * 
+         * 通过正则匹配得到数值的小数点位数，效率没有`getDecimalDigit`高。
+         * 
+         * @private
+         * @param {Number} value
          * @return {Number}        位数
          */
         this._getDecimalDigit = function(value){
@@ -60,12 +71,15 @@
         };
 
         /**
+         * ##toFixed2
+         * 
          * 四舍五入或者不四舍五入保留指定小数位
-         * 类似于Number.toFixed (解决ie下 Math.toFixed 函数bug)
-         * @param  {Number}  value 数值
-         * @param  {Number}  l     保留小数点位数
-         * @param  {Boolean} f     是否进行四舍五入 default:四舍五入 true:不进行四舍五入
-         * @return {String}        保留小数后String
+         * 类似于 `Number.toFixed` (解决ie下 `Number.toFixed` 函数bug)
+         * 
+         * @param {Number} value 数值
+         * @param {Number} l     保留小数点位数
+         * @param {Boolean} f    是否进行四舍五入 default:四舍五入  true:不进行四舍五入
+         * @return {String}      保留小数后String
          */
         this.toFixed2 = function(value,l,f){
             var reg = /^(-?\d+)(\.(\d+))?/,m = value.toString().match(reg),i,d,z;
@@ -90,11 +104,7 @@
             }
         };
         
-        /**
-         * 将a 与 b 乘以相同倍数,得到乘以相同倍数的数值和放大倍数
-         * @param  {Number} a
-         * @param  {Number} b
-         */
+        //将a 与 b 乘以相同倍数,得到乘以相同倍数的数值和放大倍数
         function calculate (a,b){
             var _a,_b,r1 = this.getDecimalDigit(a),r2 =this.getDecimalDigit(b), d = r1 -r2 , _d = Math.pow(10,Math.abs(d)) , m = Math.pow(10, Math.max(r1, r2));
             
@@ -111,30 +121,62 @@
             };
         }
 
-        //加法
+        /**
+         * ## add
+         *
+         * 加法运算
+         * 
+         * @param {Number} a 
+         * @param {Number} b 
+         * @return {Number} 相加以后的值
+         */
         this.add = function(a,b){
             var o = calculate.call(this,a,b);
             return (o.a + o.b) / o.m;
         };
 
-        //减法
+        /**
+         * ## sub
+         *
+         * 减法运算
+         * 
+         * @param {Number} a 
+         * @param {Number} b 
+         * @return {Number} 相减以后的值
+         */
         this.sub = function(a,b){
             return this.add(a,-b);
         };
 
-        //乘法
+        /**
+         * ## mul
+         * 
+         * 乘法运算
+         * 
+         * @param {Number} a 
+         * @param {Number} b 
+         * @return {Number} 相乘以后的值
+         */
         this.mul = function(a,b){
             var o = calculate.call(this,a,b);
             return ( o.a * o.b ) / (o.m * o.m);
         };
 
-        //除法
+        /**
+         * ## div
+         *
+         * 除法运算
+         * 
+         * @param {Number} a 
+         * @param {Number} b 
+         * @return {Number} 相除以后的值
+         */
         this.div = function(a,b){
             var o = calculate.call(this,a,b);
             return o.a / o.b;
         };
 
-        //添加到 Number.prototype 上
+        //添加到 `Number.prototype` 上，方便调用。
         var f = ["add","sub","mul","div","toFixed2"],i=f.length,proto = Calculator.prototype;
         while(i--){
             (function(i){

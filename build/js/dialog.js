@@ -1,3 +1,8 @@
+/**
+ * # Kub.Dialog
+ *
+ * 对话框
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
 
@@ -9,10 +14,36 @@
         Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
     }
 }(this,function(root,$,_){
+
+    /**
+     * ## Dialog Constructor
+     *
+     * Dialog 类
+     *
+     * 使用：
+     * ```js
+     *   //可定制多个按钮
+     *   var dialog = new Kub.Dialog({
+     *       message:"这是个弹窗",
+     *       title:"弹窗",
+     *       buttons:[{
+     *           text:"确定",
+     *           handler:function(){
+     *           }
+     *       },{
+     *          text:"取消",
+     *           handler:function(e,dialog){
+     *               //返回 event 与 dialog对象
+     *               dialog.close();
+     *           }
+     *       }]
+     *   });
+     * ```
+     */
     var Dialog = function(options){
         this.options = $.extend({}, Dialog.prototype.defaults, options||{});
 
-        //最大可包含5个按钮
+        //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
         this.options.buttons && this.options.buttons.length > 5 && (this.options.buttons.length = 5);
         this._init();
     },
@@ -24,19 +55,57 @@
         DIALOGID = "J_dialog" , 
         DIALOGCLOSEID = "J_dialogClose",
         DIALOGBUTTONCLASS = "J_dialogButton",
+        //弹窗模板
         TEMPLATE = '<div class="kub-dialog-modal <%= data.className%> <%if( data.modal ){%> kub-modal <%}%>"> <div class="kub-dialog-wrapper"><div class="kub-dialog-container"> <div class="kub-dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="kub-dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="kub-dialog-button kub-dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="kub-dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="kub-dialog-footer kub-column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="kub-dialog-button J_dialogButton" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>'
 
     ;(function(){
         this.constructor = Dialog;
 
+        /**
+         * ## defaults
+         *
+         * 默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `modal`: 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
+         * 
+         * * `title`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+         *
+         * * `showHeader`: 是否显示头部。
+         * 
+         * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
+         * 
+         * * `message`: 弹窗内容
+         *
+         * * `className`: 弹窗类名
+         * 
+         * * `scrollable`: 是否禁用页面滚动条
+         * 
+         * * `animated`: 是否开启动画效果
+         *
+         * * `buttons`: 弹窗按钮
+         * 
+         * ```js
+         * [{   
+         *     //按钮名称
+         *     text:"确定",
+         *     handler:function(){
+         *         //按钮单击触发事件
+         *     }
+         * }]
+         * ```
+         */
         this.defaults = {
             modal:true,
             title:"",
             showHeader:true,
-            message:"",
             closable:true,
+            message:"",
+            className:"",
             scrollable:true,
-            animated:true
+            animated:true,
+            buttons:null
         };
 
         this.i18n = {
@@ -50,6 +119,7 @@
             }
         };
 
+        //添加本地化，主要用在 `alert`,`confirm`,`prompt`
         this.addLocale = function(name, locale) {
             name && locale && (this.i18n[name] = locale);
             return this;
@@ -97,7 +167,7 @@
         };
 
 
-        /*采用table-cell居中方式*/
+        //采用table-cell居中方式
         this.setPosition = function(){
             /*this.$dialog.css({
                 marginTop:-(this.$dialog.height()/2 || 100),
@@ -123,6 +193,12 @@
             return this;
         };
 
+        /**
+         * ## show
+         *
+         * 显示弹窗
+         * @return {instance} 返回当前实例
+         */
         this.show = function(){
             this.disableScrollbar();
 
@@ -133,6 +209,12 @@
             return this;
         };
 
+        /**
+         * ## hide
+         *
+         * 隐藏弹窗
+         * @return {instance} 返回当前实例
+         */
         this.hide = function(){
             !this.options.scrollable && i--;
             this.enableScrollbar();
@@ -143,6 +225,12 @@
             return this;
         };
 
+        /**
+         * ## close
+         *
+         * 关闭弹窗
+         * @return {instance} 返回当前实例
+         */
         this.close = function(){
             var self =this;
             if(this.options.closeHandler && this.options.closeHandler.call(this) === false){

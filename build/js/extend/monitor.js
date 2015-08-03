@@ -1,13 +1,12 @@
-/*
-解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，默认等待500ms会重刷页面
-safeDomains： 安全域名，根据需求进行改变
-waitTime:    延迟刷新时间
-validateVar：验证变量是否存在，同样根据需求进行改变
-*/
+/**
+ * # Kub.Monitor
+ *
+ * 解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，然后重新加载页面。
+ * 
+ */
 !(function(root, factory) {
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
-        //加上模块名称，防止在require,加载完毕以后加载该js,出现的错误
         define(function() {
             return Kub.Monitor = factory(root);
         });
@@ -16,6 +15,17 @@ validateVar：验证变量是否存在，同样根据需求进行改变
     }
 }(this, function(root) {
     'use strict';
+
+    /**
+     * ## Monitor Constructor
+     *
+     * Monitor 类，全局只会初始化一个实例对象。第一次初始化以后，第二次会返回上一次初始化的实例。
+     *
+     * 使用方法：
+     * ```js
+     * new Kub.Monitor();
+     * ```
+     */
     function Monitor(opts){
         if(Monitor.prototype.instance) return Monitor.prototype.instance;
         Monitor.prototype.instance = this;
@@ -36,6 +46,21 @@ validateVar：验证变量是否存在，同样根据需求进行改变
 
     Monitor.prototype = {
         constructor:Monitor,
+
+        /**
+         * ## defaults
+         *
+         * `defaults`默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `waitTime`: 延迟刷新时间。立即刷新可能会出现依旧被劫持问题。
+         * 
+         * * `safeDomains`: 安全域名。
+         * 
+         * * `validateVar`: 验证变量是否存在。
+         */
+        
         defaults: {
             waitTime: 500,
             safeDomains: ['koudai.com', 'vdian.com', 'weidian.com', '10.1.22.40'],
@@ -107,7 +132,13 @@ validateVar：验证变量是否存在，同样根据需求进行改变
         isValidate: function() {
             return root.location.href.indexOf("_r=1") != -1 ? false : true;
         },
-        //刷新页面
+
+        /**
+         * ## refresh
+         * 
+         * 刷新页面，给页面加上
+         * 
+         */
         refresh: function() {
             var self = this,
                 href = root.location.href,
@@ -121,14 +152,26 @@ validateVar：验证变量是否存在，同样根据需求进行改变
                 root.location.replace(href + hash);
             }, self.options.waitTime);
         },
+
         /**
+         * ## validateVar
+         * 
          * 验证变量是否存在 根据项目情况进行修改
+         * 
          * @return {Boolean} 错误 false 正确 true
          */
         validateVar: function() {
             return this.options.validateVar ? this.options.validateVar.call(this) : true;
         },
-        //是否在安全的域名内
+
+        /**
+         * ## isSafeDomain
+         *
+         * 是否在安全的域名内
+         * 
+         * @param {String}  src url地址
+         * @return {Boolean} true：在安全域名内 false：不在完全域名内
+         */
         isSafeDomain: function(src) {
             var self = this;
             for (var i = 0, j = self.options.safeDomains.length; i < j; i++) {
@@ -140,8 +183,12 @@ validateVar：验证变量是否存在，同样根据需求进行改变
             }
             return false;
         },
+
         /**
+         * ## validateScript
+         * 
          * 验证script是否包含外部文件
+         * 
          * @return {Boolean} 错误 false 正确 true
          */
         validateScript: function() {

@@ -1,6 +1,8 @@
 /**
- * 延迟加载组件
- * var lazyload = new LazyLoad($("img"));
+ * # Kub.LazyLoad
+ * 
+ * 延迟加载组件。
+ * 
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -13,6 +15,17 @@
     }
 }(this,function(root,$){
     'use strict';
+
+    /**
+     * ## LazyLoad Constructor
+     *
+     * LazyLoad 类
+     *
+     * 使用：
+     * ```js
+     * var lazyload = new Kub.LazyLoad($("img"));
+     * ```
+     */
     var LazyLoad = function(element,options){
         this.$element = $(element);
 
@@ -23,14 +36,27 @@
         this._init();
     };
     (function(){
+
         this.constructor=LazyLoad;
-        /** 
-            container:window,           图片存放容器，容器会监听事件
-            threshold:50,               提前加载距离，默认50px
-            waitTime:5000,              等待时间，用户如果在 waitTime 时间内无操作，则会加载剩余默认图片
-            delay:100,                  事件监听时的延迟时间
-            attributeName:"original",   属性名称，默认会从dom上取出地址 data-attributeName
-            eventName:"scroll resize",  监听的事件名称
+
+        /**
+         * ## defaults
+         *
+         * 默认配置项。
+         *
+         * 配置项说明：
+         * 
+         *   `container` : 图片存放容器，容器会监听事件
+         *   
+         *   `threshold` : 提前加载距离，默认50px
+         *   
+         *   `waitTime` : 等待时间，用户如果在 waitTime 时间内无操作，则会加载剩余默认图片
+         *   
+         *   `delay` : 事件监听时的延迟时间
+         *   
+         *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
+         *   
+         *   `eventName` : 监听的事件名称
          */
         this.defaults={
             container:window,
@@ -41,10 +67,8 @@
             eventName:"scroll resize"
         };
         
-        /**
-         * 更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
-         * @param  {$} element 需要被更新的jQuery对象
-         */
+       
+        //更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内        
         this.updateElement = function(element){
             var self=this;
             self.$element=element;
@@ -54,7 +78,11 @@
         };
 
         /**
+         * ## getUnloadedElements
+         * 
          * 获取所有还未被加载的节点
+         * 
+         * @return {instance} 当前实例
          */
         this.getUnloadedElements = function(){
             var self =this;
@@ -64,7 +92,11 @@
         };
 
         /**
+         * ## loadAll
+         * 
          * 强制加载所有图片，无论节点是否在可视区域内
+         * 
+         * @return {instance} 当前实例
          */
         this.loadAll = function(){
             var self=this,options=self.options,elements;
@@ -73,10 +105,10 @@
                 var $this=$(this);
                 self.load($this,$this.attr("data-"+self.options.attributeName));
             });
+            return self;
         };
-        /**
-         * 加载所有在可视区域内的图片
-         */
+
+        //加载所有在可视区域内的图片
         this.loadElementsInViewport = function(){
             var self=this,options=self.options,elements;
 
@@ -92,9 +124,11 @@
         };
 
         /**
+         * ## isVisible
+         * 
          * 是否可见
-         * @param  {jQuery}  $this   元素
-         * @param  {Object}  options 参数
+         * @param {$}  $this   元素
+         * @param {Object}  options 参数
          * @return {Boolean}         true ：可见 false ：不可见
          */
         this.isVisible = function($this,options){
@@ -144,9 +178,12 @@
         };
 
         /**
+         * ## load
+         * 
          * 加载指定元素
-         * @param  {$} $element      加载的节点
-         * @param  {String} original 图片地址
+         * 
+         * @param {$} $element      加载的节点
+         * @param {String} original 图片地址
          * @return {instance}        current instance
          */
         this.load = function($element,original){
@@ -159,12 +196,16 @@
             } else {
                 $element.css("background-image", "url('" + original + "')");
             }
-            //$element.data("loaded",true);
             $element[0].loaded=true;
             return this;
         };
 
-        //销毁对象
+        /**
+         * ## destory
+         * 
+         * 销毁对象
+         * @return {instance} 当前实例
+         */
         this.destory = function(){
             var self=this,options=self.options;
             //取消监听
@@ -177,16 +218,25 @@
             return self;
         };
         
-        // copy from http://www.appelsiini.net/projects/lazyload, thanks open source!
-        //是否在可视区域内
+        /**
+         * ## isInViewport
+         * 
+         * 是否在可视区域内
+         * 
+         * @param {zepto} element 检查的元素
+         * @return {Boolean} 是：true 否 ：false
+         */
         this.isInViewport = function($this){
             return !this.belowthefold($this[0],this.options) && !this.abovethetop($this[0],this.options) && !this.rightoffold($this[0],this.options) && !this.leftofbegin($this[0],this.options);
         };
 
         /**
+         * ## belowthefold
+         * 
          * 是否在视窗下面
-         * @param  {Element} element 检查的元素
-         * @param  {Object} settings 被检查时的参数
+         * 
+         * @param {Element} element 检查的元素
+         * @param {Object} settings 被检查时的参数
          * @return {Boolean}         是：true 否 ：false
          */
         this.belowthefold = function(element, settings) {
@@ -201,9 +251,12 @@
         };
 
         /**
+         * ## abovethetop
+         * 
          * 是否在视窗上面
-         * @param  {Element} element 检查的元素
-         * @param  {Object} settings 被检查时的参数
+         * 
+         * @param {Element} element 检查的元素
+         * @param {Object} settings 被检查时的参数
          * @return {Boolean}         是：true 否 ：false
          */
         this.abovethetop = function(element, settings) {
@@ -219,9 +272,12 @@
         };
 
         /**
+         * ## rightoffold
+         * 
          * 是否在视窗右侧
-         * @param  {Element} element 检查的元素
-         * @param  {Object} settings 被检查时的参数
+         * 
+         * @param {Element} element 检查的元素
+         * @param {Object} settings 被检查时的参数
          * @return {Boolean}         是：true 否 ：false
          */
         this.rightoffold = function(element, settings) {
@@ -235,9 +291,12 @@
         };
 
         /**
+         * ## leftofbegin
+         * 
          * 是否在视窗左侧
-         * @param  {Element} element 检查的元素
-         * @param  {Object} settings 被检查时的参数
+         * 
+         * @param {Element} element 检查的元素
+         * @param {Object} settings 被检查时的参数
          * @return {Boolean}         是：true 否 ：false
          */
         this.leftofbegin = function(element, settings) {

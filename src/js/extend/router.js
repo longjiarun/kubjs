@@ -1,3 +1,9 @@
+/**
+ * # Kub.Router
+ *
+ * 路由控制
+ * 
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
@@ -9,6 +15,29 @@
     }
 }(this,function(root,_){
     'use strict';
+
+    /**
+     * ## Router Constructor
+     *
+     * Router 类
+     *
+     * 使用方法：
+     * ```js
+     * var router = new Kub.Router({
+     *     //默认路由
+     *     defaultRoute:"/",
+     *     //路由列表
+     *     routes:{
+     *          "add": function(){
+     *          },
+     *          "detail/:id":function(id){
+     *              //可获取到id参数
+     *              console.log(id);
+     *          }
+     *     }
+     * });
+     * ```
+     */
     function Router(options){
         this.options = _.extend({
             defaultRoute:"/",
@@ -26,28 +55,64 @@
     }
     ;(function(){
         this.constructor = Router;
+
         //缓存所有路由
         this.routes = [];
 
-        //设置默认路由
+        /**
+         * ## setDefaultRoute
+         * 
+         * 设置默认路由
+         * 
+         * @param {String} route 路由
+         * @return {instance} 当前实例
+         */
         this.setDefaultRoute = function(route){
             this.options.defaultRoute = route;
             return this;
         };
 
+        /**
+         * ## getHash
+         *
+         * 获取hash值
+         * 
+         * @param {String} url  url地址
+         * @return {String}     hash
+         */
         this.getHash = function(url) {
             var match = url.match(/#(.*)$/);
             return match ? match[1] : '';
         };
 
+        /**
+         * ## updateHash
+         *
+         * 更新hash
+         * 
+         * @param {String} url      url地址
+         * @param {String} route    路由
+         * @return {String}         返回修改以后的url
+         */
         this.updateHash = function(url,route){
             return url && url.replace(/#(.*)$/, "")+"#"+route;
         };
 
+        /**
+         * ## getCurrentRoute
+         * 获取当前路由
+         * @return {String} 当前路由
+         */
         this.getCurrentRoute = function(){
             return this.currentRoute;
         };
 
+        /**
+         * ## start
+         * 开始路由控制，必须调用start方法才能开始设置路由
+         * 
+         * @return {instance} 当前实例
+         */
         this.start = function(){
             if(this.started) return this;
             var self = this;
@@ -65,7 +130,6 @@
                     updateHash:false
                 });
             };
-            //this._event = "hashchange"
             window.addEventListener(this._event, this._checkUrl);
 
             self.navigate(self.getHash(location.href),{
@@ -74,6 +138,13 @@
             return self;
         };
 
+        /**
+         * ## stop
+         * 
+         * 停止路由，需调用start开始路由
+         * 
+         * @return {instance} 当前实例
+         */
         this.stop = function(){
             window.removeEventListener(this._event, this._checkUrl);
             this.started = false;
@@ -103,9 +174,20 @@
             });
         };
 
+        /**
+         * ## navigate
+         * 
+         * 导航到某一路由
+         * 
+         * @param {String} route 
+         * @param {Object} opts  配置参数 {`trigger`:是否触发回调函数,`updateHash`:是否更新路由,`replace`:是否需要替换路由}
+         * @return {instance} 当前实例
+         */
         this.navigate = function(route,opts){
             var self = this, options = self.options, f = true;
+
             //1、解决重复执行问题
+            //
             //2、主要是解决不支持replaceState方法的浏览器
             if(self.currentRoute == route) return self;
 
@@ -128,7 +210,9 @@
                 });
 
                 //如果当前route没有在route 中，则将其重定向到默认route中。
+                //
                 //替换会出现一个问题，就是当前路由后续路由都会被替换。造成无法回退上以前的历史记录
+                //
                 //如果使用location.hash，则会出现后退按钮会一直无效
                 f && opts.trigger ? options.defaultRoute && location.replace(self.updateHash(location.href,options.defaultRoute)) 
                   : opts.updateHash && self._updateHash(route, opts.replace);
@@ -152,6 +236,15 @@
             return this;
         }
 
+        /**
+         * ## route / add
+         *
+         * 添加一个新的路由
+         * 
+         * @param {String/RegExp}   route    路由或者正则表达式
+         * @param {Function} callback 回调函数
+         * @return {instance} 当前实例
+         */
         this.route = this.add = function(route,callback){
             if (!_.isRegExp(route)) route = this._routeToRegExp(route);
             this.routes.unshift({
@@ -162,7 +255,12 @@
         };
 
         /**
-         * 移除 route 函数
+         * ## remove
+         * 移除指定route的回调函数，或者指定route与指定回调函数
+         * 
+         * @param {String}   route    路由
+         * @param {Function} callback 回调函数
+         * @return {instance} 当前实例
          */
         this.remove = function(route,callback){
             if(route){
