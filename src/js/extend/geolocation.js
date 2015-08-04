@@ -49,9 +49,9 @@
          *
          * 配置项说明：
          * 
-         * * `ipUrl`: 通过ip获取位置的url。
+         * * `ipUrl`: 通过ip获取位置的接口。
          * 
-         * * `positionUrl`: //通过经纬度获取位置的url
+         * * `positionUrl`: 通过经纬度获取位置的接口
          * 
          * * `expires`: 一天，单位：毫秒。位置cookie 超时时间
          *
@@ -146,7 +146,7 @@
          * 
          * @param {Function} success  获取成功以后回调，返回HTML5默认的position属性
          * @param {Function} _error   失败以后回调
-         * @return {instance} 当前实例对象
+         * @return {instance} 当前实例
          */
         getCurrentPosition:function(success,_error,_options){
             var self=this,options=self.options,settings,error;
@@ -207,7 +207,7 @@
          * 
          * @param {Function} callback 成功以后回调，返回address对象
          * @param {Function}   error 失败以后回调，超时也会触发该回调
-         * @return {instance} 当前实例对象
+         * @return {instance} 当前实例
          */
         getAddress : function(callback,error){
             var self=this,options = self.options,city,timer,flag,address;
@@ -232,9 +232,9 @@
          * 
          * 通过经纬度获取位置信息
          * 
-         * @param {Function} callback 成功以后回调，返回address对象
+         * @param {Function} callback 成功以后回调，参数为address对象
          * @param {Function}   error 失败以后回调，超时也会触发该回调
-         * @return {instance} 当前实例对象
+         * @return {instance} 当前实例
          */
         getAddressByPosition : function(callback,error){
             var self=this,options=self.options,address,timer,flag;
@@ -299,10 +299,10 @@
         /**
          * ## getAddressByIp
          * 
-         * 通过第三方接口获取城市信息
-         * @param {Function} callback 成功以后回调，返回address对象
-         * @param {Function}   error 失败以后回调
-         * @return {instance} 当前实例对象
+         * 通过第三方Ip接口获取城市信息
+         * @param {Function}   callback 成功以后回调，参数为address对象
+         * @param {Function}   error    失败以后回调
+         * @return {instance} 当前实例
          */
         getAddressByIp:function(callback,error){
             var self=this,options=self.options,address,

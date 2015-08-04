@@ -2,6 +2,7 @@
  * # Kub.DatePicker
  *
  * 时间选择器。格式化参照 [`date`](date.js.html)
+ * 
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -22,8 +23,8 @@
      *
      * 使用：
      * ```js
-     * //采用默认的format yyyy-MM-dd
-     *   var datepicker = new Kub.DatePicker($("#J_datepicker"));
+     *  //采用默认的format yyyy-MM-dd
+     *  var datepicker = new Kub.DatePicker($("#J_datepicker"));
      *
      *  //采用默认的format yyyy-MM-dd
      *  //可配置title 与 本地化
@@ -279,7 +280,7 @@
          * 设置时间选择器时间
          * 
          * @param {Date} date 时间
-         * @return {instance} 返回当前实例
+         * @return {instance} 当前实例
          */
         this.setDate = function(date){
             var self = this;
@@ -314,7 +315,7 @@
          * 获取时间选择器选择的时间
          * 
          * @param {Date} date 时间
-         * @return {Date} 返回获取到的时间
+         * @return {Date} 获取到的时间
          */
         this.getDate = function(){
             var self = this,
@@ -338,7 +339,7 @@
          *
          * @param {String} name 对应列的名称（year,month,day,hour,minute,second）
          * @param {String} value 值
-         * @return {instance} 返回当前实例
+         * @return {instance} 当前实例
          */
         this.setValue = function(name,value){
             var $this = this.ui[name], index;
@@ -368,7 +369,7 @@
          * ## close
          *
          * 关闭时间选择器
-         * @return {instance} 返回当前实例
+         * @return {instance} 当前实例
          */
         this.close = function(){
             this.dialog.close();
@@ -379,7 +380,7 @@
          * ## show
          *
          * 显示时间选择器
-         * @return {instance} 返回当前实例
+         * @return {instance} 当前实例
          */
         this.show = function(){
             this.dialog.show();
@@ -390,7 +391,7 @@
          * ## hide
          *
          * 隐藏时间选择器
-         * @return {instance} 返回当前实例
+         * @return {instance} 当前实例
          */
         this.hide = function(){
             this.dialog.hide();

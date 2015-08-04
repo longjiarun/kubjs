@@ -2,7 +2,7 @@
  * # Kub.Prompt
  * 
  * 输入框
- * 
+ * @extend [Dialog](dialog.js.html)
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -22,7 +22,12 @@
      *
      * 使用方法：
      * ```js
-     * var prompt = new Kub.Prompt();
+     * var prompt = new Kub.Prompt({
+     *     confirm:function(event,dialog){
+     *         //输入框输入的值
+     *         console.log(dialog.value);
+     *     }
+     * });
      * ```
      */
     var Prompt = function(options){

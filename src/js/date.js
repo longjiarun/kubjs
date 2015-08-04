@@ -117,8 +117,9 @@
          * 
          * 添加本地化
          * 
-         * @param {String} name  本地化名称
+         * @param {String} name   本地化名称
          * @param {Object} locale 本地化数据
+         * @return {instance}     当前实例
          */
         this.addLocale = function(name, locale) {
             name && locale && (this.i18n[name] = locale);
@@ -131,6 +132,7 @@
          * 设置默认本地化
          * 
          * @param {String} name 本地化名称
+         * @return {instance}     当前实例
          */
         this.setLocale = function(name) {
             this.locale = name;
@@ -180,8 +182,8 @@
          * 
          * 格式化日期
          * 
-         * @param  {Date} date     日期
-         * @param  {String} format 日期格式
+         * @param {Date} date     日期
+         * @param {String} format 日期格式
          * @return {String}        格式化以后的日期
          */
         this.format = function(date, format) {
@@ -214,8 +216,8 @@
          * dateHelper.parse("2015-11-12","yyyy-MM-dd");
          * ```
          * 
-         * @param  {String} input  字符串
-         * @param  {String} format 格式化字符串
+         * @param {String} input  字符串
+         * @param {String} format 格式化字符串
          * @return {Date}          格式化的日期
          */
         this.parse = function(input, format) {

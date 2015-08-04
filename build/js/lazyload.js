@@ -127,8 +127,8 @@
          * ## isVisible
          * 
          * 是否可见
-         * @param {$}  $this   元素
-         * @param {Object}  options 参数
+         * @param {$}  $this         元素
+         * @param {Object}  options  参数
          * @return {Boolean}         true ：可见 false ：不可见
          */
         this.isVisible = function($this,options){
@@ -184,7 +184,7 @@
          * 
          * @param {$} $element      加载的节点
          * @param {String} original 图片地址
-         * @return {instance}        current instance
+         * @return {instance}       当前实例
          */
         this.load = function($element,original){
             //如果原图片为空
@@ -237,7 +237,7 @@
          * 
          * @param {Element} element 检查的元素
          * @param {Object} settings 被检查时的参数
-         * @return {Boolean}         是：true 否 ：false
+         * @return {Boolean}        是：true 否 ：false
          */
         this.belowthefold = function(element, settings) {
             var fold,$window=$(window);
@@ -257,7 +257,7 @@
          * 
          * @param {Element} element 检查的元素
          * @param {Object} settings 被检查时的参数
-         * @return {Boolean}         是：true 否 ：false
+         * @return {Boolean}        是：true 否 ：false
          */
         this.abovethetop = function(element, settings) {
             var fold,$window=$(window);
@@ -278,7 +278,7 @@
          * 
          * @param {Element} element 检查的元素
          * @param {Object} settings 被检查时的参数
-         * @return {Boolean}         是：true 否 ：false
+         * @return {Boolean}        是：true 否 ：false
          */
         this.rightoffold = function(element, settings) {
             var fold,$window=$(window);
@@ -297,7 +297,7 @@
          * 
          * @param {Element} element 检查的元素
          * @param {Object} settings 被检查时的参数
-         * @return {Boolean}         是：true 否 ：false
+         * @return {Boolean}        是：true 否 ：false
          */
         this.leftofbegin = function(element, settings) {
             var fold,$window=$(window);

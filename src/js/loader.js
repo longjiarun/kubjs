@@ -2,7 +2,7 @@
  * # Kub.Loader
  * 
  * 加载等待框
- * 
+ * @extend [Dialog](dialog.js.html)
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -23,6 +23,8 @@
      * 使用方法：
      * ```js
      * var loader = new Kub.Loader();
+     * //隐藏loader
+     * loader.hide();
      * ```
      */
     var Loader = function(options){

@@ -2,7 +2,7 @@
  * # Kub.Toast
  * 
  * 提示框
- * 
+ * @extend [Dialog](dialog.js.html)
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
