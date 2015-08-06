@@ -59,6 +59,12 @@
             //使输入框失去焦点
             self.$element[0].blur();
             self.dialog.show();
+
+            //解决 iphone 下，fixed定位问题
+            setTimeout(function(){
+                var $window = $(window);
+                $window.scrollTop($window.scrollTop());
+            },0);
             return false;
         });
     };
