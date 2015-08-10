@@ -131,7 +131,7 @@ function test(){
         prevButton:$swiperWrap.find(".prev-button"),
         //滚动时触发slide事件
         slide:function(index){
-            console.log("slide:"+index,this)
+            //console.log("slide:"+index,this)
         }
     });
 
@@ -139,7 +139,7 @@ function test(){
     var $swiperWrap1 = $(".J_vertical");
     new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
-        //followFinger:true,
+        followFinger:true,
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap1.find(".pagination li"),
@@ -149,7 +149,7 @@ function test(){
         //默认滚动位置
         initialSlide:1,
         slide:function(index){
-            console.log("slide:"+index)
+            //console.log("slide:"+index)
         }
     });
 }
