@@ -28,7 +28,9 @@
     function init(){
         var self = this,options = self.options,ui = self.ui;
 
-        var hammer = new Hammer(self.$element[0]),x,y,w,h;
+        var hammer = new Hammer(self.$element[0]),x,y,w,h,
+            horizontal = options.direction === "horizontal";
+
         //监听拖动开始事件
         hammer.get("pan").set({
             threshold: 0
@@ -42,14 +44,16 @@
             h = pos.h;
             
             self.timer && clearInterval(self.timer);
-            event.srcEvent.preventDefault();
+
+            !horizontal && event.srcEvent.preventDefault();
         }).on("panmove",function(event){
+            var resistance, deltaX = event.deltaX, deltaY = event.deltaY;
             //是否跟随手指滑动
             if(options.followFinger){
-                if(options.direction === "horizontal"){
+                if(horizontal){
                     //横向
                     //计算出第一个或者最后一个节点
-                    var resistance = 1 - event.distance/w/2, deltaX = event.deltaX;
+                    resistance = 1 - event.distance/w/2;
                     if(self.activeIndex == 0){
                         resistance = deltaX > 0 ? resistance : 1;
                     }else if( self.activeIndex == self.length-1 ){
@@ -61,7 +65,8 @@
                     self.setTranslate(x +  deltaX * resistance + "px", 0,0);
                 }else{
                     //垂直
-                    var resistance = 1 - event.distance/h/2, deltaY = event.deltaY; 
+                    resistance = 1 - event.distance/h/2;
+
                     if(self.activeIndex == 0){
                         resistance = deltaY > 0 ? resistance : 1;
                     }else if( self.activeIndex == self.length-1 ){
@@ -73,19 +78,27 @@
                     self.setTranslate(0,y + deltaY * resistance + "px",0);
                 }
             }
-            event.srcEvent.preventDefault();
+
+            var _deltaX = Math.abs(deltaX)
+            if(horizontal &&  _deltaX >= options.threshold && _deltaX > Math.abs(deltaY)){
+                event.srcEvent.preventDefault();
+            }
+
+            if(!horizontal){
+                event.srcEvent.preventDefault();
+            }
         }).on("panend",function(event){
             
             var distance,duration,velocity;
 
             //计算出持续时间
-            velocity = options.direction === "horizontal" ? event.velocityX : event.velocityY;
-            options.direction === "horizontal" ? (distance = Math.abs(event.deltaX)) : (distance = Math.abs(event.deltaY));
+            velocity = horizontal ? event.velocityX : event.velocityY;
+            horizontal ? (distance = Math.abs(event.deltaX)) : (distance = Math.abs(event.deltaY));
             duration = self.getDuration(distance,velocity);
 
             //如果大于限定距离，则允许切换
             if(distance > options.threshold && Math.abs(velocity) > 0.2){
-                if(options.direction === "horizontal"){
+                if(horizontal){
                     //横向
                     event.deltaX < 0 ? self.slideNext(duration) : self.slidePrev(duration);
                 }else{
@@ -96,8 +109,9 @@
             }
 
             auto.call(self);
+
             event.srcEvent.preventDefault();
-        });
+        })
 
 
         //监听左右切换按钮

@@ -146,6 +146,12 @@
         this._init = function(){
             var self = this,options = self.options;
 
+            //解决 iphone 下，fixed定位问题
+            setTimeout(function(){
+                var $window = $(window);
+                $window.scrollTop($window.scrollTop());
+            },5);
+
             //渲染数据
             self._render(options);
             this.$dialog = this.$element.find("#"+DIALOGID);

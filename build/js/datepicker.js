@@ -64,7 +64,7 @@
             setTimeout(function(){
                 var $window = $(window);
                 $window.scrollTop($window.scrollTop());
-            },0);
+            },5);
             return false;
         });
     };
