@@ -125,6 +125,10 @@
         setDefaultStyle.call(self);
 
         auto.call(self);
+
+        handleOrientationChange.call(self,function(){
+            self.slideTo(self.activeIndex,options.speed/2);
+        });
     };
 
     function setDefaultStyle(){
@@ -180,6 +184,18 @@
             w:w,
             h:h
         };
+    }
+
+    function handleOrientationChange(callback){
+        var self=this, options = self.options,timer;
+        function handler() {
+            timer && clearTimeout(timer);
+            timer = setTimeout(function(){
+                callback && callback();
+            },300);
+        }
+        window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", handler, false);
+        return self;
     }
 
     ;(function(){
