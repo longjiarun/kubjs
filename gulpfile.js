@@ -85,8 +85,8 @@ gulp.task("publishdoc",function(){
         });
 });
 
-gulp.task("default",["css","js"],function(){
-
+gulp.task("default",["clean"],function(){
+    gulp.start("css","js");
 });
 
 gulp.task("watch",["default"],function(){
