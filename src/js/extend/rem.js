@@ -143,7 +143,9 @@
                 saw = window.screen.availWidth,
                 w;
             w = Math.min(iw,ow,sw,saw);
-            options.limit && (w = w > options.width ? options.width : w);
+
+            w = os.tablet ? options.width : w;
+
             return w;
         };
 

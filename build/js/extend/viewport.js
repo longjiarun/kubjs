@@ -215,7 +215,7 @@
 
             w = self.getDeviceWidth() || options.width;
             
-            scale = options.limit ? w > options.width ? 0 : w / options.width : w / options.width;
+            scale = os.tablet ? 0 : w / options.width;
 
             return scale;
         };
