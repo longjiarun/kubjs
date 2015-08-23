@@ -215,6 +215,7 @@
 
             w = self.getDeviceWidth() || options.width;
             
+            //如果是平板，则采用`width`最大宽度
             scale = os.tablet ? 0 : w / options.width;
 
             return scale;

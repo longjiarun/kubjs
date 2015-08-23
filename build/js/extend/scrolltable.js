@@ -297,7 +297,7 @@
                         this.$element.find(this.options.itemSelector+data.id).remove();
 
                         this.data.length == 0 && !self.completed && this.$complete && this.$complete.remove() && this.setNoDataStatus();
-
+                        this.$container.trigger("scroll");
                         return this;
                     }
                 }
@@ -341,7 +341,7 @@
                         this.$element.find(this.options.itemSelector+id).remove();
 
                         this.data.length == 0 && !self.completed && this.$complete && this.$complete.remove() && this.setNoDataStatus();
-                        
+                        this.$container.trigger("scroll");
                         return this;
                     }
                 }
@@ -396,8 +396,10 @@
                 dataType:options.dataType,
                 data:options.formatAjaxData ? options.formatAjaxData(data) : data,
                 success:function(){
-                    options.success && options.success.apply(this,arguments);
-                    success && success.apply(this,arguments);
+                    if(options.success && options.success.apply(this,arguments) === false){
+                    }else{
+                        success && success.apply(this,arguments);
+                    }
                 },
                 error:function(){
                     options.error && options.error.apply(this,arguments);

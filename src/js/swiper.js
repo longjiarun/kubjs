@@ -1,3 +1,8 @@
+/**
+ * # Kub.Swiper
+ * 
+ * 图片切换组件 
+ */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
@@ -9,6 +14,29 @@
     }
 }(this,function(root,$,Hammer){
     'use strict';
+
+    /**
+     * ## Swiper Constructor
+     *
+     * `Swiper`类。
+     *
+     * 使用方法：
+     * ```js
+     *  new Kub.Swiper($swiperWrap.find(".swiper"),{
+     *      auto:true,
+     *      slideSelector:$swiperWrap.find(".slide"),
+     *      slideActiveClass:"active",
+     *      paginationSelector:$swiperWrap.find(".pagination li"),
+     *      paginationActiveClass:"pagination-active",
+     *      nextButton:$swiperWrap.find(".next-button"),
+     *      prevButton:$swiperWrap.find(".prev-button"),
+     *      slide:function(index){
+     *          //console.log("slide:"+index,this)
+     *      }
+     * });
+     * ```
+     */
+    
     var Swiper = function(element,options){
         this.options = $.extend({},Swiper.prototype.defaults, options||{});
         this.$element = $(element);
@@ -113,7 +141,6 @@
             event.srcEvent.preventDefault();
         })
 
-
         //监听左右切换按钮
         options.nextButton && ui.nextButton.on("click",function(){
             !self.isScrolling && self.slideNext(options.speed);
@@ -201,14 +228,50 @@
     ;(function(){
         this.constructor = Swiper;
 
+        /**
+         * ## defaults
+         *
+         * `Swiper`默认配置项。
+         *
+         * 配置项说明：
+         * 
+         * * `direction`: 切换方向。horizontal：横向， vertical：纵向
+         * 
+         * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
+         *
+         * * `auto`: 是否可自动切换。true:可以，false：不可以
+         * 
+         * * `delay`: 延迟时间。
+         *
+         * * `speed`: 切换速度。
+         *
+         * * `followFinger`: 是否跟随手指移动
+         * 
+         * * `initialSlide`: 初始化滚动位置
+         * 
+         * * `slideSelector`: 滚动块元素选择器
+         * 
+         * * `slideActiveClass`: 滚动块元素选中的类名
+         * 
+         * * `paginationSelector`: 缩略图或者icon选择器
+         *
+         * * `paginationActiveClass`: 选中的类名
+         *
+         * * `nextButton`: 下一个选择器
+         *
+         * * `prevButton`: 上一个选择器
+         *
+         * * `slide`: 切换回调函数
+         */
+        
         this.defaults = {
             //vertical
             direction:"horizontal",
             threshold:50,
-            delay:2500,
             auto:false,
+            delay:2500,
             speed : 500,
-            randomSlide:true,
+            followFinger:true,
             initialSlide:0,
             slideSelector:"",
             slideActiveClass:"",
@@ -216,6 +279,7 @@
             paginationActiveClass:"",
             nextButton:"",
             prevButton:"",
+            slide:null,
             style:{
                 swiper:{
                     "-webkit-transition-property": "-webkit-transform",
@@ -233,6 +297,15 @@
             return (index % this.length + this.length) % this.length;
         };
 
+        /**
+         * ## setTranslate
+         *
+         * 设置偏移量
+         * 
+         * @param {String} x     x偏移。注意值应该包含单位。例如 100px,或者10%。
+         * @param {String} y     y偏移。注意值应该包含单位。例如 100px,或者10%。
+         * @param {Number} speed 滚动速度
+         */
         this.setTranslate = function(x,y,speed){
             var self = this,options = self.options,cssProps = {};
             speed = speed || 0;
@@ -285,6 +358,15 @@
             }
         }
 
+        /**
+         * ## slideTo
+         *
+         * 滚动到指定索引值位置
+         * 
+         * @param  {index} index 滚动索引值
+         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
+         * @return {instance}    当前实例
+         */
         this.slideTo = function(index,speed,flag){
             var self = this,options = self.options;
 
@@ -304,14 +386,14 @@
             triggerSlideHandler.call(this,index,speed);
 
             //设置选中状态Class
-            self.setActiveClass(index);
+            self._setActiveClass(index);
 
             //保存当前索引值
             self.activeIndex = index;
             return self;
         };
 
-        this.setActiveClass = function(index){
+        this._setActiveClass = function(index){
             var self = this,options = self.options;
 
             //添加选中的class
@@ -321,10 +403,26 @@
             return self;
         };
 
+        /**
+         * ## slideNext
+         *
+         * 切换到下一个
+         * 
+         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
+         * @return {instance}    当前实例
+         */
         this.slideNext = function(speed,flag){
             return this.slideTo(this.activeIndex+1,speed,flag);
         };
 
+        /**
+         * ## slidePrev
+         *
+         * 切换到上一个
+
+         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
+         * @return {instance}    当前实例
+         */
         this.slidePrev = function(speed,flag){
             return this.slideTo(this.activeIndex-1,speed,flag);
         };

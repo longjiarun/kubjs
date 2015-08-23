@@ -121,8 +121,7 @@ function test(){
     //横向滚动
     var $swiperWrap = $(".J_horizontal");
     new Kub.Swiper($swiperWrap.find(".swiper"),{
-        //是否跟随手指滑动
-        followFinger:true,
+        auto:true,
         slideSelector:$swiperWrap.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap.find(".pagination li"),
@@ -139,7 +138,6 @@ function test(){
     var $swiperWrap1 = $(".J_vertical");
     new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
-        followFinger:true,
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap1.find(".pagination li"),
