@@ -303,9 +303,6 @@ textarea:focus {
 .kub-dialog .kub-dialog-footer .kub-dialog-button:last-child:after {
   display: none;
 }
-.kub-dialog .kub-dialog-footer .kub-dialog-button:nth-child(2) {
-  color: #1c7cd3;
-}
 .kub-dialog .kub-column2 .kub-dialog-button {
   width: 50%;
 }
