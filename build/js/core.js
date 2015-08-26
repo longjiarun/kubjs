@@ -157,21 +157,34 @@
          *
          * 使用：
          * ```js
+         * 
          * //设置当前地址参数
+         * 
+         * //默认采用`window.location.href`
          * Kub.core.setParams({
          *     name:"kubjs"
          * });
+         *
+         * //传入url
+         * Kub.core.setParams("http://www.weidian.com?userId=123",{
+         *     name:"kubjs"
+         * });
+         * 
          * //追加参数
+         * 
+         * //如果不存在名称为 name 的参数，则新增参数。如果存在则替换其值
          * Kub.core.setParams({
          *     name:"kubjs"
          * },true);
+         * 
          * ```
          * 
-         * @param {String} url    [description]
-         * @param {[type]} params [description]
-         * @param {[type]} add    [description]
+         * @param {String} url    url
+         * @param {Object} params 参数对象
+         * @param {Boolean} add   是否追加参数。true：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
          */
         this.setParams = function(url,params,add){
+            //验证url是否传值，如果 url 未传值，则使用当前页面 url
             if(this.isObject(url)){
                 add = params;
                 params = url;
