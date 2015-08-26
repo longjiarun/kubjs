@@ -50,6 +50,10 @@ gulp.task("doc",function(){
 
 var markdox = require("gulp-markdox");
 
+//只生成文档
+//docker -i src/js -o docs/html/kub -x lib 
+
+//监听文档并生成文档
 //docker -i src/js -o docs/html/kub -x lib -w
 gulp.task("doc", function(){
     del("docs/markdown",function(){
