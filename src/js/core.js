@@ -55,7 +55,7 @@
         os.mobile = os.phone || os.tablet;
 
         /**
-         * ##os
+         * ## os
          * 
          * 检测系统类型与版本，包含系统类型与版本信息
          *
@@ -138,6 +138,21 @@
         };
 
         /**
+         * ## getHash
+         *
+         * 获取hash值
+         * 
+         * @param {String} url  url地址
+         * @return {String}     hash
+         */
+        this.getHash = function(url) {
+            url = url || window.location.href;
+
+            var match = url.match(/#(.*)$/);
+            return match ? match[1] : '';
+        };
+
+        /**
          * ## getParamsString
          *
          * 获取 params string
@@ -149,6 +164,10 @@
             url = url || window.location.href;
             return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/) ) && matchs[1];
         };
+
+
+        //解析 param string 正则表达式
+        var paramsRegxp = /([^=&]+)(=([^&#]*))?/g;
 
         /**
          * ## setParams
@@ -190,29 +209,38 @@
                 params = url;
                 url = window.location.href;
             }
+            params = params || {};
 
-            var queryString = this.getParamsString(url), _queryString = queryString || "", f,i=0;
-            
-            function get(name){
-                return params[name] == void 0 ? name : name + "="+ params[name];
-            }
+            var queryString = this.getParamsString(url), _queryString = "", f = -1, _params={};
 
-            for(var name in params){
+            //解析 url 中的参数，存放在对象中
+            queryString && queryString.replace(paramsRegxp,function(a,name,c,value){
+
                 if(params.hasOwnProperty(name)){
-                    f= false;
-                    i++;
-                    //替换原来的参数
-                    _queryString = _queryString.replace(new RegExp( name + "(=([^&#]*))?","g"),function(a,b,c){
-                        f = true;
-                        return get(name);
-                    });
-                    //如果没有当前参数，则新增参数
-                    add && !f && (_queryString += (i == 0 ? "" : "&") + get(name));
+                    value = params[name];
+                }
+                _params[name] = value !== undefined ? value : "";
+            });
+
+            //如果是追加，则合并参数
+            if(add){
+                for(var name in params){
+                    if(params.hasOwnProperty(name)){ 
+                        _params[name] = params[name] !== undefined ? params[name] : "";
+                    }
                 }
             }
 
-            return queryString ? url.replace(queryString , _queryString) : url.replace(/^[^#]*/ , function(url,hash){
-                return url + (_queryString ? "?" + _queryString : _queryString);
+            //将参数合并成字符串
+            for(name in _params){
+                if(_params.hasOwnProperty(name)){ 
+                    _queryString += (++f ? "&" : "") + (_params[name] !== "" ? name + "=" + _params[name] : name);
+                }
+            }
+
+            //替换掉原来 url 中的 querystring
+            return url.replace(/^([^#\?]*)[^#]*/, function(a,url,hash){
+                return url + (_queryString ? "?" + _queryString : "" );
             });
         };
 
@@ -227,10 +255,11 @@
          * @return {Object} 返回参数对象
          */
         this.getParams = function(url){
-            if(!url) url=window.location.href;
+            url = url || window.location.href;
+            
             var params={}, queryString = this.getParamsString(url);
             
-            queryString && queryString.replace(/([^=&]+)(=([^&#]*))?/g,function(a,name,c,value){
+            queryString && queryString.replace(paramsRegxp,function(a,name,c,value){
                 params[name] = value;
             });
 

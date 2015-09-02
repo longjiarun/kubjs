@@ -22,8 +22,19 @@
 </style>
 <script type="text/javascript">
 function test(){
-
+    console.log(Kub.core.setParams({
+        p:3,
+        name:undefined,
+        age:null,
+        f:false,
+        g:0
+    }));
     
+
+    console.log(Kub.core.getParams())
+
+    return;
+
     console.log($("#J_html").html());
 
     console.log(Kub.core.htmlToText($("#J_html").html()));
