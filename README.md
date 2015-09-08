@@ -81,6 +81,49 @@ API文档写在js中，采用 [Docker](https://github.com/jbt/docker) 生成文�
 </pre>
 
 ### 使用
+
+组件依赖关系表，大部分组件默认依赖 zepto与underscore
+
+swiper与datepicker组件依赖于hammer
+
+<pre>
+// require 配置
+
+require.config({
+    baseUrl:"./js/",
+    shim:{
+        "lib/kub/alert":{
+            deps:["lib/kub/dialog"]
+        },
+        "lib/kub/confirm":{
+            deps:["lib/kub/dialog"]
+        },
+        "lib/kub/toast":{
+            deps:["lib/kub/dialog"]
+        },
+        "lib/kub/loader":{
+            deps:["lib/kub/dialog"]
+        },
+        "lib/kub/prompt":{
+            deps:["lib/kub/dialog"]
+        },
+        "lib/kub/datepicker":{
+            deps:["lib/kub/dialog","lib/kub/date"]
+        },
+        "lib/kub/datepicker":{
+            deps:["lib/kub/dialog","lib/kub/date"]
+        },
+        "lib/kub/extend/scrolltable":{
+            deps:["lib/kub/core","lib/kub/lazyload"]
+        },
+        "lib/kub/extend/geolocation":{
+            deps:["lib/kub/cookie"]
+        }
+    }
+});
+</pre>
+
+
 <pre>
 //类(工厂)
 var dialog = new Kub.Dialog({
