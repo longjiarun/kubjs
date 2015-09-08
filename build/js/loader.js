@@ -8,12 +8,14 @@
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return Kub.Loader = factory(root,root._,Kub.Dialog);
+            return Kub.Loader = factory(root, root._, root.jQuery||root.Zepto, Kub.Dialog);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/underscore"),require("./lib/zepto"),require("./dialog"));
     }else {
-        Kub.Loader = factory(root,root._,Kub.Dialog);
+        Kub.Loader = factory(root, root._, root.jQuery||root.Zepto, Kub.Dialog);
     }
-}(this,function(root,_,Dialog){
+}(this,function(root, _, $, Dialog){
 
     /**
      * ## Loader Constructor

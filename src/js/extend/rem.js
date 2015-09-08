@@ -10,6 +10,8 @@
         define(function() {
             return Kub.Rem = factory(root);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root);
     } else {
         Kub.Rem = factory(root);
     }

@@ -10,6 +10,8 @@
         define(function() {
             return Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/zepto"),require("./lib/underscore"),require("./lib/hammer"),require("./dialog"),require("./date"));
     }else {
         Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
     }

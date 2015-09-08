@@ -10,6 +10,8 @@
         define(function() {
             return Kub.Monitor = factory(root);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root);
     } else {
         Kub.Monitor = factory(root);
     }

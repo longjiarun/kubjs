@@ -2452,7 +2452,7 @@ extend(Hammer, {
 
 if (typeof define == TYPE_FUNCTION && define.amd) {
     define(function() {
-        return Hammer;
+        return window[exportName] = Hammer;
     });
 } else if (typeof module != 'undefined' && module.exports) {
     module.exports = Hammer;

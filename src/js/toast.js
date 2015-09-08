@@ -8,12 +8,14 @@
     var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof define === "function") {
         define(function() {
-            return Kub.Toast = factory(root,Kub.Dialog);
+            return Kub.Toast = factory(root, root.jQuery || root.Zepto, Kub.Dialog);
         });
-    }else {
-        Kub.Toast = factory(root,Kub.Dialog);
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/zepto"),require("./dialog"));
+    } else {
+        Kub.Toast = factory(root, root.jQuery || root.Zepto, Kub.Dialog);
     }
-}(this,function(root,Dialog){
+}(this,function(root,$,Dialog){
 
     /**
      * ## Toast Constructor

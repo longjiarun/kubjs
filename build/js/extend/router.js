@@ -10,6 +10,8 @@
         define(function() {
             return Kub.Router = factory(root,root._);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root, require('../lib/underscore'));
     } else {
         Kub.Router = factory(root,root._);
     }

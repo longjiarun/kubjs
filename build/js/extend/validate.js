@@ -10,7 +10,7 @@
             return Kub.validate = factory(root,root._);
         });
     }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root, require('underscore'));
+        module.exports = factory(root, require('../lib/underscore'));
     }else {
         Kub.validate = factory(root,root._);
     }

@@ -13,6 +13,8 @@
         define(function(){
             return Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("../lib/zepto"),require("../cookie"));
     }else{
         Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
     }

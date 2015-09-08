@@ -1741,3 +1741,11 @@ window.$ === undefined && (window.$ = Zepto)
         }
     }
 })(Zepto)
+
+if (typeof define == "function") {
+    define(function() {
+        return Zepto;
+    });
+} else if (typeof module != 'undefined' && module.exports) {
+    module.exports = Zepto;
+}

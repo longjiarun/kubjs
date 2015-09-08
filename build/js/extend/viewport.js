@@ -10,7 +10,9 @@
         define(function() {
             return  Kub.Viewport = factory(root);
         });
-    } else {
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root);
+    }else {
         Kub.Viewport = factory(root);
     }
 }(this,function(root){

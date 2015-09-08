@@ -10,6 +10,8 @@
         define(function(){
             return Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/zepto"));
     }else{
         Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
     }

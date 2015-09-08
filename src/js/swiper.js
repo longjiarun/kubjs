@@ -9,7 +9,9 @@
         define(function() {
             return Kub.Swiper = factory(root, root.jQuery || root.Zepto, root.Hammer);
         });
-    }else {
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/zepto"),require("./lib/hammer"));
+    } else {
         Kub.Swiper = factory(root, root.jQuery || root.Zepto, root.Hammer);
     }
 }(this,function(root,$,Hammer){

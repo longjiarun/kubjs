@@ -10,6 +10,8 @@
         define(function() {
             return Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
         });
+    }else if (typeof exports !== 'undefined') {
+        module.exports = factory(root,require("./lib/zepto"),require("./lib/underscore"));
     }else {
         Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
     }
