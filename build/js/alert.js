@@ -6,12 +6,12 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof define === "function") {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root, root.jQuery||root.Zepto, Kub.Dialog);
+    }else if (typeof define === "function") {
         define(function() {
             return Kub.Alert = factory(root, root.jQuery||root.Zepto ,Kub.Dialog);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root, require("./lib/zepto"), require("./dialog"));
     } else {
         Kub.Alert = factory(root, root.jQuery||root.Zepto, Kub.Dialog);
     }

@@ -6,12 +6,12 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof define === "function") {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root);
+    }else if (typeof define === "function") {
         define(function() {
             return Kub.calculator = factory(root);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root);
     } else {
         Kub.calculator = factory(root);
     }

@@ -3,6 +3,7 @@
  *
  * zepto的扩展，解决zepto方法的不足。
  */
+
 !function(root){
     var $ = root.jQuery||root.Zepto,
         $body = $(document.body);

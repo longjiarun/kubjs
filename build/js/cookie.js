@@ -5,11 +5,13 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof define === "function") {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root);
+    }else if (typeof define === "function") {
         define(function() {
             return Kub.cookie = factory(root);
         });
-    }else {
+    } else {
         Kub.cookie = factory(root);
     }
 }(this,function(root){

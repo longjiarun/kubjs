@@ -5,13 +5,13 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if(typeof define === "function"){
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root,root.jQuery || root.Zepto,root.template,require("../core"),require("../lazyLoad"));
+    }else if(typeof define === "function"){
         define(function(){
             return Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root,require("../lib/zepto"),require("../lib/arttemplate"),require("../core"),require("../lazyLoad"));
-    } else{
+    }else{
         Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
     }
 }(this,function(root,$,template, core, LazyLoad){

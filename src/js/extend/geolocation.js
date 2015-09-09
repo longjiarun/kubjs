@@ -9,13 +9,13 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if(typeof define === "function"){
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root,root.jQuery || root.Zepto,require("../cookie"));
+    }else if(typeof define === "function"){
         define(function(){
             return Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root,require("../lib/zepto"),require("../cookie"));
-    }else{
+    } else{
         Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
     }
 }(this,function(root,$,cookie){

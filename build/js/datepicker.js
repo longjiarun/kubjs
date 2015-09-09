@@ -6,13 +6,13 @@
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof define === "function") {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,require("./dialog"),require("./date"));
+    }else if (typeof define === "function") {
         define(function() {
             return Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root,require("./lib/zepto"),require("./lib/underscore"),require("./lib/hammer"),require("./dialog"),require("./date"));
-    }else {
+    } else {
         Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
     }
 }(this,function(root,$,_,Hammer,Dialog){

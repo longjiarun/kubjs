@@ -6,13 +6,13 @@
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
 
-    if (typeof define === "function") {
+    if (typeof module !== "undefined" && module.exports) {
+        module.exports = factory(root,root.jQuery||root.Zepto,root._);
+    }else if (typeof define === "function") {
         define(function() {
             return Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
         });
-    }else if (typeof exports !== 'undefined') {
-        module.exports = factory(root,require("./lib/zepto"),require("./lib/underscore"));
-    }else {
+    } else {
         Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
     }
 }(this,function(root,$,_){
