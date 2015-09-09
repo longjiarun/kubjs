@@ -329,6 +329,7 @@ textarea:focus {
 .kub-toast .kub-dialog-body {
   padding: 0.5em 0.75em;
   color: #ffffff;
+  text-align: center;
 }
 .kub-prompt .kub-prompt-input {
   font-size: 100%;
