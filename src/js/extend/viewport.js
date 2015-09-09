@@ -91,11 +91,14 @@
          * 
          * * `delay`: 横竖屏切换时，延迟设置时间。
          *
+         * * `expires`: cookie缓存时间，默认10天。
+         *
          * * `limit`: 是否限制宽度。true：当窗口大于`width`时，不做放大处理。false：当窗口大于`width`时，进行放大处理。
          */
         this.defaults = {
             width:640,      //页面宽度
             delay:150,
+            expires:864000000,
             limit:true
         };
 
@@ -126,6 +129,12 @@
          */
         this.setViewportValue = function(value){
             var viewport = document.getElementById(viewportId);
+
+            //在当前目录下缓存value
+            this.cookie("viewport",value,{
+                path:"./",
+                expires:this.options.expires
+            });
             !viewport ? (viewport = this.createViewportElement(value)) : viewport.setAttribute("content", value);
             return this;
         };
@@ -249,6 +258,50 @@
             }
             return self;
         };
+
+        //设置cookie
+        this.cookie = function (key, value, options) {
+            var days, time, result, decode;
+
+            options = options || {};
+
+            if(!options.hasOwnProperty('path')){
+                options.path = '/';
+            }
+
+            // A key and value were given. Set cookie.
+            if (arguments.length > 1 && String(value) !== "[object Object]") {
+                // Enforce object
+                options = $.extend({}, options);
+
+                if (value === null || value === undefined) options.expires = -1;
+
+                if (typeof options.expires === 'number') {
+                    days = (options.expires);
+                    time = options.expires = new Date();
+
+                    time.setTime(time.getTime() + days)
+                }
+
+                value = String(value);
+
+                return (document.cookie = [
+                    encodeURIComponent(key), '=',
+                    options.raw ? value : encodeURIComponent(value),
+                    options.expires ? '; expires=' + options.expires.toUTCString() : '',
+                    options.path ? '; path=' + options.path : '',
+                    options.domain ? '; domain=' + options.domain : '',
+                    options.secure ? '; secure' : ''
+                ].join(''))
+            }
+
+            // Key and possibly options given, get cookie
+            options = value || {};
+
+            decode = options.raw ? function (s) { return s } : decodeURIComponent;
+
+            return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null
+        }
 
     }).call(Viewport.prototype);
     return Viewport;
