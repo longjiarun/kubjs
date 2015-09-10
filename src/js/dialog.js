@@ -3,8 +3,8 @@
  *
  * 对话框
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
 
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery||root.Zepto,root._);
@@ -15,7 +15,7 @@
     } else {
         Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
     }
-}(this,function(root,$,_){
+}(function(root,$,_){
 
     /**
      * ## Dialog Constructor

@@ -3,8 +3,8 @@
  * 
  * 图片切换组件 
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery || root.Zepto,root.Hammer);
     }else if (typeof define === "function") {
@@ -14,7 +14,7 @@
     } else {
         Kub.Swiper = factory(root, root.jQuery || root.Zepto, root.Hammer);
     }
-}(this,function(root,$,Hammer){
+}(function(root,$,Hammer){
     'use strict';
 
     /**

@@ -4,8 +4,8 @@
  * 加载等待框
  * @extend [Dialog](dialog.js.html)
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root, root._, root.jQuery||root.Zepto, require("./dialog"));
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.Loader = factory(root, root._, root.jQuery||root.Zepto, Kub.Dialog);
     }
-}(this,function(root, _, $, Dialog){
+}(function(root, _, $, Dialog){
 
     /**
      * ## Loader Constructor

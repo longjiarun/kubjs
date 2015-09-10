@@ -4,8 +4,8 @@
  * 路由控制
  * 
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root, root._);
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     }else {
         Kub.Router = factory(root,root._);
     }
-}(this,function(root,_){
+}(function(root,_){
     'use strict';
 
     /**

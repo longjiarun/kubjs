@@ -3,8 +3,8 @@
  *
  * kubjs 核心模块，该模块只提供最基础的方法。
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if(typeof define === "function"){
@@ -14,7 +14,7 @@
     } else{
         Kub.core = factory(root);
     }
-}(this,function(root){
+}(function(root){
 
      /**
      * ## Core Constructor

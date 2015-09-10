@@ -3,8 +3,8 @@
  * 
  * copy from `zepto.cookie.js`，将 expires 单位改为毫秒。
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if (typeof define === "function") {
@@ -14,7 +14,7 @@
     } else {
         Kub.cookie = factory(root);
     }
-}(this,function(root){
+}(function(root){
     /**
      * ##cookie方法
      * 

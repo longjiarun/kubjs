@@ -4,8 +4,8 @@
  * 延迟加载组件。
  * 
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery||root.Zepto);
     }else if(typeof define === "function"){
@@ -15,7 +15,7 @@
     } else{
         Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
     }
-}(this,function(root,$){
+}(function(root,$){
     'use strict';
 
     /**

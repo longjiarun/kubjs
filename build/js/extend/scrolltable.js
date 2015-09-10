@@ -3,8 +3,8 @@
  *
  * 滚动分页
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery || root.Zepto,root.template,require("../core"),require("../lazyLoad"));
     }else if(typeof define === "function"){
@@ -14,7 +14,7 @@
     }else{
         Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
     }
-}(this,function(root,$,template, core, LazyLoad){
+}(function(root,$,template, core, LazyLoad){
 
     /**
      * ## ScrollTable Constructor
@@ -404,8 +404,10 @@
                     }
                 },
                 error:function(){
-                    options.error && options.error.apply(this,arguments);
-                    error && error.apply(this,arguments);
+                    if(options.error && options.error.apply(this,arguments) === false){
+                    }else{
+                        error && error.apply(this,arguments);
+                    }
                 }
             });
             return self;

@@ -42,8 +42,8 @@
     a    : 简称上午或者下午。例如AM.
 
 */
-!(function(root, factory) {
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory) {
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if (typeof define === "function") {
@@ -53,7 +53,7 @@
     } else {
         Kub.dateHelper = factory(root);
     }
-}(this, function(root) {
+}(function(root) {
     'use strict';
 
     /**

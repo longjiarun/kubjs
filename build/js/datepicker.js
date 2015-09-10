@@ -4,8 +4,8 @@
  * 时间选择器。格式化参照 [`date`](date.js.html)
  * 
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,require("./dialog"),require("./date"));
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
     }
-}(this,function(root,$,_,Hammer,Dialog){
+}(function(root,$,_,Hammer,Dialog){
     "use strict";
 
     /**

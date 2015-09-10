@@ -4,8 +4,8 @@
  * 页面scale适配方案，详见[移动端适配](http://10.1.3.35:8080/hz-front/viewport)。
  * 
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.Viewport = factory(root);
     }
-}(this,function(root){
+}(function(root){
     //只考虑 ios,android,window phone 
     var ua = navigator.userAgent,
         android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),

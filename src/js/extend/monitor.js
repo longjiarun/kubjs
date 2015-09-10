@@ -4,8 +4,8 @@
  * 解决页面js错误（例如 文件被劫持，文件加载出现错误等），检测到页面出现问题，然后重新加载页面。
  * 
  */
-!(function(root, factory) {
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory) {
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.Monitor = factory(root);
     }
-}(this, function(root) {
+}(function(root) {
     'use strict';
 
     /**

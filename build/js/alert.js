@@ -4,8 +4,8 @@
  * 
  * @extend [Dialog](dialog.js.html)
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root, root.jQuery||root.Zepto, Kub.Dialog);
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.Alert = factory(root, root.jQuery||root.Zepto, Kub.Dialog);
     }
-}(this,function(root,$,Dialog){
+}(function(root,$,Dialog){
 
     /**
      * ## Alert Constructor

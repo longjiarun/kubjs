@@ -4,8 +4,8 @@
  * 数值计算，解决浮点数不精确问题。提供加减乘除方法。
  *     
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root);
     }else if (typeof define === "function") {
@@ -15,7 +15,7 @@
     } else {
         Kub.calculator = factory(root);
     }
-}(this,function(root){
+}(function(root){
     'use strict';
 
     /**

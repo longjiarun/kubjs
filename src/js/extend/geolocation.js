@@ -7,8 +7,8 @@
  * 
  * 由于html5获取经纬度接口，会请求Google服务，在国内基本不行，使用时请注意。
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery || root.Zepto,require("../cookie"));
     }else if(typeof define === "function"){
@@ -18,7 +18,7 @@
     } else{
         Kub.Geolocation = factory(root,root.jQuery || root.Zepto,Kub.cookie);
     }
-}(this,function(root,$,cookie){
+}(function(root,$,cookie){
 
     /**
      * ## Geolocation Constructor
