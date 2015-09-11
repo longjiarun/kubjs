@@ -30,7 +30,8 @@
      *       title:"弹窗",
      *       buttons:[{
      *           text:"确定",
-     *           handler:function(){
+     *           handler:function(e,dialog){
+     *               
      *           }
      *       },{
      *          text:"取消",
@@ -70,23 +71,23 @@
          *
          * 配置项说明：
          * 
-         * * `modal`: 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
+         * * `modal`: 是否显示遮罩层；
          * 
-         * * `title`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+         * * `title`: 对话框名称；
          *
-         * * `showHeader`: 是否显示头部。
+         * * `showHeader`: 是否显示头部；
          * 
-         * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
+         * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效；
          * 
-         * * `message`: 弹窗内容
+         * * `message`: 弹窗内容，可设置成`html`；
          *
-         * * `className`: 弹窗类名
+         * * `className`: 弹窗类名；
          * 
-         * * `scrollable`: 是否禁用页面滚动条
+         * * `scrollable`: 是否禁用页面滚动条；
          * 
-         * * `animated`: 是否开启动画效果
+         * * `animated`: 是否开启动画效果；
          *
-         * * `buttons`: 弹窗按钮
+         * * `buttons`: 弹窗按钮；
          * 
          * ```js
          * [{   
