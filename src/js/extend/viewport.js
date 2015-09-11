@@ -272,7 +272,6 @@
             // A key and value were given. Set cookie.
             if (arguments.length > 1 && String(value) !== "[object Object]") {
                 // Enforce object
-                options = $.extend({}, options);
 
                 if (value === null || value === undefined) options.expires = -1;
 
