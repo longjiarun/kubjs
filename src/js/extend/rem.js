@@ -50,6 +50,19 @@
         }
         this.options = options;
 
+        var l ;
+        if(options.device && options.device.phone && (l = options.device.phone.length)){
+            for(var i =0;i<l;i++){
+                (new RegExp(options.device.phone[i],"i")).test(ua) && (os.tablet = false);
+            }
+        }
+
+        if(options.device && options.device.tablet && (l = options.device.tablet.length)){
+            for(var i =0;i<l;i++){
+                (new RegExp(options.device.tablet[i],"i")).test(ua) && (os.tablet = true);
+            }
+        }
+
         os.mobile && this.handleOrientationChange();
     }
 
@@ -75,7 +88,11 @@
             width:640,
             fontSize:32,
             delay:150,      
-            limit:true
+            limit:true,
+            device:{
+                phone:["lenovo-a850"],
+                tablet:[]
+            }
         };
 
         /**
