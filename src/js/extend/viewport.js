@@ -33,9 +33,12 @@
     os.windowsPhone = os.windows && /phone/i.test(ua);
     os.windowsTablet = os.windows && /touch/i.test(ua) && !os.windowsPhone;
 
+    //平板
     os.tablet = os.android && !/mobile/i.test(ua) || os.ipad || os.windowsTablet;
+    //移动端
     os.mobile = os.android || os.ios || os.windowsPhone;
 
+    
     /**
      * ## Viewport Constructor
      *
@@ -69,6 +72,19 @@
             return this;
         }
 
+        var l ;
+        if(options.device && options.device.phone && (l = options.device.phone.length)){
+            for(var i =0;i<l;i++){
+                (new RegExp(options.device.phone[i],"i")).test(ua) && (os.tablet = false);
+            }
+        }
+
+        if(options.device && options.device.tablet && (l = options.device.tablet.length)){
+            for(var i =0;i<l;i++){
+                (new RegExp(options.device.tablet[i],"i")).test(ua) && (os.tablet = true);
+            }
+        }
+
         //如果是 Android，处理横竖屏情况
         os.android && this.handleOrientationChange();
         this.setViewportByScale(this.getViewportScale());
@@ -99,7 +115,11 @@
             width:640,      //页面宽度
             delay:150,
             expires:864000000,
-            limit:true
+            limit:true,
+            device:{
+                phone:["lenovo-a850"],
+                tablet:[]
+            }
         };
 
         /**
