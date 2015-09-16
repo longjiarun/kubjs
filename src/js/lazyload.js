@@ -221,8 +221,6 @@
         };
         
         /**
-         * ## isInViewport
-         * 
          * 是否在可视区域内
          * 
          * @param {zepto} element 检查的元素

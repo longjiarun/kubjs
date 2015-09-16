@@ -56,8 +56,6 @@
         };
 
         /**
-         * ## _getDecimalDigit
-         * 
          * 通过正则匹配得到数值的小数点位数，效率没有`getDecimalDigit`高。
          * 
          * @private
