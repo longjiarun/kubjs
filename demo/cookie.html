@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Cookie Test</title>
+</head>
+<body>
+
+<script type="text/javascript" src="../build/js/cookie.js"></script>
+<script type="text/javascript">
+var cookie = Kub.cookie;
+
+
+//默认写到根路径下
+cookie("name","child1");   
+
+//写到父域名下
+cookie("name","parent",{
+    domain:"koudai.com"
+}); 
+ 
+
+
+//默认写到当前路径下
+cookie("name","child2",{
+    path:"./"
+}); 
+
+//默认写到当前路径下
+cookie("name","child3",{
+    path:"/src/"
+}); 
+
+
+cookie("name",null,{
+    path:"./"
+})
+
+
+cookie("name",null,{
+    path:"/src/"
+}); 
+
+console.log(cookie("name"));
+//输出 child2
+
+</script>
+</body>
+</html>

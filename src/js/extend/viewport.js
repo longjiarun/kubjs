@@ -72,6 +72,7 @@
             return this;
         }
 
+        //某些设备
         var l ;
         if(options.device && options.device.phone && (l = options.device.phone.length)){
             for(var i =0;i<l;i++){
@@ -108,14 +109,11 @@
          * * `delay`: 横竖屏切换时，延迟设置时间。
          *
          * * `expires`: cookie缓存时间，默认10天。
-         *
-         * * `limit`: 是否限制宽度。true：当窗口大于`width`时，不做放大处理。false：当窗口大于`width`时，进行放大处理。
          */
         this.defaults = {
             width:640,      //页面宽度
             delay:150,
             expires:864000000,
-            limit:true,
             device:{
                 phone:["lenovo-a850"],
                 tablet:[]
@@ -246,7 +244,7 @@
 
             w = self.getDeviceWidth() || options.width;
             
-            //如果是平板，则采用`width`最大宽度
+            //如果是平板，则默认不设置，`scale`默认为 0 
             scale = os.tablet ? 0 : w / options.width;
 
             return scale;
@@ -263,7 +261,7 @@
         this.setViewportByScale = function(scale){
             var self=this,options = self.options;
 
-            //如果不限制宽度
+            //如果是平板
             if(scale == 0){
                 self.setViewportValue("width=device-width,user-scalable=no");
             }else{

@@ -3,8 +3,8 @@
  *
  * 滚动分页
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(root,factory){
+    var Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery || root.Zepto,root.template,require("../core"),require("../lazyLoad"));
     }else if(typeof define === "function"){
@@ -14,7 +14,7 @@
     }else{
         Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
     }
-}(function(root,$,template, core, LazyLoad){
+}(this,function(root,$,template, core, LazyLoad){
 
     /**
      * ## ScrollTable Constructor
@@ -163,6 +163,8 @@
             return this;
         };
 
+        this.loaded = true;
+
         /**
          * ## load
          * 
@@ -174,18 +176,20 @@
             var self = this,options = this.options,page = self.page+1;
 
             //如果加载图片被隐藏，或者加载已完成则不进行加载
-            if(self.$loading[0].offsetWidth <= 0 && self.$loading[0].offsetHeight <= 0 || self.completed){
+            if(self.$loading[0].offsetWidth <= 0 && self.$loading[0].offsetHeight <= 0 || self.completed || !self.loaded){
                 return self;
             }
 
             self.page = page;
-            
+            self.loaded = false;
+
             if(self.pages == void 0 || self.page <= self.pages){
 
                 self.getData({
                     page:self.page,
                     pagesize:options.pageSize
                 },function(data){
+                    self.loaded = true;
                     data = options.format ? options.format(data) : data;
 
                     //如果没有数据
@@ -200,7 +204,7 @@
                     self.add(data[options.resultKey]);
 
                     //判断数据是否加载完成
-                    self.page == self.pages && self.setCompletedStatus();
+                    self.page >= self.pages && self.setCompletedStatus();
                     self.$container.trigger("scroll");
                 });
             }else{
@@ -408,6 +412,7 @@
                     }else{
                         error && error.apply(this,arguments);
                     }
+                    
                 }
             });
             return self;

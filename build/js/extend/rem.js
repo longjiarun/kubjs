@@ -81,14 +81,11 @@
          * * `fontSize`: 计算rem的基准像素值，一般不进行修改。
          * 
          * * `delay`: 横竖屏切换时，延迟设置时间。
-         *
-         * * `limit`: 是否限制宽度。true：当窗口大于`width`时，不做放大处理。false：当窗口大于`width`时，进行放大处理。
          */
         this.defaults = {
             width:640,
             fontSize:32,
             delay:150,      
-            limit:true,
             device:{
                 phone:["lenovo-a850"],
                 tablet:[]
@@ -163,6 +160,7 @@
                 w;
             w = Math.min(iw,ow,sw,saw);
 
+            //如果是平板，则采用页面最大宽度
             w = os.tablet ? options.width : w;
 
             return w;

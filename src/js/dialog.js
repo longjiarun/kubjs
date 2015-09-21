@@ -35,10 +35,10 @@
      *           }
      *       },{
      *          text:"取消",
-     *           handler:function(e,dialog){
+     *          handler:function(e,dialog){
      *               //返回 event 与 dialog对象
      *               dialog.close();
-     *           }
+     *          }
      *       }]
      *   });
      * ```
@@ -91,8 +91,8 @@
          * 
          * ```js
          * [{   
-         *     //按钮名称
-         *     text:"确定",
+         *     text:"按钮名称",//按钮名称
+         *     className:"button-name",//按钮class类名
          *     handler:function(){
          *         //按钮单击触发事件
          *     }
