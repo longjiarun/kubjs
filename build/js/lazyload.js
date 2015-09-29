@@ -203,12 +203,12 @@
         };
 
         /**
-         * ## destory
+         * ## destroy
          * 
          * 销毁对象
          * @return {instance} 当前实例
          */
-        this.destory = function(){
+        this.destroy = function(){
             var self=this,options=self.options;
             //取消监听
             self.$container.off(options.eventName,self._handle);

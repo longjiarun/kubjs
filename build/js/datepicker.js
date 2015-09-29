@@ -198,6 +198,8 @@
 
             //设置默认时间
             self.setDate(options.date);
+            //验证是否存在31天
+            self._setDays(options.date.getFullYear(), options.date.getMonth());
 
             //注册全局拖动事件，注册在每一列，会导致拖动不流畅
             self._registerGlobalScroll();
