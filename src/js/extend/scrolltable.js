@@ -2,6 +2,8 @@
  * # Kub.ScrollTable
  *
  * 滚动分页
+ *
+ * 由于业务不一样，数据接口与参数经常不一致，所以要配置format与formatAjaxData参数
  */
 !(function(root,factory){
     var Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -69,11 +71,11 @@
          * 
          * * `itemSelector`: item选择器，用于删除
          * 
-         * * `loadingTemplate`: loading 图标模板
+         * * `loadingTemplate`: loading 模板
          * 
          * * `noDataTemplate`: 无数据模板
          * 
-         * * `completedTempalte`: 数据加载以后模板
+         * * `completedTempalte`: 数据全部加载完成以后模板
          * 
          * * `template`: item模板
          * 
