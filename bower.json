@@ -1,0 +1,7 @@
+{
+  "name": "kubjs",
+  "version": "1.0.0",
+  "main": "",
+  "keywords": ["ui", "zepto"],
+  "ignore" : ["docs", "demo","build","test","gulp.publish.js","H5.sh"]
+}
