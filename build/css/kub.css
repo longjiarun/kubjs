@@ -1,9 +1,4 @@
 /*reset css*/
-html {
-  font-family: sans-serif;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
 body,
 div,
 dl,
@@ -245,7 +240,7 @@ textarea:focus {
   margin: 0 auto;
   max-width: 640px;
   /*position: absolute;*/
-  font-size: 16px;
+  font-size: 18px;
   background: #ffffff;
   border-radius: 6px;
   color: #333333;

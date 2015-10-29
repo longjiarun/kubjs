@@ -1,14 +1,15 @@
 @import "animate";
 @import "common";
 @import "spinner";
-@white:#fff;
-@font-color:#333;
-@border-radius:6px;
-@border-color:#f4f4f4;
-@border:2px solid @border-color;
-@font-size:18px;
-@m-size:0.75em;
-@header-padding-top:1em;
+
+@dialog-white:#fff;
+@dialog-font-color:#333;
+@dialog-border-radius:6px;
+@dialog-border-color:#f4f4f4;
+@dialog-border:2px solid @dialog-border-color;
+@dialog-font-size:18px;
+@dialog-m-size:0.75em;
+@dialog-header-padding-top:1em;
 
 
 .kub-ofh{
@@ -49,27 +50,27 @@
     margin:0 auto;
     max-width:640px;
     /*position: absolute;*/
-    font-size:@font-size;
-    background: @white;
-    border-radius: @border-radius;
-    color:@font-color;
+    font-size:@dialog-font-size;
+    background: @dialog-white;
+    border-radius: @dialog-border-radius;
+    color:@dialog-font-color;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     
     .kub-dialog-button{
         background: none;
         border: none;
-        padding: @header-padding-top 0;
+        padding: @dialog-header-padding-top 0;
         font-size:100%;
         text-align: center;
         display: inline-block;
     }
     .kub-dialog-header{
-        border-radius: @border-radius @border-radius 0 0;
+        border-radius: @dialog-border-radius @dialog-border-radius 0 0;
 
-        padding: (@header-padding-top + 0.1) @m-size;
+        padding: (@dialog-header-padding-top + 0.1) @dialog-m-size;
 
         text-align: center;
-        background: @border-color;
+        background: @dialog-border-color;
         .kub-dialog-close{
             float: right;
             font-weight: bold;
@@ -80,18 +81,18 @@
             margin:-5px -5px 0 0;
         }
         &:hover{
-            color:@font-color;
+            color:@dialog-font-color;
         }
     }
     .kub-dialog-body{
         line-height: 1.5;
-        padding:(@header-padding-top + 0.3) @m-size;
+        padding:(@dialog-header-padding-top + 0.3) @dialog-m-size;
         img{
             max-width: 100%;
         }
     }
     .kub-dialog-footer{
-        border-top: @border;
+        border-top: @dialog-border;
         .kub-dialog-button{
             width: 100%;
             position: relative;
@@ -99,7 +100,7 @@
                 position: absolute;
                 content: "";
                 display: block;
-                border-right: @border;
+                border-right: @dialog-border;
                 right: 0;
                 top: 0;
                 bottom: 0;
@@ -140,8 +141,8 @@
         
     }
     .kub-dialog-body{
-        padding: 0.5em @m-size;
-        color:@white;
+        padding: 0.5em @dialog-m-size;
+        color:@dialog-white;
         text-align: center;
     }
 }
@@ -149,9 +150,9 @@
     font-size:100%;
     margin-top:0.2em;
     width: 96%;
-    border:1px solid @border-color;
+    border:1px solid @dialog-border-color;
     padding: 0.5em 2%;
-    background: @white;
+    background: @dialog-white;
 }
 
 .kub-loader{
@@ -163,12 +164,12 @@
         border-radius: 0.8em;
         border:none;
         .kub-loader-message{
-            color:@white;
+            color:@dialog-white;
             text-align: center;
             padding-top:0.2em;
         }
         .kub-dialog-body{
-            padding:@m-size;
+            padding:@dialog-m-size;
         }
     }
 }
