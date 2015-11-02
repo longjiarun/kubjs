@@ -153,12 +153,18 @@
         this.getViewportWidth = function(){
             var self=this,
                 options = self.options,
-                iw = window.innerWidth,
-                ow = window.outerWidth,
-                sw = window.screen.width,
-                saw = window.screen.availWidth,
+                iw    = window.innerWidth || 100000,
+                bodyw = document.documentElement.offsetWidth,
+                ow    = window.outerWidth || iw,
+                sw    = window.screen.width || iw,
+                saw   = window.screen.availWidth || iw,
                 w;
-            w = Math.min(iw,ow,sw,saw);
+
+            w = Math.min(iw,ow,sw,saw, bodyw);
+
+            if (w === 100000) {
+                w = 320;
+            }
 
             //如果是平板，则采用页面最大宽度
             w = os.tablet ? options.width : w;
