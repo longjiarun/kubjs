@@ -6,7 +6,10 @@
  */
 !(function(factory){
     var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
+    
+    if (typeof require !== "undefined" && require.async) {
+        module.exports = factory(root, require('zepto'), require("./dialog"));
+    } else if (typeof module !== "undefined" && module.exports) {
         module.exports = factory(root,root.jQuery || root.Zepto,require("./dialog"));
     }else if (typeof define === "function") {
         define(function() {
