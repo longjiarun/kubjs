@@ -50,6 +50,7 @@
         Dialog.call(this,this.options);
     };
     
+    
     //继承于 `Dialog`
     Dialog.prototype.inherit(Confirm,Dialog);
 
