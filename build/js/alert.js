@@ -7,7 +7,7 @@
 !(function(factory){
     var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root, root.jQuery||root.Zepto, Kub.Dialog);
+        module.exports = factory(root, root.jQuery||root.Zepto, require("./dialog"));
     }else if (typeof define === "function") {
         define(function() {
             return Kub.Alert = factory(root, root.jQuery||root.Zepto ,Kub.Dialog);

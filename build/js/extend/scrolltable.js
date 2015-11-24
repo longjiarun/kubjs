@@ -5,18 +5,18 @@
  *
  * 由于业务不一样，数据接口与参数经常不一致，所以要配置format与formatAjaxData参数
  */
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
+!(function(factory){
+    var root = this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery || root.Zepto,root.template,require("../core"),require("../lazyLoad"));
+        module.exports = factory(root,root.jQuery || root.Zepto,root._,require("../core"),require("../lazyLoad"));
     }else if(typeof define === "function"){
         define(function(){
-            return Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
+            return Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root._, Kub.core, Kub.LazyLoad);
         });
     }else{
-        Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root.template, Kub.core, Kub.LazyLoad);
+        Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root._, Kub.core, Kub.LazyLoad);
     }
-}(this,function(root,$,template, core, LazyLoad){
+}(function(root,$,_, core, LazyLoad){
 
     /**
      * ## ScrollTable Constructor
@@ -238,7 +238,7 @@
             var length,html="";
             if(data && (length =data.length)){
                 for(var i=0; i<length; i++){
-                    html += template.compile(this.options.template)({
+                    html += _.template(this.options.template)({
                         data:data[i]
                     });
                 }

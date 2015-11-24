@@ -7,7 +7,7 @@
 !(function(factory){
     var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,require("./dialog"),require("./date"));
+        module.exports = factory(root,root.jQuery||root.Zepto,root._,require('./lib/hammer'),require("./dialog"),require("./date"));
     }else if (typeof define === "function") {
         define(function() {
             return Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
