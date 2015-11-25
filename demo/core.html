@@ -24,7 +24,7 @@
 <script type="text/javascript">
 
 function test(){
-    console.log(Kub.core.setQuerystring("asdasd",{
+    console.log(Kub.core.setQuerystring({
         p:3,
         name:undefined,
         age:null,
@@ -32,12 +32,11 @@ function test(){
         g:0,
         url:window.location.href
     },{
-        append:true
+        append:true,
+        raw:true
     }));
     
-    console.log(Kub.core.getQuerystring("asdasd?p=3&name&age=null&f=false&g=0&url=http%3A%2F%2Flj.koudai.com%3A3000%2Fsrc%2Fkub%2Fdemo%2Fcore.html",{
-        raw:true
-    }))
+    console.log(Kub.core.getQuerystring("http://lj.koudai.com:3000/src/kub/demo/core.html?p=3&name&age=null&f=false&g=0&url=http%3A%2F%2Flj.koudai.com%3A3000%2Fsrc%2Fkub%2Fdemo%2Fcore.html"))
 
     return;
 

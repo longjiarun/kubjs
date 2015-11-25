@@ -116,7 +116,7 @@
         },
         
         /**
-         * ## isEmail
+         * ## isPositiveInteger
          * 验证正整数
          */
         isPositiveInteger:function(value){
