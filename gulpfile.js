@@ -9,7 +9,7 @@ var src = "src", build = "build";
 
 //clean
 gulp.task("clean",function(){
-    del(build);
+    del.sync(build);
 });
 
 //copy

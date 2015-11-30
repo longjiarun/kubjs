@@ -36,7 +36,7 @@
     //some code
 }));
 
-2、底层库采用zepto,underscore，部分依赖于hammer，arttemplate
+2、底层库采用zepto,underscore，部分依赖于hammer
 
 ```
 
@@ -82,7 +82,7 @@ API文档写在js中，采用 [Docker](https://github.com/jbt/docker) 生成文�
 
 - 组件依赖关系表，大部分组件默认依赖 zepto 与 underscore；
 
-- swiper 与 datepicker 组件依赖于 hammer 。scrolltable 组件依赖于 arttemplate；
+- swiper 与 datepicker 组件依赖于 hammer 。
 
 - 模块依赖关系表未将基础库放入依赖中，所以在页面中要默认引入基础库；
 
