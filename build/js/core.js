@@ -102,7 +102,7 @@
             return target;
         };
 
-        ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'].forEach(function(name) {
+        ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array'].forEach(function(name) {
             proto['is' + name] = function(obj) {
                 return toString.call(obj) === '[object ' + name + ']';
             };
@@ -242,14 +242,14 @@
                 if(params.hasOwnProperty(name)){
                     value = params[name];
                 }
-                _params[name] = value !== undefined ? value : "";
+                _params[name] = value != undefined ? value : "";
             });
 
             //如果是追加，则合并参数
             if(opts.append){
                 for(var name in params){
                     if(params.hasOwnProperty(name)){ 
-                        _params[name] = params[name] !== undefined ? params[name] : "";
+                        _params[name] = params[name] != undefined ? params[name] : "";
                     }
                 }
             }
@@ -257,7 +257,7 @@
             //将参数合并成字符串
             for(name in _params){
                 if(_params.hasOwnProperty(name)){ 
-                    _queryString += (++f ? "&" : "") + (_params[name] !== "" ? name + "=" + (opts.raw ? _params[name] : encodeURIComponent(_params[name])) : name);
+                    _queryString += (++f ? "&" : "") + (_params[name] !== "" ? name + "=" + (opts.raw ? _params[name] : encodeURIComponent(_params[name]) ) : name);
                 }
             }
 
@@ -296,7 +296,7 @@
             var params={}, queryString = getParamsString(url);
             
             queryString && queryString.replace(paramsRegxp,function(a,name,c,value){
-                params[name] = opts.raw ? value : decodeURIComponent(value);
+                params[name] = opts.raw ? value : !!value ? decodeURIComponent(value) : undefined;
             });
 
             return params;
