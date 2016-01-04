@@ -102,7 +102,7 @@
             return target;
         };
 
-        ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'].forEach(function(name) {
+        ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array'].forEach(function(name) {
             proto['is' + name] = function(obj) {
                 return toString.call(obj) === '[object ' + name + ']';
             };
