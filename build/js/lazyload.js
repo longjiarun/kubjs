@@ -63,7 +63,7 @@
         this.defaults={
             container:window,
             threshold:50,
-            waitTime:5000,
+            waitTime:-1,
             delay:150,
             attributeName:"original",
             eventName:"scroll resize"
