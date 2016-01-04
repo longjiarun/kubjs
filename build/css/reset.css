@@ -41,7 +41,7 @@ input,
 select,
 textarea,
 button {
-  font-size: 100%;
+  font: inherit;
 }
 table {
   border-collapse: collapse;
