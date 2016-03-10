@@ -1,0 +1,28 @@
+{
+  "name":"kubjs",
+  "description": "kubjs",
+  "main": "src/js/core.js",
+  "authors": [
+    "longjia"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "kub",
+    "webpack",
+    "component",
+    "UI"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": false,
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "demo",
+    "docs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

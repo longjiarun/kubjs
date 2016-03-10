@@ -1,0 +1,22 @@
+{
+  "name": "kubjs",
+  "version": "2.0.0",
+  "description": "kubjs",
+  "main": "src/js/core.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.vdian.net/hz-front/kubjs.git"
+  },
+  "keywords": [
+    "kub"
+  ],
+  "author": "longjia",
+  "license": "MIT"
+}
