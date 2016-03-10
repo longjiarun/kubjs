@@ -25,14 +25,14 @@
      *
      * 使用方法：
      * ```js
-     * 
+     *
      * new Kub.ScrollTable();
      *
      * ```
      */
     function ScrollTable(element,options){
         var self = this;
-        
+
         this.options = $.extend({},options,ScrollTable.prototype.defaults,options||{});
 
         this.$list = $(options.listSelector);
@@ -49,7 +49,7 @@
         this.$element = $(element);
     }
 
-    Kub.core.inherit(ScrollTable, LazyLoad);
+    core.inherit(ScrollTable, LazyLoad);
 
     ;(function(){
         this.constructor = ScrollTable;
@@ -60,39 +60,39 @@
          * `defaults`默认配置项。
          *
          * 配置项说明：
-         * 
+         *
          * * `url`: url地址
-         * 
+         *
          * * `type`: 请求类型
-         * 
+         *
          * * `dataType`: 数据类型
-         * 
+         *
          * * `listSelector`: 列表选择器
-         * 
+         *
          * * `itemSelector`: item选择器，用于删除
-         * 
+         *
          * * `loadingTemplate`: loading 模板
-         * 
+         *
          * * `noDataTemplate`: 无数据模板
-         * 
+         *
          * * `completedTempalte`: 数据全部加载完成以后模板
-         * 
+         *
          * * `template`: item模板
-         * 
+         *
          * * `success`: 成功回调函数
-         * 
+         *
          * * `error`: 失败回调函数
-         * 
+         *
          * * `defaultPage`: 默认页数
-         * 
+         *
          * * `pageSize`: 页面大小
-         * 
+         *
          * * `countKey`: 总数的key
-         * 
+         *
          * * `resultKey`: 数据结果的key
-         * 
+         *
          * * `format`: 格式化后端数据方法，由于每个请求过来的数据可能不一致，所以需要手动格式化。
-         * 
+         *
          * * `formatAjaxData`: 格式化Ajax请求参数，由于每个请求发送的数据格式可能不一致，所以需要手动格式化。
          */
         this.defaults = {
@@ -142,9 +142,9 @@
 
         /**
          * ## refresh
-         * 
+         *
          * 重新刷新table
-         * 
+         *
          * @return {instance} 当前实例
          */
         this.refresh = function(){
@@ -169,9 +169,9 @@
 
         /**
          * ## load
-         * 
+         *
          * 加载下一页数据
-         * 
+         *
          * @return {instance} 当前实例
          */
         this.load = function(){
@@ -220,7 +220,7 @@
             this.$loading.hide();
             this.$loading[0].loaded=true;
             this.$complete = $(this.options.completedTempalte).appendTo(this.$element);
-                        
+
             this.completed = true;
             return this;
         };
@@ -229,7 +229,7 @@
             this.$loading.hide();
             this.$loading[0].loaded=true;
             this.$nodata = $(this.options.noDataTemplate).appendTo(this.$element);
-                        
+
             this.completed = true;
             return this;
         };
@@ -243,15 +243,15 @@
                     });
                 }
             }
-            
+
             return html;
         }
 
         /**
          * ## add/append
-         * 
+         *
          * 往后添加数据
-         * 
+         *
          * @param {Array} data   需要被添加的数据数组
          * @return {instance} 当前实例
          */
@@ -269,9 +269,9 @@
 
         /**
          * ## preappend
-         * 
+         *
          * 往前添加数据
-         * 
+         *
          * @param {Array} data   需要被添加的数据数组
          * @return {instance} 当前实例
          */
@@ -289,9 +289,9 @@
 
         /**
          * ## remove
-         * 
+         *
          * 删除数据
-         * 
+         *
          * @param {Object} data   被删除的数据
          * @return {instance} 当前实例
          */
@@ -315,9 +315,9 @@
 
         /**
          * ## getById
-         * 
+         *
          * 通过ID获取数据
-         * 
+         *
          * @param {Number} id   需要被删除的数据ID
          * @param {String} name ID名称，有可能Id名称不一定是 ”id“
          * @return {Object}      筛选出来的数据
@@ -331,15 +331,15 @@
 
         /**
          * ## removeById
-         * 
+         *
          * 通过ID移除数据
-         * 
+         *
          * @param {Number} id   需要被删除的数据ID
          * @param {String} name ID名称，有可能Id名称不一定是 ”id“
          * @return {instance} 当前实例
          */
         this.removeById = function(id,name){
-            var length, 
+            var length,
                 name = name ? name :"id";
 
             if (this.data && (length = this.data.length)) {
@@ -359,9 +359,9 @@
 
         /**
          * ## filter
-         * 
+         *
          * 筛选数据方法
-         * 
+         *
          * @param {Object} params 参数
          * @return {Array}         返回筛选出来的方法
          */
@@ -388,9 +388,9 @@
 
         /**
          * ## getData
-         * 
+         *
          * 获取数据
-         * 
+         *
          * @param {Object} data    Ajax请求参数
          * @param {Function} success 请求成功以后回调
          * @param {Function} error   请求失败以后回调
@@ -414,7 +414,7 @@
                     }else{
                         error && error.apply(this,arguments);
                     }
-                    
+
                 }
             });
             return self;
