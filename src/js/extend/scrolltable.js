@@ -235,10 +235,12 @@
         };
 
         this.getRenderHtml = function(data){
-            var length,html="";
+            var length, html="",
+                tpl = typeof this.options.template === "function" ? this.options.template : _.template(this.options.template);
+
             if(data && (length =data.length)){
                 for(var i=0; i<length; i++){
-                    html += _.template(this.options.template)({
+                    html += tpl({
                         data:data[i]
                     });
                 }
