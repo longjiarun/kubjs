@@ -8,7 +8,7 @@
 !(function(factory){
     var root = this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery || root.Zepto,root._,require("../core"),require("../lazyLoad"));
+        module.exports = factory(root,root.jQuery || root.Zepto,root._,require("../core"),require("../lazyload"));
     }else if(typeof define === "function"){
         define(function(){
             return Kub.ScrollTable = factory(root, root.jQuery || root.Zepto, root._, Kub.core, Kub.LazyLoad);
