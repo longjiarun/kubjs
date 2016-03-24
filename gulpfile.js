@@ -15,7 +15,7 @@ gulp.task("clean",function(){
 //copy
 gulp.task("copy",["clean"],function(){
     return gulp.src([src+"/**/*"])
-        .pipe(gulp.dest(build)); 
+        .pipe(gulp.dest(build));
 });
 
 gulp.task("css",function(){
@@ -24,7 +24,7 @@ gulp.task("css",function(){
         .pipe(gulp.dest(build))
         .pipe(minifyCss())
         .on("end",function(){
-            
+
         })
         .on("error",function(err){
             err && console.log(err.message);
@@ -36,7 +36,7 @@ gulp.task("js",function(){
         //.pipe(uglify())
         .pipe(gulp.dest(build))
         .on("end",function(){
-            
+
         })
         .on("error",function(err){
             err && console.log(err.message);
@@ -51,7 +51,7 @@ gulp.task("doc",function(){
 var markdox = require("gulp-markdox");
 
 //只生成文档
-//docker -i src/js -o docs/html/kub -x lib 
+//docker -i src/js -o docs/html/kub -x lib
 
 //监听文档并生成文档
 //docker -i src/js -o docs/html/kub -x lib -w
@@ -67,27 +67,6 @@ gulp.task("doc", function(){
 });
 
 //发布文档
-var publish = require("./gulp.publish"),
-    apiPath = "docs/html";
-publish({
-    build:apiPath,
-    rootDir : 'api'
-});
-
-//运行 publishdoc 发布文档
-gulp.task("publishdoc",function(){
-    return gulp.src(apiPath+"/kub/core.js.html")
-        .pipe(rename(function(path){
-            path.basename = "index"
-        }))
-        .pipe(gulp.dest(function(file){
-            file.contents = new Buffer("<script>window.location.href ='core.js.html'; </script>");
-            return apiPath+"/kub";
-        }))
-        .on("end",function(){
-            gulp.start("publish");
-        });
-});
 
 gulp.task("default",["clean"],function(){
     gulp.start("css","js");
