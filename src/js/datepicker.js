@@ -4,7 +4,7 @@
  * 时间选择器。格式化参照 [`date`](date.js.html)
  *
  * 依赖于Hammer.js
- * 
+ *
  */
 !(function(factory){
     var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
@@ -36,8 +36,8 @@
      *      title:"Date Picker",
      *      locale:"en"
      *  });
-     *   
-     *  //自定义format 
+     *
+     *  //自定义format
      *  var datepicker2 = new Kub.DatePicker($("#J_datepicker2"),{
      *      title:"选择时间",
      *      format:"yyyy-MM-dd,HH:mm:ss",
@@ -52,6 +52,8 @@
      *  });
      * ```
      */
+    var CLASS_NAME = ".kub-datepicker";
+
     var DatePicker = function(element,options){
         var self =this;
         this.$element = $(element);
@@ -93,21 +95,21 @@
          * 配置项说明：
          *
          * * `locale`: 本地化。本地化采用CSS实现。
-         * 
+         *
          * * `title`: 时间选择器弹窗名称。
-         * 
+         *
          * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗，并进行赋值。如果传递，需调用`dialog.close()`手动关闭弹窗，并且需要手动填充输入框。
-         * 
+         *
          * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
          *
          * * `format`: 日期格式
-         * 
+         *
          * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
          *
          * * `className`: 弹窗类名，不建议修改，会影响样式。
-         * 
+         *
          * * `date`: 默认显示时间
-         * 
+         *
          * * `yearRange`: 年份显示区间
          */
         this.defaults = {
@@ -160,7 +162,7 @@
 
         this._init = function(){
             var self = this,options = self.options;
-            
+
             //创建对话框
             self._render();
 
@@ -183,7 +185,7 @@
             //设置本地化
             self.dialog.$element.addClass("kub-datepicker-"+options.locale);
 
-            //监听每个元素的滚动事件            
+            //监听每个元素的滚动事件
             self.ui.columns = self.dialog.$element.find(VALUECOLUMNCLASS).each(function(){
                 var $handler = $(this), hammer = new Hammer($handler[0]);
                 //监听拖动开始事件
@@ -218,9 +220,16 @@
         this._registerGlobalScroll = function(){
             var self = this,
                 options = self.options,
-                hammer = new Hammer(self.dialog.$element[0]),
-                $handler, index, y, shouldSetDays;
-            
+                $datepicker = self.dialog.$dialog.find(CLASS_NAME);
+
+            $datepicker.parent().on("touchmove",function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            });
+
+            var hammer = new Hammer($datepicker[0]),$handler, index, y, shouldSetDays;
+
             //监听拖动开始事件
             hammer.get("pan").set({
                 threshold: 0
@@ -231,7 +240,7 @@
                     //决定是否设置天数，由于年份与月份决定每月的天数
                     shouldSetDays = $handler.hasClass("month") || $handler.hasClass("year");
                     index = 0;
-                    y = $handler[0].y;                    
+                    y = $handler[0].y;
                 }
                 event.preventDefault();
             }).on("panmove",function(event){
@@ -240,7 +249,7 @@
             }).on("panend",function(event){
                 if($handler){
                     index = -self._getIndex(y + event.deltaY, HEIGHTUNIT, $handler.find("."+SHOWCLASS).length);
-            
+
                     self._cacheData($handler,index);
 
                     self.setTranslate($handler, 0, $handler[0].y +"px", DURATION);
@@ -290,7 +299,7 @@
          * ## setDate
          *
          * 设置时间选择器时间
-         * 
+         *
          * @param {Date} date 时间
          * @return {instance} 当前实例
          */
@@ -325,7 +334,7 @@
          * ## getDate
          *
          * 获取时间选择器选择的时间
-         * 
+         *
          * @param {Date} date 时间
          * @return {Date} 获取到的时间
          */
@@ -365,7 +374,7 @@
         /**
          *
          * 获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
-         * 
+         *
          * @param {String} name 对应列的名称（year,month,day,hour,minute,second）
          * @return {Number} 某一列的值
          */
@@ -409,6 +418,6 @@
         };
 
     }).call(DatePicker.prototype);
-    
+
     return DatePicker;
 }));
