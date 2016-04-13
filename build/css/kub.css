@@ -179,7 +179,7 @@ textarea:focus {
   font-size: 10px;
 }
 .kub-spinner > div {
-  background-color: #ff0000;
+  background-color: #f00;
   height: 100%;
   width: 6px;
   display: inline-block;
@@ -240,9 +240,9 @@ textarea:focus {
   max-width: 640px;
   /*position: absolute;*/
   font-size: 18px;
-  background: #ffffff;
+  background: #fff;
   border-radius: 6px;
-  color: #333333;
+  color: #333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .kub-dialog .kub-dialog-button {
@@ -269,7 +269,7 @@ textarea:focus {
   margin: -5px -5px 0 0;
 }
 .kub-dialog .kub-dialog-header:hover {
-  color: #333333;
+  color: #333;
 }
 .kub-dialog .kub-dialog-body {
   line-height: 1.5;
@@ -323,7 +323,7 @@ textarea:focus {
 }
 .kub-toast .kub-dialog-body {
   padding: 0.5em 0.75em;
-  color: #ffffff;
+  color: #fff;
   text-align: center;
 }
 .kub-prompt .kub-prompt-input {
@@ -332,7 +332,7 @@ textarea:focus {
   width: 96%;
   border: 1px solid #f4f4f4;
   padding: 0.5em 2%;
-  background: #ffffff;
+  background: #fff;
 }
 .kub-loader {
   z-index: 10002;
@@ -345,7 +345,7 @@ textarea:focus {
   border: none;
 }
 .kub-loader .kub-dialog .kub-loader-message {
-  color: #ffffff;
+  color: #fff;
   text-align: center;
   padding-top: 0.2em;
 }

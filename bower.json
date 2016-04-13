@@ -1,7 +1,7 @@
 {
   "name":"kubjs",
   "description": "kubjs",
-  "main": "src/js/core.js",
+  "main": "src/js/kub.js",
   "authors": [
     "longjia"
   ],

@@ -45,67 +45,49 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(13);
+	module.exports = __webpack_require__(7);
 
 
 /***/ },
 
-/***/ 13:
+/***/ 7:
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
-	/**
-	 * # fn
-	 *
-	 * zepto的扩展，解决zepto方法的不足。
-	 */
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var ua = navigator.userAgent,
+	    android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
+	    ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+	    ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
+	    iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+	    wp = ua.match(/Windows Phone ([\d.]+)/),
+	    os = {};
 
-	!function (root) {
-	    var $ = root.jQuery || root.Zepto,
-	        $body = $(document.body);
+	//android
+	android ? (os.android = true, os.version = android[2]) : os.android = false;
 
-	    /**
-	     * ## $.fn.focuson
-	     *
-	     * 解决iPhone下同时进行错误提示与focus，会出现错误提示框出不来。
-	     *
-	     * 错误提示框被隐藏下键盘下。是由于iPhone对页面适配做出的处理，iPhone并没有将这个页面进行滚动处理。
-	     *
-	     * @return {} [description]
-	     */
-	    $.fn.focuson = function () {
-	        var $this = this.eq(0),
-	            scrollTop = $body.scrollTop(),
-	            top = $this.offset().top;
-	        if (scrollTop > top) {
-	            $body.scrollTop(top);
-	        }
-	        $this.focus();
-	        return this;
-	    };
+	//iphone
+	iphone && !ipod ? (os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.')) : os.iphone = false;
 
-	    /**
-	     * ## $.fn.isHidden
-	     *
-	     * 判断元素是否隐藏
-	     * @return {Boolean} true：隐藏，false：显示
-	     */
-	    $.fn.isHidden = function () {
-	        var elem = this.eq(0)[0];
-	        return elem.offsetWidth <= 0 && elem.offsetHeight <= 0;
-	    };
+	//ipad
+	ipad ? (os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.')) : os.ipad = false;
 
-	    /**
-	     * ## $.fn.isVisible
-	     *
-	     * 判断元素是否显示
-	     * @return {Boolean} true：显示，false：隐藏
-	     */
-	    $.fn.isVisible = function () {
-	        return !this.isHidden();
-	    };
-	}(window);
+	//ipod
+	ipod ? (os.ios = os.ipod = true, os.version = ipod[3].replace(/_/g, '.')) : os.ipod = false;
+
+	//window phone
+	wp ? (os.wp = true, os.version = wp[1]) : os.wp = false;
+
+	!os.iphone && !os.ipad && !os.ipod && (os.ios = false);
+
+	os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
+	os.tablet = !os.phone && (os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua)) ? true : false;
+	os.mobile = os.phone || os.tablet;
+
+	exports.default = os;
 
 /***/ }
 

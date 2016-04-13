@@ -3,6 +3,8 @@
  *
  * kubjs 核心模块，该模块只提供最基础的方法。
  */
+import os from './detect';
+
 !(function(factory){
     var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
     if (typeof module !== "undefined" && module.exports) {
@@ -25,49 +27,21 @@
      * ```js
      * //获取url参数
      * var params = Kub.core.getQuerystring();
-     * 
+     *
      * ```
      */
     var Core = function(){
-        
+
     };
     var toString = Object.prototype.toString;
 
     ;(function(){
-        var proto = this,ua = navigator.userAgent;
+        var proto = this;
         this.constructor = Core;
-
-        var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
-            ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
-            ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
-            iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
-            wp = ua.match(/Windows Phone ([\d.]+)/),
-            os = {};
-
-        //android
-        android ? (os.android = true, os.version = android[2]) : (os.android = false);
-
-        //iphone
-        iphone && !ipod ? ( os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.') ) : (os.iphone  = false);
-
-        //ipad
-        ipad ? ( os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.') ) : (os.ipad  = false);
-        
-        //ipod
-        ipod ? ( os.ios = os.ipod = true, os.version = ipod[3].replace(/_/g, '.') ) : (os.ipod = false);
-
-        //window phone
-        wp ? ( os.wp = true, os.version = wp[1]) : (os.wp = false);
-
-        !os.iphone && !os.ipad && !os.ipod && (os.ios = false);
-
-        os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
-        os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
-        os.mobile = os.phone || os.tablet;
 
         /**
          * ## os
-         * 
+         *
          * 检测系统类型与版本，包含系统类型与版本信息
          *
          * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
@@ -117,7 +91,7 @@
          * ## inherit
          *
          * 类的继承
-         * 
+         *
          * @param {Class} c 子类
          * @param {Class} p 父类
          */
@@ -131,9 +105,9 @@
 
         /**
          * ## htmlToText
-         * 
+         *
          * 将html转换为text
-         * 
+         *
          * @param {String} value html
          * @return {String} 处理以后的文本
          */
@@ -149,7 +123,7 @@
         };
 
         /**
-         * 
+         *
          *
          * 获取 params string
          * @param {String} url url地址，未传值取 `window.location.href`。
@@ -190,9 +164,9 @@
          *
          * 使用：
          * ```js
-         * 
+         *
          * //设置当前地址参数
-         * 
+         *
          * //默认采用`window.location.href`
          * Kub.core.setQuerystring({
          *     name:"kubjs"
@@ -202,22 +176,22 @@
          * Kub.core.setQuerystring("http://www.weidian.com?userId=123",{
          *     name:"kubjs"
          * });
-         * 
+         *
          * //追加参数
-         * 
+         *
          * //如果不存在名称为 name 的参数，则新增参数。如果存在则替换其值
          * Kub.core.setQuerystring({
          *     name:"kubjs"
          * },{
          *     append:true
          * });
-         * 
+         *
          * ```
-         * 
+         *
          * @param {String} url    url
-         * 
+         *
          * @param {Object} params 参数对象
-         * 
+         *
          * @param {Object} opts   配置参数。 raw : 配置是否 encodeURIComponent ，append：是否追加参数。true：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
          */
         this.setQuerystring = function(url,params,opts){
@@ -248,7 +222,7 @@
             //如果是追加，则合并参数
             if(opts.append){
                 for(var name in params){
-                    if(params.hasOwnProperty(name)){ 
+                    if(params.hasOwnProperty(name)){
                         _params[name] = params[name] != undefined ? params[name] : "";
                     }
                 }
@@ -256,7 +230,7 @@
 
             //将参数合并成字符串
             for(name in _params){
-                if(_params.hasOwnProperty(name)){ 
+                if(_params.hasOwnProperty(name)){
                     _queryString += (++f ? "&" : "") + (_params[name] !== "" ? name + "=" + (opts.raw ? _params[name] : encodeURIComponent(_params[name]) ) : name);
                 }
             }
@@ -271,13 +245,13 @@
          * ## getQuerystring
          *
          * 获取url中的参数。
-         * 
+         *
          * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
-         * 
+         *
          * @param {String} url url地址，未传值取 `window.location.href`。
-         * 
-         * @param {Object} opts 配置参数，配置是否 decodeURIComponent 
-         * 
+         *
+         * @param {Object} opts 配置参数，配置是否 decodeURIComponent
+         *
          * @return {Object} 返回参数对象
          */
         this.getQuerystring = function(url,opts){
@@ -292,9 +266,9 @@
             },opts || {});
 
             url = url || window.location.href;
-            
+
             var params={}, queryString = getParamsString(url);
-            
+
             queryString && queryString.replace(paramsRegxp,function(a,name,c,value){
                 params[name] = opts.raw ? value : !!value ? decodeURIComponent(value) : undefined;
             });
@@ -306,9 +280,9 @@
          * ## getParams(废弃)
          *
          * 获取url中的参数。
-         * 
+         *
          * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
-         * 
+         *
          * @param {String} url url地址，未传值取 `window.location.href`。
          * @return {Object} 返回参数对象
          */
