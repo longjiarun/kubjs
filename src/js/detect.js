@@ -1,3 +1,11 @@
+/**
+ * # os
+ *
+ * 检测系统类型与版本，包含系统类型与版本信息
+ *
+ * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
+ */
+
 let ua = navigator.userAgent,
     android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
     ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
@@ -21,10 +29,16 @@ ipod ? ( os.ios = os.ipod = true, os.version = ipod[3].replace(/_/g, '.') ) : (o
 //window phone
 wp ? ( os.wp = true, os.version = wp[1]) : (os.wp = false);
 
+//ios
 !os.iphone && !os.ipad && !os.ipod && (os.ios = false);
 
+//手机
 os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
+
+//平板
 os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
+
+//移动端
 os.mobile = os.phone || os.tablet;
 
-export default os;
+module.exports = os;
