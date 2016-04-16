@@ -6,7 +6,7 @@
  * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
  */
 
-let ua = navigator.userAgent,
+var ua = navigator.userAgent,
     android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
     ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
     ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),

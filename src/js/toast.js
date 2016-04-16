@@ -1,87 +1,75 @@
 /**
  * # Kub.Toast
- * 
+ *
  * 提示框
  * @extend [Dialog](dialog.js.html)
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery || root.Zepto,require("./dialog"));
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.Toast = factory(root, root.jQuery || root.Zepto, Kub.Dialog);
-        });
-    }else {
-        Kub.Toast = factory(root, root.jQuery || root.Zepto, Kub.Dialog);
-    }
-}(function(root,$,Dialog){
 
-    /**
-     * ## Toast Constructor
-     *
-     * 初始化`Toast`类，`Toast`并不提供实例方法，实例方法均继承于`Dialog`。
-     *
-     * 使用方法：
-     * ```js
-     * var toast = new Kub.Toast({
-     *     message:"操作成功。"
-     * });
-     * ```
-     */
-    var Toast = function(options){
-        var self = this;
-        this.options = $.extend({},Toast.prototype.defaults, options||{},{
-            showHeader:false,
-            buttons:null,
-            modal:false,
-            scrollable:true
-        });
+/**
+ * ## Toast Constructor
+ *
+ * 初始化`Toast`类，`Toast`并不提供实例方法，实例方法均继承于`Dialog`。
+ *
+ * 使用方法：
+ * ```js
+ * var toast = new Kub.Toast({
+ *     message:'操作成功。'
+ * });
+ * ```
+ */
 
-        Dialog.call(this,this.options);
+var core = require('./core'),
+    Dialog = require('./dialog');
+
+var Toast = function(options){
+        var self = this,
+            opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
+
+        Dialog.call(this, opts);
 
         //自动关闭
         setTimeout(function(){
             self.close();
-        },this.options.delay);
-    };
+        }, opts.delay);
+    },
+    proto = Toast.prototype;
 
-    //继承于 `Dialog`
-    Dialog.prototype.inherit(Toast,Dialog);
+//继承于 `Dialog`
+core.inherit(Toast,Dialog);
 
-    ;(function(){
-        this.constructor = Toast;
+proto.constructor = Toast;
 
-        /**
-         * ## defaults
-         *
-         * `Toast`默认配置项。
-         *
-         * 配置项说明：
-         * 
-         * * `message`: 显示文字 
-         * 
-         * * `className`: 弹窗类名，不建议修改，会影响样式。
-         *
-         * * `top`: 距离顶部高度
-         *
-         * * `delay`: 延迟时间
-         */
-        this.defaults = {
-            message:"",
-            className:"kub-toast",
-            top:50,
-            delay:2000
-        };
+/**
+ * ## defaults
+ *
+ * `Toast`默认配置项。
+ *
+ * 配置项说明：
+ *
+ * * `message`: 显示文字
+ *
+ * * `className`: 弹窗类名，不建议修改，会影响样式。
+ *
+ * * `top`: 距离顶部高度
+ *
+ * * `delay`: 延迟时间
+ */
+proto.defaults = {
+    message:'',
+    className:'kub-toast',
+    top:50,
+    delay:2000,
 
-        this.setPosition = function(){
-            this.$element.css({
-                top:this.options.top
-            });
-            return this;
-        };
+    showHeader:false,
+    buttons:null,
+    modal:false
+}
 
-     }).call(Toast.prototype);
+proto.setPosition = function(){
+    this.$element.css({
+        top:this.options.top
+    });
+    return this;
+}
 
-    return Toast;
-}));
+module.exports = Toast;
