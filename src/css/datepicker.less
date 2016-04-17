@@ -1,5 +1,4 @@
 @import "animate";
-@import "common";
 @import "dialog";
 
 .kub-datepicker-dialog{
@@ -26,7 +25,7 @@
         bottom:0;
         left:0;
         height:@height*3 ;
-        
+
         width: 100%;
         z-index:0;
         border:1px solid rgba(0,0,0,0.1);
@@ -45,7 +44,7 @@
         position: relative;
         top:0;
         height: @height * 3;
-        padding:0 @padding; 
+        padding:0 @padding;
         display: inline-block;
         overflow:hidden;
         z-index:10;
@@ -54,12 +53,12 @@
             font-size:0.5em;
             top:@height;
             right:0
-        } 
+        }
         ul{
             li{
                 line-height: @height;
                 height:@height;
-                
+
                 opacity: 1;
                 display: none;
             }
@@ -71,7 +70,7 @@
             }
         }
     }
-    
+
     .year:after{
         content:"年";
     }
