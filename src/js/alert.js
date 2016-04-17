@@ -20,7 +20,7 @@ var core = require('./core'),
  */
 
 var Alert = function(options) {
-        var opts = this.options = $.extend({}, Alert.prototype.defaults, options || {});
+        var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {});
 
         opts.buttons = [{
             text: opts.confirmText,

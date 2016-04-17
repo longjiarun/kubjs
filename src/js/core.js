@@ -54,13 +54,13 @@ proto.extend = function(target, source) {
         }
     }
     return target;
-}
+};
 
 ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array'].forEach(function(name) {
     proto['is' + name] = function(obj) {
         return toString.call(obj) === '[object ' + name + ']';
     };
-})
+});
 
 //function also is object
 proto.isObject = function(obj) {

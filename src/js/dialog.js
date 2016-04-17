@@ -110,8 +110,7 @@ var init = function() {
 
     //解决 iphone 下，fixed定位问题
     setTimeout(function() {
-        var $window = $(window);
-        $window.scrollTop($window.scrollTop());
+        window.scrollTo(window.scrollX, window.scrollY);
     }, 5);
 
     //渲染数据
@@ -124,7 +123,7 @@ var init = function() {
     self.show();
 
     //注册按钮事件
-    self.$element.on('click', DIALOG_BUTTON_SELECTOR, function(e) {
+    self.$element.find(DIALOG_BUTTON_SELECTOR).on('click', function(e) {
         var index = parseInt($(this).attr('data-index')),
             button = options.buttons[index];
 

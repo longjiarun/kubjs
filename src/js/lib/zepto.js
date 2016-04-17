@@ -245,10 +245,10 @@ var Zepto = (function() {
             // normalize array if an array of nodes is given
             if (isArray(selector)) dom = compact(selector)
                 // Wrap DOM nodes.
-            else if (isObject(selector))
+            else if (isObject(selector)){
                 dom = [selector], selector = null
                 // If it's a html fragment, create nodes from it
-            else if (fragmentRE.test(selector))
+            }else if (fragmentRE.test(selector))
                 dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
                 // If there's a context, create a collection on that context first, and select
                 // nodes from there

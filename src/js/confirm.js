@@ -40,7 +40,7 @@ var Confirm = function(options) {
 
         Dialog.call(this, opts);
     },
-    proto = Alert.prototype;
+    proto = Confirm.prototype;
 
 //继承于 `Dialog`
 core.inherit(Confirm, Dialog);

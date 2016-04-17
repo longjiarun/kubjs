@@ -1,4 +1,4 @@
-var Kub = {
+var Kub = window.Kub = {
     $: require('./lite'),
     core: require('./core'),
     dateHelper: require('./date'),
@@ -13,12 +13,10 @@ var Kub = {
 };
 
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Kub;
-} else if (typeof define === 'function') {
+if (typeof define === 'function') {
     define(function() {
         return Kub;
     });
-} else {
-    window.Kub = Kub;
+} else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Kub;
 }

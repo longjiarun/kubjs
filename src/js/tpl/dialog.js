@@ -9,7 +9,7 @@ __p+=' kub-modal ';
 }
 __p+='"><div class="kub-dialog-wrapper"><div class="kub-dialog-container"><div class="kub-dialog" id="J_dialog"> ';
 if(data.showHeader){
-__p+=' <div class="kub-dialog-header clearfix"><strong> '+
+__p+=' <div class="kub-dialog-header"><strong> '+
 ((__t=( data.title))==null?'':__t)+
 ' </strong></div> ';
 }

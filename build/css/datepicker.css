@@ -54,15 +54,6 @@
   -webkit-animation-name: kubStretch;
   animation-name: kubStretch;
 }
-/*common css*/
-.clearfix {
-  clear: both;
-}
-.clearfix:after {
-  display: table;
-  content: " ";
-  clear: both;
-}
 .kub-spinner {
   margin: 0 auto;
   width: 60px;

@@ -22,7 +22,7 @@ for(var i=1 ;i<=31;i++){
 __p+=' <li class="kub-datepicker-show" data-value="'+
 ((__t=( i))==null?'':__t)+
 '"> '+
-((__t=(( i<10 ? ( "0" + i) : i)))==null?'':__t)+
+((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 ' </li> ';
 }
 __p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column hour" data-type="hour"><ul><li class="kub-datepicker-show"></li> ';
@@ -30,7 +30,7 @@ for(var i=0 ;i<=23;i++){
 __p+=' <li class="kub-datepicker-show" data-value="'+
 ((__t=( i))==null?'':__t)+
 '"> '+
-((__t=(( i<10 ? ( "0" + i) : i)))==null?'':__t)+
+((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 ' </li> ';
 }
 __p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column minute" data-type="minute"><ul><li class="kub-datepicker-show"></li> ';
