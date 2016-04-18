@@ -220,14 +220,13 @@
         this._registerGlobalScroll = function(){
             var self = this,
                 options = self.options,
-                $datepicker = self.dialog.$dialog.find(CLASS_NAME);
+                $datepicker = self.dialog.$element.find(CLASS_NAME);
 
             $datepicker.parent().on("touchmove",function(e){
                 e.stopPropagation();
                 e.preventDefault();
                 e.stopImmediatePropagation();
             });
-
             var hammer = new Hammer($datepicker[0]),$handler, index, y, shouldSetDays;
 
             //监听拖动开始事件
