@@ -189,7 +189,7 @@ proto.load = function($element, original) {
     if (!original) {
         return;
     }
-    if ($element.is('img')) {
+    if ($element[0].nodeName === 'IMG') {
         $element.attr('src', original);
     } else {
         $element.css('background-image', 'url(' + original + ')');

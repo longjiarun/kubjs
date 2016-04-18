@@ -19,9 +19,9 @@ var os = require('./detect');
  */
 var Core = function() {
 
-    },
-    toString = Object.prototype.toString,
-    proto = Core.prototype;
+},
+toString = Object.prototype.toString,
+proto = Core.prototype;
 
 proto.constructor = Core;
 
@@ -65,7 +65,7 @@ proto.extend = function(target, source) {
 //function also is object
 proto.isObject = function(obj) {
     return this.isFunction(obj) || toString.call(obj) === '[object Object]';
-}
+};
 
 /**
  * ## inherit
@@ -81,7 +81,7 @@ proto.inherit = function(c, p) {
     c.prototype = new F();
     c.prototype.constructor = c;
     c.uber = p.prototype;
-}
+};
 
 /**
  * ## htmlToText
@@ -94,7 +94,7 @@ proto.inherit = function(c, p) {
 proto.htmlToText = function(value) {
     //.replace(/&nbsp;|&#160;/gi, '')
     return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '');
-}
+};
 
 /**
  *
@@ -107,7 +107,7 @@ var getParamsString = function(url) {
     var matchs;
     url = url || window.location.href;
     return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/)) && matchs[1];
-}
+};
 
 //解析 param string 正则表达式
 var paramsRegxp = /([^=&]+)(=([^&#]*))?/g;
@@ -197,7 +197,7 @@ proto.setQuerystring = function(url, params, opts) {
     return url.replace(/^([^#\?]*)[^#]*/, function(a, url, hash) {
         return url + (_queryString ? '?' + _queryString : '');
     });
-}
+};
 
 /**
  * ## getQuerystring
@@ -213,17 +213,18 @@ proto.setQuerystring = function(url, params, opts) {
  * @return {Object} 返回参数对象
  */
 proto.getQuerystring = function(url, opts) {
+    var href = window.location.href;
 
     if (this.isObject(url)) {
         opts = url;
-        url = window.location.href;
+        url = href;
     }
 
     opts = this.extend({
         raw: false
     }, opts || {});
 
-    url = url || window.location.href;
+    url = url || href;
 
     var params = {},
         queryString = getParamsString(url);
@@ -233,6 +234,6 @@ proto.getQuerystring = function(url, opts) {
     });
 
     return params;
-}
+};
 
 module.exports = new Core();

@@ -27,34 +27,32 @@ var core = require('./core'),
     template = require('./tpl/prompt');
 
 var Prompt = function(options) {
-        var self = this,
-            opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
+    var self = this,
+        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
 
-        opts.buttons = [{
-            text: opts.cancelText,
-            handler: opts.cancel || function(e, dialog) {
-                dialog.close();
-            }
-        }, {
-            text: opts.confirmText,
-            handler: function(e, dialog) {
-                dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value;
-                opts.confirm && opts.confirm.call(this, e, dialog);
-            }
-        }];
+    opts.buttons = [{
+        text: opts.cancelText,
+        handler: opts.cancel || function(e, dialog) {
+            dialog.close();
+        }
+    }, {
+        text: opts.confirmText,
+        handler: function(e, dialog) {
+            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value;
+            opts.confirm && opts.confirm.call(this, e, dialog);
+        }
+    }];
 
-        opts.message = template({
-            data: opts
-        });
+    opts.message = template({
+        data: opts
+    });
 
-        Dialog.call(this, opts);
-    },
-    proto = Prompt.prototype;
+    Dialog.call(this, opts);
+};
+
+var proto = Prompt.prototype = Object.create(Dialog.prototype);
 
 var INPUT_SELECTOR = '#J_input';
-
-//继承于 `Dialog`
-core.inherit(Prompt, Dialog);
 
 proto.constructor = Prompt;
 
@@ -95,6 +93,6 @@ proto.defaults = {
     inputType: 'text',
     placeholder: '',
     defaultValue: ''
-}
+};
 
 module.exports = Prompt;

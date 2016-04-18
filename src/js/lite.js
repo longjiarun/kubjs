@@ -14,9 +14,14 @@ var Lite = $ = function(selector, context) {
     }
 
     if (typeof selector === 'object') {
-        if ($.isArrayLike(selector)) {
+        if (selector._l) {
+
+            return selector;
+        } else if ($.isArrayLike(selector)) {
+
             return wrap(slice.call(selector), selector);
         } else {
+
             //$(document)
             return wrap([selector], selector);
         }
@@ -25,19 +30,20 @@ var Lite = $ = function(selector, context) {
     if (typeof selector === 'string') {
         if (selector[0] === '<'){
             var nodes = $.fragment(selector);
-
-            return wrap(slice.call(nodes), nodes);
+            return wrap(nodes, nodes);
         }
 
         return wrap($.qsa(selector, context), selector);
     }
 
-    return wrap();
+    return wrap()
 };
 
 function wrap(dom, selector) {
     dom = dom || [];
+
     Object.setPrototypeOf(dom, $.fn);
+
     dom.selector = selector || '';
     return dom;
 }
@@ -60,15 +66,15 @@ var slice = Array.prototype.slice,
         }
 
         return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector));
-    };
+    }
 
     this.fragment = function(html){
         var div = document.createElement('div'),nodes ;
         div.innerHTML = html;
         nodes = div.children;
         div = null;
-        return nodes;
-    };
+        return slice.call(nodes);
+    }
 
     this.isArrayLike = function(obj) {
         return typeof obj.length == 'number'
@@ -83,6 +89,8 @@ var slice = Array.prototype.slice,
     }
 
     this.fn = this.prototype = {
+
+        _l : true,
 
         each: function(callback) {
             var l = this.length,
@@ -191,7 +199,7 @@ var slice = Array.prototype.slice,
 
         off: function(name, callback) {
             return this.each(function() {
-                this.removeEventListener(name, callback, false);
+                callback ? this.removeEventListener(name, callback, false) : this.removeEventListener(name) ;
             });
         },
 
@@ -201,10 +209,10 @@ var slice = Array.prototype.slice,
             });
         },
 
-        trigger: function(eventType, eventData) {
+        trigger: function(type, detail) {
             return this.each(function() {
-                this.dispatchEvent(new CustomEvent(eventType, {
-                    detail: eventData,
+                this.dispatchEvent(new CustomEvent(type, {
+                    detail: detail,
                     bubbles: true,
                     cancelable: true
                 }));

@@ -31,10 +31,7 @@ var Alert = function(options) {
 
         Dialog.call(this, opts);
     },
-    proto = Alert.prototype;
-
-//继承于 `Dialog`
-core.inherit(Alert, Dialog);
+    proto = Alert.prototype = Object.create(Dialog.prototype);
 
 proto.constructor = Alert;
 

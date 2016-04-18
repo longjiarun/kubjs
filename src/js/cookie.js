@@ -30,7 +30,7 @@ var cookie = function (key, value, options) {
             days = (options.expires);
             time = options.expires = new Date();
 
-            time.setTime(time.getTime() + days)
+            time.setTime(time.getTime() + days);
         }
 
         value = String(value);
@@ -42,7 +42,7 @@ var cookie = function (key, value, options) {
             options.path ? '; path=' + options.path : '',
             options.domain ? '; domain=' + options.domain : '',
             options.secure ? '; secure' : ''
-        ].join(''))
+        ].join(''));
     }
 
     // Key and possibly options given, get cookie

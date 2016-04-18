@@ -28,7 +28,7 @@ var Confirm = function(options) {
 
         var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {});
 
-        this.options.buttons = [{
+        opts.buttons = [{
             text: opts.cancelText,
             handler: opts.cancel || function(e, dialog) {
                 dialog.close();
@@ -40,10 +40,8 @@ var Confirm = function(options) {
 
         Dialog.call(this, opts);
     },
-    proto = Confirm.prototype;
+    proto = Confirm.prototype = Object.create(Dialog.prototype);
 
-//继承于 `Dialog`
-core.inherit(Confirm, Dialog);
 
 proto.constructor = Confirm;
 
@@ -74,6 +72,6 @@ proto.defaults = {
     showHeader: false,
     className: "kub-confirm",
     modal: true
-}
+};
 
 module.exports = Confirm;

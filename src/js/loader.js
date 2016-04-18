@@ -23,19 +23,17 @@ var core = require('./core'),
     template = require('./tpl/loader');
 
 var Loader = function(options) {
-        var self = this,
-            opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
+    var self = this,
+        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
 
-        opts.message = template({
-            data: this.options
-        });
+    opts.message = template({
+        data: this.options
+    });
 
-        Dialog.call(this, opts);
-    },
-    proto = Loader.prototype;
+    Dialog.call(this, opts);
+};
 
-//继承于 `Dialog`
-core.inherit(Loader, Dialog);
+var proto = Loader.prototype = Object.create(Dialog.prototype);
 
 proto.constructor = Loader;
 
@@ -60,6 +58,6 @@ proto.defaults = {
 
     showHeader: false,
     buttons: null
-}
+};
 
 module.exports = Loader;

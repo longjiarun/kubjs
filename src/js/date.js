@@ -50,16 +50,17 @@
  * 使用：
  * ```js
  * //String to Date
- * "2015-05-20".parseDate("yyyy-MM-dd");
+ * '2015-05-20'.parseDate('yyyy-MM-dd');
  *
  * //格式化日期
- * (new Date()).format("yyyy-MM-dd,hh:mm:ss");
+ * (new Date()).format('yyyy-MM-dd,hh:mm:ss');
  * ```
  */
 var DateHelper = function() {
 
-    },
-    proto = DateHelper.prototype;
+};
+
+var proto = DateHelper.prototype;
 
 proto.constructor = DateHelper;
 
@@ -93,10 +94,10 @@ proto.i18n = {
             full: ['上午', '下午']
         }
     }
-}
+};
 
 //默认中文
-proto.locale = "zh";
+proto.locale = 'zh';
 
 /**
  * ## addLocale
@@ -110,7 +111,7 @@ proto.locale = "zh";
 proto.addLocale = function(name, locale) {
     name && locale && (this.i18n[name] = locale);
     return this;
-}
+};
 
 /**
  * ## setLocale
@@ -123,14 +124,14 @@ proto.addLocale = function(name, locale) {
 proto.setLocale = function(name) {
     this.locale = name;
     return this;
-}
+};
 
 var _get2Year = function(date) {
-    return (date.getFullYear() + "").replace(/\d{2}$/, "00") - 0;
+    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0;
 };
 
 var _get2 = function(value) {
-    return value < 10 ? "0" + value : value;
+    return value < 10 ? '0' + value : value;
 };
 
 var _getAmPm = function(date) {
@@ -161,7 +162,7 @@ var _getValueByPattern = function(fmt, date) {
         a: self.i18n[self.locale].amPm.abbr[_getAmPm(date)]
     };
     return patterns[fmt];
-}
+};
 
 /**
  * ## format
@@ -176,13 +177,13 @@ proto.format = function(date, format) {
     var self = this;
     if (!date) return;
 
-    format = format || "yyyy-MM-dd";
+    format = format || 'yyyy-MM-dd';
 
     format = format.replace(/(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|mm|m|ss|s|aa|a)/g, function(part) {
         return _getValueByPattern.call(self, part, date);
     });
     return format;
-}
+};
 
 /**
  * ## parse
@@ -193,13 +194,13 @@ proto.format = function(date, format) {
  *
  * ```js
  * //1112会被计算在MM内。
- * dateHelper.parse("2015-1112","yyyy-MMdd");
+ * dateHelper.parse('2015-1112','yyyy-MMdd');
  * ```
  *
  * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
  *
  * ```js
- * dateHelper.parse("2015-11-12","yyyy-MM-dd");
+ * dateHelper.parse('2015-11-12','yyyy-MM-dd');
  * ```
  *
  * @param {String} input  字符串
@@ -230,7 +231,7 @@ proto.parse = function(input, format) {
         second = parts[fmt['ss']] || parts[fmt['s']] || 0;
 
     return new Date(year, month, day, hour, minute, second);
-}
+};
 
 var dateHelper = new DateHelper();
 

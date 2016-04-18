@@ -36,13 +36,14 @@ var core = require('./core'),
     template = require('./tpl/dialog');
 
 var Dialog = function(options) {
-        var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
+    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
 
-        //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
-        //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
-        init.call(this);
-    },
-    $body = $('body'),
+    //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
+    //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
+    init.call(this);
+};
+
+var $body = $('body'),
     proto = Dialog.prototype;
 
 var ZOOMIN_CLASS = 'kub-animated kub-zoomIn',
@@ -96,7 +97,6 @@ proto.defaults = {
 };
 
 var render = function(data) {
-
     var html = template({
         data: data
     });
@@ -116,9 +116,9 @@ var init = function() {
     //渲染数据
     render.call(self, options);
 
-    this.$dialog = this.$element.find(DIALOG_SELECTOR);
+    self.$dialog = self.$element.find(DIALOG_SELECTOR);
 
-    self.setPosition();
+    self.setPosition && self.setPosition();
 
     self.show();
 
@@ -131,7 +131,6 @@ var init = function() {
     });
 };
 
-proto.setPosition = function() {}
 
 /**
  * ## show
@@ -168,15 +167,14 @@ proto.hide = function() {
  * @return {instance} 返回当前实例
  */
 proto.close = function() {
-    var self = this,
-        opts = this.options;
+    var opts = this.options;
 
     if (opts.closeHandler && opts.closeHandler.call(this) === false) {
         return this;
     }
 
     this.hide();
-    self.$element.remove();
+    this.$element.remove();
 
     return this;
 };

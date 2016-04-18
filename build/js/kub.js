@@ -95,9 +95,14 @@
 	    }
 
 	    if (typeof selector === 'object') {
-	        if ($.isArrayLike(selector)) {
+	        if (selector._l) {
+
+	            return selector;
+	        } else if ($.isArrayLike(selector)) {
+
 	            return wrap(slice.call(selector), selector);
 	        } else {
+
 	            //$(document)
 	            return wrap([selector], selector);
 	        }
@@ -106,19 +111,20 @@
 	    if (typeof selector === 'string') {
 	        if (selector[0] === '<'){
 	            var nodes = $.fragment(selector);
-
-	            return wrap(slice.call(nodes), nodes);
+	            return wrap(nodes, nodes);
 	        }
 
 	        return wrap($.qsa(selector, context), selector);
 	    }
 
-	    return wrap();
+	    return wrap()
 	};
 
 	function wrap(dom, selector) {
 	    dom = dom || [];
+
 	    Object.setPrototypeOf(dom, $.fn);
+
 	    dom.selector = selector || '';
 	    return dom;
 	}
@@ -141,15 +147,15 @@
 	        }
 
 	        return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector));
-	    };
+	    }
 
 	    this.fragment = function(html){
 	        var div = document.createElement('div'),nodes ;
 	        div.innerHTML = html;
 	        nodes = div.children;
 	        div = null;
-	        return nodes;
-	    };
+	        return slice.call(nodes);
+	    }
 
 	    this.isArrayLike = function(obj) {
 	        return typeof obj.length == 'number'
@@ -164,6 +170,8 @@
 	    }
 
 	    this.fn = this.prototype = {
+
+	        _l : true,
 
 	        each: function(callback) {
 	            var l = this.length,
@@ -272,7 +280,7 @@
 
 	        off: function(name, callback) {
 	            return this.each(function() {
-	                this.removeEventListener(name, callback, false);
+	                callback ? this.removeEventListener(name, callback, false) : this.removeEventListener(name) ;
 	            });
 	        },
 
@@ -282,10 +290,10 @@
 	            });
 	        },
 
-	        trigger: function(eventType, eventData) {
+	        trigger: function(type, detail) {
 	            return this.each(function() {
-	                this.dispatchEvent(new CustomEvent(eventType, {
-	                    detail: eventData,
+	                this.dispatchEvent(new CustomEvent(type, {
+	                    detail: detail,
 	                    bubbles: true,
 	                    cancelable: true
 	                }));
@@ -396,9 +404,9 @@
 	 */
 	var Core = function() {
 
-	    },
-	    toString = Object.prototype.toString,
-	    proto = Core.prototype;
+	},
+	toString = Object.prototype.toString,
+	proto = Core.prototype;
 
 	proto.constructor = Core;
 
@@ -442,7 +450,7 @@
 	//function also is object
 	proto.isObject = function(obj) {
 	    return this.isFunction(obj) || toString.call(obj) === '[object Object]';
-	}
+	};
 
 	/**
 	 * ## inherit
@@ -458,7 +466,7 @@
 	    c.prototype = new F();
 	    c.prototype.constructor = c;
 	    c.uber = p.prototype;
-	}
+	};
 
 	/**
 	 * ## htmlToText
@@ -471,7 +479,7 @@
 	proto.htmlToText = function(value) {
 	    //.replace(/&nbsp;|&#160;/gi, '')
 	    return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '');
-	}
+	};
 
 	/**
 	 *
@@ -484,7 +492,7 @@
 	    var matchs;
 	    url = url || window.location.href;
 	    return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/)) && matchs[1];
-	}
+	};
 
 	//解析 param string 正则表达式
 	var paramsRegxp = /([^=&]+)(=([^&#]*))?/g;
@@ -574,7 +582,7 @@
 	    return url.replace(/^([^#\?]*)[^#]*/, function(a, url, hash) {
 	        return url + (_queryString ? '?' + _queryString : '');
 	    });
-	}
+	};
 
 	/**
 	 * ## getQuerystring
@@ -590,17 +598,18 @@
 	 * @return {Object} 返回参数对象
 	 */
 	proto.getQuerystring = function(url, opts) {
+	    var href = window.location.href;
 
 	    if (this.isObject(url)) {
 	        opts = url;
-	        url = window.location.href;
+	        url = href;
 	    }
 
 	    opts = this.extend({
 	        raw: false
 	    }, opts || {});
 
-	    url = url || window.location.href;
+	    url = url || href;
 
 	    var params = {},
 	        queryString = getParamsString(url);
@@ -610,7 +619,7 @@
 	    });
 
 	    return params;
-	}
+	};
 
 	module.exports = new Core();
 
@@ -721,16 +730,17 @@
 	 * 使用：
 	 * ```js
 	 * //String to Date
-	 * "2015-05-20".parseDate("yyyy-MM-dd");
+	 * '2015-05-20'.parseDate('yyyy-MM-dd');
 	 *
 	 * //格式化日期
-	 * (new Date()).format("yyyy-MM-dd,hh:mm:ss");
+	 * (new Date()).format('yyyy-MM-dd,hh:mm:ss');
 	 * ```
 	 */
 	var DateHelper = function() {
 
-	    },
-	    proto = DateHelper.prototype;
+	};
+
+	var proto = DateHelper.prototype;
 
 	proto.constructor = DateHelper;
 
@@ -764,10 +774,10 @@
 	            full: ['上午', '下午']
 	        }
 	    }
-	}
+	};
 
 	//默认中文
-	proto.locale = "zh";
+	proto.locale = 'zh';
 
 	/**
 	 * ## addLocale
@@ -781,7 +791,7 @@
 	proto.addLocale = function(name, locale) {
 	    name && locale && (this.i18n[name] = locale);
 	    return this;
-	}
+	};
 
 	/**
 	 * ## setLocale
@@ -794,14 +804,14 @@
 	proto.setLocale = function(name) {
 	    this.locale = name;
 	    return this;
-	}
+	};
 
 	var _get2Year = function(date) {
-	    return (date.getFullYear() + "").replace(/\d{2}$/, "00") - 0;
+	    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0;
 	};
 
 	var _get2 = function(value) {
-	    return value < 10 ? "0" + value : value;
+	    return value < 10 ? '0' + value : value;
 	};
 
 	var _getAmPm = function(date) {
@@ -832,7 +842,7 @@
 	        a: self.i18n[self.locale].amPm.abbr[_getAmPm(date)]
 	    };
 	    return patterns[fmt];
-	}
+	};
 
 	/**
 	 * ## format
@@ -847,13 +857,13 @@
 	    var self = this;
 	    if (!date) return;
 
-	    format = format || "yyyy-MM-dd";
+	    format = format || 'yyyy-MM-dd';
 
 	    format = format.replace(/(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|mm|m|ss|s|aa|a)/g, function(part) {
 	        return _getValueByPattern.call(self, part, date);
 	    });
 	    return format;
-	}
+	};
 
 	/**
 	 * ## parse
@@ -864,13 +874,13 @@
 	 *
 	 * ```js
 	 * //1112会被计算在MM内。
-	 * dateHelper.parse("2015-1112","yyyy-MMdd");
+	 * dateHelper.parse('2015-1112','yyyy-MMdd');
 	 * ```
 	 *
 	 * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
 	 *
 	 * ```js
-	 * dateHelper.parse("2015-11-12","yyyy-MM-dd");
+	 * dateHelper.parse('2015-11-12','yyyy-MM-dd');
 	 * ```
 	 *
 	 * @param {String} input  字符串
@@ -901,7 +911,7 @@
 	        second = parts[fmt['ss']] || parts[fmt['s']] || 0;
 
 	    return new Date(year, month, day, hour, minute, second);
-	}
+	};
 
 	var dateHelper = new DateHelper();
 
@@ -954,7 +964,7 @@
 	            days = (options.expires);
 	            time = options.expires = new Date();
 
-	            time.setTime(time.getTime() + days)
+	            time.setTime(time.getTime() + days);
 	        }
 
 	        value = String(value);
@@ -966,7 +976,7 @@
 	            options.path ? '; path=' + options.path : '',
 	            options.domain ? '; domain=' + options.domain : '',
 	            options.secure ? '; secure' : ''
-	        ].join(''))
+	        ].join(''));
 	    }
 
 	    // Key and possibly options given, get cookie
@@ -1175,7 +1185,7 @@
 	    if (!original) {
 	        return;
 	    }
-	    if ($element.is('img')) {
+	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original);
 	    } else {
 	        $element.css('background-image', 'url(' + original + ')');
@@ -1337,13 +1347,14 @@
 	    template = __webpack_require__(9);
 
 	var Dialog = function(options) {
-	        var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
+	    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
 
-	        //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
-	        //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
-	        init.call(this);
-	    },
-	    $body = $('body'),
+	    //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
+	    //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
+	    init.call(this);
+	};
+
+	var $body = $('body'),
 	    proto = Dialog.prototype;
 
 	var ZOOMIN_CLASS = 'kub-animated kub-zoomIn',
@@ -1397,7 +1408,6 @@
 	};
 
 	var render = function(data) {
-
 	    var html = template({
 	        data: data
 	    });
@@ -1417,9 +1427,9 @@
 	    //渲染数据
 	    render.call(self, options);
 
-	    this.$dialog = this.$element.find(DIALOG_SELECTOR);
+	    self.$dialog = self.$element.find(DIALOG_SELECTOR);
 
-	    self.setPosition();
+	    self.setPosition && self.setPosition();
 
 	    self.show();
 
@@ -1432,7 +1442,6 @@
 	    });
 	};
 
-	proto.setPosition = function() {}
 
 	/**
 	 * ## show
@@ -1469,15 +1478,14 @@
 	 * @return {instance} 返回当前实例
 	 */
 	proto.close = function() {
-	    var self = this,
-	        opts = this.options;
+	    var opts = this.options;
 
 	    if (opts.closeHandler && opts.closeHandler.call(this) === false) {
 	        return this;
 	    }
 
 	    this.hide();
-	    self.$element.remove();
+	    this.$element.remove();
 
 	    return this;
 	};
@@ -1564,10 +1572,7 @@
 
 	        Dialog.call(this, opts);
 	    },
-	    proto = Alert.prototype;
-
-	//继承于 `Dialog`
-	core.inherit(Alert, Dialog);
+	    proto = Alert.prototype = Object.create(Dialog.prototype);
 
 	proto.constructor = Alert;
 
@@ -1638,7 +1643,7 @@
 
 	        var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {});
 
-	        this.options.buttons = [{
+	        opts.buttons = [{
 	            text: opts.cancelText,
 	            handler: opts.cancel || function(e, dialog) {
 	                dialog.close();
@@ -1650,10 +1655,8 @@
 
 	        Dialog.call(this, opts);
 	    },
-	    proto = Confirm.prototype;
+	    proto = Confirm.prototype = Object.create(Dialog.prototype);
 
-	//继承于 `Dialog`
-	core.inherit(Confirm, Dialog);
 
 	proto.constructor = Confirm;
 
@@ -1684,7 +1687,7 @@
 	    showHeader: false,
 	    className: "kub-confirm",
 	    modal: true
-	}
+	};
 
 	module.exports = Confirm;
 
@@ -1722,34 +1725,32 @@
 	    template = __webpack_require__(13);
 
 	var Prompt = function(options) {
-	        var self = this,
-	            opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
+	    var self = this,
+	        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
 
-	        opts.buttons = [{
-	            text: opts.cancelText,
-	            handler: opts.cancel || function(e, dialog) {
-	                dialog.close();
-	            }
-	        }, {
-	            text: opts.confirmText,
-	            handler: function(e, dialog) {
-	                dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value;
-	                opts.confirm && opts.confirm.call(this, e, dialog);
-	            }
-	        }];
+	    opts.buttons = [{
+	        text: opts.cancelText,
+	        handler: opts.cancel || function(e, dialog) {
+	            dialog.close();
+	        }
+	    }, {
+	        text: opts.confirmText,
+	        handler: function(e, dialog) {
+	            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value;
+	            opts.confirm && opts.confirm.call(this, e, dialog);
+	        }
+	    }];
 
-	        opts.message = template({
-	            data: opts
-	        });
+	    opts.message = template({
+	        data: opts
+	    });
 
-	        Dialog.call(this, opts);
-	    },
-	    proto = Prompt.prototype;
+	    Dialog.call(this, opts);
+	};
+
+	var proto = Prompt.prototype = Object.create(Dialog.prototype);
 
 	var INPUT_SELECTOR = '#J_input';
-
-	//继承于 `Dialog`
-	core.inherit(Prompt, Dialog);
 
 	proto.constructor = Prompt;
 
@@ -1790,7 +1791,7 @@
 	    inputType: 'text',
 	    placeholder: '',
 	    defaultValue: ''
-	}
+	};
 
 	module.exports = Prompt;
 
@@ -1843,20 +1844,18 @@
 	    Dialog = __webpack_require__(8);
 
 	var Toast = function(options){
-	        var self = this,
-	            opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
+	    var self = this,
+	        opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
 
-	        Dialog.call(this, opts);
+	    Dialog.call(this, opts);
 
-	        //自动关闭
-	        setTimeout(function(){
-	            self.close();
-	        }, opts.delay);
-	    },
-	    proto = Toast.prototype;
+	    //自动关闭
+	    setTimeout(function(){
+	        self.close();
+	    }, opts.delay);
+	};
 
-	//继承于 `Dialog`
-	core.inherit(Toast,Dialog);
+	var proto = Toast.prototype = Object.create(Dialog.prototype);
 
 	proto.constructor = Toast;
 
@@ -1884,14 +1883,16 @@
 	    showHeader:false,
 	    buttons:null,
 	    modal:false
-	}
+	};
 
 	proto.setPosition = function(){
+	    var top = this.options.top;
+
 	    this.$element.css({
-	        top:this.options.top
+	        top:core.isNumber(top) ? top + 'px' : top
 	    });
 	    return this;
-	}
+	};
 
 	module.exports = Toast;
 
@@ -1925,19 +1926,17 @@
 	    template = __webpack_require__(16);
 
 	var Loader = function(options) {
-	        var self = this,
-	            opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
+	    var self = this,
+	        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
 
-	        opts.message = template({
-	            data: this.options
-	        });
+	    opts.message = template({
+	        data: this.options
+	    });
 
-	        Dialog.call(this, opts);
-	    },
-	    proto = Loader.prototype;
+	    Dialog.call(this, opts);
+	};
 
-	//继承于 `Dialog`
-	core.inherit(Loader, Dialog);
+	var proto = Loader.prototype = Object.create(Dialog.prototype);
 
 	proto.constructor = Loader;
 
@@ -1962,7 +1961,7 @@
 
 	    showHeader: false,
 	    buttons: null
-	}
+	};
 
 	module.exports = Loader;
 

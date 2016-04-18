@@ -22,20 +22,18 @@ var core = require('./core'),
     Dialog = require('./dialog');
 
 var Toast = function(options){
-        var self = this,
-            opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
+    var self = this,
+        opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
 
-        Dialog.call(this, opts);
+    Dialog.call(this, opts);
 
-        //自动关闭
-        setTimeout(function(){
-            self.close();
-        }, opts.delay);
-    },
-    proto = Toast.prototype;
+    //自动关闭
+    setTimeout(function(){
+        self.close();
+    }, opts.delay);
+};
 
-//继承于 `Dialog`
-core.inherit(Toast,Dialog);
+var proto = Toast.prototype = Object.create(Dialog.prototype);
 
 proto.constructor = Toast;
 
@@ -63,13 +61,15 @@ proto.defaults = {
     showHeader:false,
     buttons:null,
     modal:false
-}
+};
 
 proto.setPosition = function(){
+    var top = this.options.top;
+
     this.$element.css({
-        top:this.options.top
+        top:core.isNumber(top) ? top + 'px' : top
     });
     return this;
-}
+};
 
 module.exports = Toast;
