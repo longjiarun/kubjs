@@ -35,20 +35,21 @@ var core = require('./core'),
     $ = require('./lite'),
     template = require('./tpl/dialog');
 
-var Dialog = function(options) {
+function Dialog(options) {
     var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
 
     //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
     //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
     init.call(this);
-};
+}
 
 var $body = $('body'),
     proto = Dialog.prototype;
 
 var ZOOMIN_CLASS = 'kub-animated kub-zoomIn',
-    DIALOG_SELECTOR = '#J_dialog',
-    DIALOG_BUTTON_SELECTOR = '.J_dialogButton';
+    DIALOG_SELECTOR = '.J_dialog',
+    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
+    EVENT_NAME = 'click';
 
 proto.constructor = Dialog;
 
@@ -104,31 +105,40 @@ var render = function(data) {
     return this;
 };
 
-var init = function() {
-    var self = this,
-        options = self.options;
-
+var fixed = function(){
     //解决 iphone 下，fixed定位问题
     setTimeout(function() {
         window.scrollTo(window.scrollX, window.scrollY);
     }, 5);
+};
 
-    //渲染数据
-    render.call(self, options);
-
-    self.$dialog = self.$element.find(DIALOG_SELECTOR);
-
-    self.setPosition && self.setPosition();
-
-    self.show();
+var bindEvents = function(){
+    var self = this,
+        options = self.options;
 
     //注册按钮事件
-    self.$element.find(DIALOG_BUTTON_SELECTOR).on('click', function(e) {
+    self.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
         var index = parseInt($(this).attr('data-index')),
             button = options.buttons[index];
 
         button.handler && button.handler.call(this, e, self);
     });
+};
+
+var init = function() {
+
+    fixed();
+
+    //渲染数据
+    render.call(this, this.options);
+
+    this.$dialog = this.$element.find(DIALOG_SELECTOR);
+
+    this.setPosition && this.setPosition();
+
+    this.show();
+
+    bindEvents.call(this);
 };
 
 

@@ -21,7 +21,7 @@
 var core = require('./core'),
     Dialog = require('./dialog');
 
-var Toast = function(options){
+function Toast(options){
     var self = this,
         opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
 
@@ -31,7 +31,7 @@ var Toast = function(options){
     setTimeout(function(){
         self.close();
     }, opts.delay);
-};
+}
 
 var proto = Toast.prototype = Object.create(Dialog.prototype);
 

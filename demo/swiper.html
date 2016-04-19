@@ -113,26 +113,34 @@
     <button class="next-button" >下一张</button>
 </div>
 
-<script type="text/javascript" src="../build/js/lib/zepto.js"></script>
-<script type="text/javascript" src="../build/js/lib/hammer.js"></script>
-<script type="text/javascript" src="../build/js/swiper.js"></script>
+
+<script type="text/javascript" src="../build/js/kub.js"></script>
 <script type="text/javascript">
 function test(){
-    //横向滚动
-    var $swiperWrap = $(".J_horizontal");
-    new Kub.Swiper($swiperWrap.find(".swiper"),{
-        auto:true,
-        slideSelector:$swiperWrap.find(".slide"),
-        slideActiveClass:"active",
-        paginationSelector:$swiperWrap.find(".pagination li"),
-        paginationActiveClass:"pagination-active",
-        nextButton:$swiperWrap.find(".next-button"),
-        prevButton:$swiperWrap.find(".prev-button"),
-        //滚动时触发slide事件
-        slide:function(index){
-            //console.log("slide:"+index,this)
-        }
-    });
+    var $ = Kub.$;
+
+    try{
+        //横向滚动
+        var $swiperWrap = $(".J_horizontal");
+        var swiper = new Kub.Swiper($swiperWrap.find(".swiper"),{
+            auto:false,
+            slideSelector:$swiperWrap.find(".slide"),
+            slideActiveClass:"active",
+            paginationSelector:$swiperWrap.find(".pagination li"),
+            paginationActiveClass:"pagination-active",
+            nextButton:$swiperWrap.find(".next-button"),
+            prevButton:$swiperWrap.find(".prev-button"),
+            //滚动时触发slide事件
+            slide:function(index){
+                //console.log("slide:"+index,this)
+            }
+        });
+
+        console.log(swiper)
+    }catch(e){
+        alert(e.message)
+    }
+
 
     //纵向滚动
     var $swiperWrap1 = $(".J_vertical");

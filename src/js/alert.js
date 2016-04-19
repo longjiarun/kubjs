@@ -4,9 +4,6 @@
  *
  * @extend [Dialog](dialog.js.html)
  */
-var core = require('./core'),
-    $ = require('./lite'),
-    Dialog = require('./dialog');
 
 /**
  * ## Alert Constructor
@@ -19,19 +16,24 @@ var core = require('./core'),
  * ```
  */
 
-var Alert = function(options) {
-        var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {});
+var core = require('./core'),
+    $ = require('./lite'),
+    Dialog = require('./dialog');
 
-        opts.buttons = [{
-            text: opts.confirmText,
-            handler: this.options.confirm || function(e, dialog) {
-                dialog.close();
-            }
-        }];
+function Alert(options) {
+    var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {});
 
-        Dialog.call(this, opts);
-    },
-    proto = Alert.prototype = Object.create(Dialog.prototype);
+    opts.buttons = [{
+        text: opts.confirmText,
+        handler: this.options.confirm || function(e, dialog) {
+            dialog.close();
+        }
+    }];
+
+    Dialog.call(this, opts);
+}
+
+var proto = Alert.prototype = Object.create(Dialog.prototype);
 
 proto.constructor = Alert;
 

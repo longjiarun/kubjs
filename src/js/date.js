@@ -56,9 +56,9 @@
  * (new Date()).format('yyyy-MM-dd,hh:mm:ss');
  * ```
  */
-var DateHelper = function() {
+function DateHelper() {
 
-};
+}
 
 var proto = DateHelper.prototype;
 

@@ -9,7 +9,8 @@ var Kub = window.Kub = {
     Confirm: require('./confirm'),
     Prompt: require('./prompt'),
     Toast: require('./toast'),
-    Loader: require('./loader')
+    Loader: require('./loader'),
+    Swiper: require('./swiper')
 };
 
 

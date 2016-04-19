@@ -11,7 +11,7 @@
  * @param {Object} options 配置项
  * @return {String}  如果未取值，则返回取到的值，如果未赋值，则返回空。
  */
-var cookie = function (key, value, options) {
+function cookie(key, value, options) {
     var days, time, result, decode;
 
     options = options || {};
@@ -51,6 +51,6 @@ var cookie = function (key, value, options) {
     decode = options.raw ? function (s) { return s } : decodeURIComponent;
 
     return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null
-};
+}
 
 module.exports = cookie;

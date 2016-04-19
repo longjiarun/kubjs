@@ -24,24 +24,23 @@ var core = require('./core'),
     $ = require('./lite'),
     Dialog = require('./dialog');
 
-var Confirm = function(options) {
+function Confirm(options) {
+    var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {});
 
-        var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {});
+    opts.buttons = [{
+        text: opts.cancelText,
+        handler: opts.cancel || function(e, dialog) {
+            dialog.close();
+        }
+    }, {
+        text: opts.confirmText,
+        handler: opts.confirm
+    }];
 
-        opts.buttons = [{
-            text: opts.cancelText,
-            handler: opts.cancel || function(e, dialog) {
-                dialog.close();
-            }
-        }, {
-            text: opts.confirmText,
-            handler: opts.confirm
-        }];
+    Dialog.call(this, opts);
+}
 
-        Dialog.call(this, opts);
-    },
-    proto = Confirm.prototype = Object.create(Dialog.prototype);
-
+var proto = Confirm.prototype = Object.create(Dialog.prototype);
 
 proto.constructor = Confirm;
 

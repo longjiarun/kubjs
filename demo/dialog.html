@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>Dialog Test</title>
 </head>
@@ -16,23 +15,14 @@
         height: 10000px;
     }
 </style>
-<script type="text/html" id="J_dialogTemplate">
-    
-</script>
-<link rel="stylesheet" type="text/css" href="../build/css/reset.css">
 
-<link rel="stylesheet" type="text/css" href="../build/css/dialog.css">
-<script type="text/javascript" src="../build/js/lib/zepto.js"></script>
-<script type="text/javascript" src="../build/js/lib/underscore.js"></script>
-<script type="text/javascript" src="../build/js/dialog.js"></script>
-<script type="text/javascript" src="../build/js/alert.js"></script>
-<script type="text/javascript" src="../build/js/confirm.js"></script>
-<script type="text/javascript" src="../build/js/prompt.js"></script>
-<script type="text/javascript" src="../build/js/toast.js"></script>
-<script type="text/javascript" src="../build/js/loader.js"></script>
+<link rel="stylesheet" type="text/css" href="../build/css/kub.css">
+<script type="text/javascript" src="../build/js/kub.js"></script>
 
 <script type="text/javascript">
 function test(){
+
+    var $ = Kub.$;
 
     new Kub.Confirm({
         message:"这是一个confirm",
@@ -41,7 +31,7 @@ function test(){
         }
     });
 
-    
+
 
     //loading 弹窗，用于在loading时，阻塞用户行为
     var loader = new Kub.Loader();
@@ -77,7 +67,8 @@ function test(){
             }
         }]
     });
-    console.log(dialog)
+    console.log($)
+    debugger;
 
     $("#J_button").on("click",function(){
         var alert = new Kub.Alert({
@@ -94,7 +85,7 @@ function test(){
         console.log(alert);
     });
 
-    
+
     var prompt = new Kub.Prompt({
         message:"这是个prompt:",
         placeholder:"输入提示文字",
@@ -121,7 +112,7 @@ function test(){
         }
     });
     console.log(prompt);
-}  
+}
 test();
 </script>
 </body>

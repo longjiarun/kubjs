@@ -41,6 +41,7 @@ gulp.task('js', function() {
                 loaders: []
             }
         }))
+        //.pipe(uglify())
         .pipe(gulp.dest(build))
 });
 

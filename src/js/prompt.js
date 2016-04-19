@@ -26,7 +26,7 @@ var core = require('./core'),
     Dialog = require('./dialog'),
     template = require('./tpl/prompt');
 
-var Prompt = function(options) {
+function Prompt(options) {
     var self = this,
         opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
 
@@ -48,7 +48,7 @@ var Prompt = function(options) {
     });
 
     Dialog.call(this, opts);
-};
+}
 
 var proto = Prompt.prototype = Object.create(Dialog.prototype);
 

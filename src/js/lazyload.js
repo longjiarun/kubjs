@@ -16,18 +16,20 @@
  * ```
  */
 
-var $ = require('./lite');
-var LazyLoad = function(element, options) {
-        this.$element = $(element);
+var $ = require('./lite'),
+    core = require('./core');
 
-        this.options = $.extend({}, LazyLoad.prototype.defaults, options || {});
-        this.$window = $(window);
-        this.$container = (this.options.container === undefined ||
-            this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container));
-        _init.call(this);
-    },
+function LazyLoad(element, options) {
+    this.$element = $(element);
 
-    proto = LazyLoad.prototype;
+    this.options = core.extend({}, LazyLoad.prototype.defaults, options || {});
+    this.$window = $(window);
+    this.$container = (this.options.container === undefined ||
+        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container));
+    _init.call(this);
+}
+
+var proto = LazyLoad.prototype;
 
 proto.constructor = LazyLoad;
 
@@ -76,10 +78,13 @@ proto.updateElement = function(element) {
  * @return {instance} 当前实例
  */
 proto.getUnloadedElements = function() {
-    var self = this;
-    return self.$element.filter(function(index) {
-        return !this.loaded;
+    var self = this,dom = [];
+
+    return self.$element.each(function(index) {
+        !this.loaded && dom.push(this);
     });
+
+    return $(dom);
 };
 
 /**
@@ -237,11 +242,13 @@ proto.isInViewport = function($this) {
  * @return {Boolean}        是：true 否 ：false
  */
 proto.belowthefold = function(element, settings) {
-    var fold, $window = $(window);
+    var fold;
     if (settings.container === undefined || settings.container === window) {
-        fold = (window.innerHeight ? window.innerHeight : $window.height()) + $window.scrollTop();
+        fold = window.innerHeight  + window.scrollY;
     } else {
-        fold = $(settings.container).offset().top + $(settings.container).height();
+        var offset = $(settings.container).offset();
+
+        fold = offset.top + offset.height;
     }
 
     return fold <= $(element).offset().top - settings.threshold;
@@ -257,15 +264,16 @@ proto.belowthefold = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 proto.abovethetop = function(element, settings) {
-    var fold, $window = $(window);
+    var fold;
 
     if (settings.container === undefined || settings.container === window) {
-        fold = $window.scrollTop();
+        fold = window.scrollY;
     } else {
         fold = $(settings.container).offset().top;
     }
 
-    return fold >= $(element).offset().top + settings.threshold + $(element).height();
+    var offset = $(element).offset();
+    return fold >= offset.top + settings.threshold + offset.height;
 };
 
 /**
@@ -278,11 +286,12 @@ proto.abovethetop = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 proto.rightoffold = function(element, settings) {
-    var fold, $window = $(window);
+    var fold;
     if (settings.container === undefined || settings.container === window) {
-        fold = $window.width() + $window.scrollLeft();
+        fold = window.innerWidth + window.scrollX;
     } else {
-        fold = $(settings.container).offset().left + $(settings.container).width();
+        var offset = $(settings.container).offset();
+        fold = offset.left + offset.width;
     }
     return fold <= $(element).offset().left - settings.threshold;
 };
@@ -297,13 +306,16 @@ proto.rightoffold = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 proto.leftofbegin = function(element, settings) {
-    var fold, $window = $(window);
+    var fold;
     if (settings.container === undefined || settings.container === window) {
-        fold = $window.scrollLeft();
+        fold = window.scrollX;
     } else {
         fold = $(settings.container).offset().left;
     }
-    return fold >= $(element).offset().left + settings.threshold + $(element).width();
+
+    var offset = $(element).offset();
+
+    return fold >= offset.left + settings.threshold + offset.width;
 };
 
 module.exports = LazyLoad;

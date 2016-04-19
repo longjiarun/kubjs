@@ -22,7 +22,7 @@ var core = require('./core'),
     Dialog = require('./dialog'),
     template = require('./tpl/loader');
 
-var Loader = function(options) {
+function Loader(options) {
     var self = this,
         opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
 
@@ -31,7 +31,7 @@ var Loader = function(options) {
     });
 
     Dialog.call(this, opts);
-};
+}
 
 var proto = Loader.prototype = Object.create(Dialog.prototype);
 

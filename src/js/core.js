@@ -17,11 +17,12 @@ var os = require('./detect');
  *
  * ```
  */
-var Core = function() {
+function Core() {
 
-},
-toString = Object.prototype.toString,
-proto = Core.prototype;
+}
+
+var toString = Object.prototype.toString,
+    proto = Core.prototype;
 
 proto.constructor = Core;
 
