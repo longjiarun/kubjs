@@ -9,13 +9,15 @@ var $ = Lite = function Lite(selector, context) {
         return $.ready(selector);
     }
 
+    if (isArray(selector)) {
+        //$([document,document.body]) not $(window)
+        return wrap(slice.call(selector), selector);
+    }
+
     if (typeof selector === 'object') {
         if (selector._l) {
 
             return selector;
-        } else if ($.isArrayLike(selector)) {
-
-            return wrap(slice.call(selector), selector);
         } else {
 
             //$(document)
@@ -50,7 +52,7 @@ var slice = Array.prototype.slice,
 function wrap(dom, selector) {
     dom = dom || [];
 
-    Object.setPrototypeOf(dom, $.fn);
+    Object.setPrototypeOf ? Object.setPrototypeOf(dom, $.fn): (dom.__proto__ = $.fn);
 
     dom.selector = selector || '';
     return dom;
@@ -63,6 +65,11 @@ function dasherize(str) {
         .replace(/_/g, '-')
         .toLowerCase();
 }
+
+var isArray = Array.isArray ||
+    function(object) {
+        return object instanceof Array
+    };
 
 (function() {
 
@@ -78,10 +85,6 @@ function dasherize(str) {
         nodes = div.children;
         div = null;
         return slice.call(nodes);
-    }
-
-    this.isArrayLike = function(obj) {
-        return typeof obj.length == 'number';
     }
 
     this.ready = function(callback) {
@@ -159,7 +162,9 @@ function dasherize(str) {
             var css = '';
             if (isObject) {
                 for (var key in property) {
-                    property[key] == null ? this.style.removeProperty(key) : (css += dasherize(key) + ':' + property[key] + ';');
+                    property[key] == null ? this.each(function() {
+                        this.style.removeProperty(key)
+                    }) : (css += dasherize(key) + ':' + property[key] + ';');
                 }
             } else {
                 css += dasherize(key) + ':' + property[key] + ';'
@@ -211,7 +216,7 @@ function dasherize(str) {
                 var className = this.className;
 
                 name.trim().split(/\s+/g).forEach(function(klass) {
-                    className = className.replace(new RegExp('(^|\\s)' + klass + '(\\s|$)', 'g'), " ");
+                    className = className.replace(new RegExp('(^|\\s)' + klass + '(\\s|$)', 'g'), "");
                 })
 
                 this.className = className;
@@ -266,9 +271,10 @@ function dasherize(str) {
 
         removeAttr: function(name) {
             return this.each(function() {
+                var self = this;
                 this.nodeType === 1 && name.split(/\s+/g).forEach(function(attribute) {
-                    this.removeAttribute(attribute);
-                }, this);
+                    self.removeAttribute(attribute);
+                });
             })
         },
 

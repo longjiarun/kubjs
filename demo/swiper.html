@@ -8,23 +8,36 @@
 </head>
 <body>
 <style type="text/css">
-
+body{
+    height: 4000px;
+    width:400px;
+    margin:0 auto;
+}
 .horizontal .swiper-wraper{
     width:100%;
     height: 200px;
     overflow: hidden;
 }
 .horizontal .swiper{
-    /*width:400%;
+    width: 600%;
     display: table;
-    content:" ";*/
+    content:" ";
     height: 100%;
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
 }
 
 .horizontal .slide{
-    /*float:left;
-    width:25%;*/
     height: 100%;
+
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+
+    font-size:100px;
+    color:#fff;
 }
 
 .slide1{
@@ -50,11 +63,10 @@
     overflow:hidden;
 }
 .vertical .swiper{
-    /*height: 400%;*/
-    height: 100%;
+    height: 400%;
 }
 .vertical .slide{
-    height: 100%;
+    height: 25%;
 }
 </style>
 <div class="J_horizontal horizontal">
@@ -81,8 +93,6 @@
         <li>3</li>
         <li>4</li>
     </ul>
-    <button class="prev-button" >上一张</button>
-    <button class="next-button" >下一张</button>
 </div>
 
 //垂直滚动
@@ -109,8 +119,6 @@
         <li>3</li>
         <li>4</li>
     </ul>
-    <button class="prev-button" >上一张</button>
-    <button class="next-button" >下一张</button>
 </div>
 
 
@@ -123,20 +131,18 @@ function test(){
         //横向滚动
         var $swiperWrap = $(".J_horizontal");
         var swiper = new Kub.Swiper($swiperWrap.find(".swiper"),{
-            auto:false,
+            infinite:true,
             slideSelector:$swiperWrap.find(".slide"),
             slideActiveClass:"active",
             paginationSelector:$swiperWrap.find(".pagination li"),
             paginationActiveClass:"pagination-active",
-            nextButton:$swiperWrap.find(".next-button"),
-            prevButton:$swiperWrap.find(".prev-button"),
             //滚动时触发slide事件
             slide:function(index){
-                //console.log("slide:"+index,this)
+                console.log("slide:"+index,this)
             }
         });
 
-        console.log(swiper)
+        console.log(swiper.slide(3))
     }catch(e){
         alert(e.message)
     }
@@ -144,20 +150,19 @@ function test(){
 
     //纵向滚动
     var $swiperWrap1 = $(".J_vertical");
-    new Kub.Swiper($swiperWrap1.find(".swiper"),{
+    var swiper1 = new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
         paginationSelector:$swiperWrap1.find(".pagination li"),
         paginationActiveClass:"pagination-active",
-        nextButton:$swiperWrap1.find(".next-button"),
-        prevButton:$swiperWrap1.find(".prev-button"),
         //默认滚动位置
-        initialSlide:1,
         slide:function(index){
-            //console.log("slide:"+index)
+            console.log("slide:"+index)
         }
     });
+
+    console.log(swiper1.next === swiper.next)
 }
 test();
 </script>
