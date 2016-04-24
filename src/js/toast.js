@@ -23,7 +23,7 @@ var core = require('./core'),
 
 function Toast(options){
     var self = this,
-        opts = this.options = core.extend({},Toast.prototype.defaults, options||{})
+        opts = this.options = core.extend({}, _prototype.defaults, options||{})
 
     Dialog.call(this, opts)
 

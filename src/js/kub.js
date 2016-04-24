@@ -35,6 +35,7 @@
     } else if (typeof module !== 'undefined' && module.exports) {
         module.exports = Kub
     }
+
 // } catch (e) {
 //     alert(e.message)
 // }

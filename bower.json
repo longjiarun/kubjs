@@ -1,28 +1,34 @@
 {
-  "name":"kubjs",
-  "description": "kubjs",
-  "main": "src/js/kub.js",
-  "authors": [
-    "longjia"
-  ],
-  "license": "MIT",
-  "keywords": [
-    "kub",
-    "webpack",
-    "component",
-    "UI"
-  ],
-  "moduleType": [],
-  "homepage": "",
-  "private": false,
-  "ignore": [
-    "node_modules",
-    "bower_components",
-    "demo",
-    "docs",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-  }
+    "name": "kub",
+    "version": "2.0.0",
+    "description": "mobile js library",
+    "main": "src/js/kub.js",
+    "authors": [
+        "longjia <longjiarun@qq.com>"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/longjiarun/kubjs.git"
+    },
+    "license": "MIT",
+    "keywords": [
+        "kub",
+        "webpack",
+        "component",
+        "mobile",
+        "ui"
+    ],
+    "moduleType": ["commonjs"],
+    "homepage": "",
+    "private": false,
+    "ignore": [
+        "/.*",
+        "node_modules",
+        "bower_components",
+        "demo",
+        "build",
+        "test",
+        "server.js"
+    ],
+    "dependencies": {}
 }

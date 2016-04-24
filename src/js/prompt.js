@@ -30,7 +30,7 @@ var INPUT_SELECTOR = '.J_input'
 
 function Prompt(options) {
     var self = this,
-        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {})
+        opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.cancelText,

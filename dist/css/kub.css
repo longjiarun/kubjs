@@ -1,0 +1,224 @@
+/*! Kub Mobile JavaScript Library v2.0.0  (https://github.com/longjiarun/kubjs.git)*/
+.kub-animated {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@-webkit-keyframes kubZoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes kubZoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.kub-zoomin {
+  -webkit-animation-name: kubZoomIn;
+  animation-name: kubZoomIn;
+}
+.kub-dialog-modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+}
+.kub-modal {
+  background: rgba(0, 0, 0, 0.6);
+}
+.kub-dialog-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.kub-dialog-wrapper .kub-dialog-container {
+  display: table-cell;
+  vertical-align: middle;
+}
+.kub-dialog {
+  width: 86%;
+  margin: 0 auto;
+  font-size: 18px;
+  background: #fff;
+  border-radius: 6px;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.kub-dialog .kub-dialog-button {
+  display: block;
+  background: none;
+  border: none;
+  border-right: 2px solid #f4f4f4;
+  padding: 1em 0.5em;
+  font-size: 100%;
+  text-align: center;
+}
+.kub-dialog .kub-dialog-button:focus {
+  outline: 0;
+}
+.kub-dialog .kub-dialog-header {
+  border-radius: 6px 6px 0 0;
+  padding: 1.1em 0.5em;
+  text-align: center;
+  background: #f4f4f4;
+}
+.kub-dialog .kub-dialog-body {
+  line-height: 1.5;
+  padding: 1.2em 1em;
+}
+.kub-dialog .kub-dialog-footer {
+  border-top: 2px solid #f4f4f4;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+.kub-dialog .kub-dialog-footer .kub-dialog-button {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child {
+  border: none;
+}
+.kub-toast {
+  position: fixed;
+  bottom: auto;
+  height: auto;
+  z-index: 10003;
+}
+.kub-toast .kub-dialog {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.kub-toast .kub-dialog-body {
+  padding: 0.5em;
+  color: #fff;
+  text-align: center;
+}
+.kub-prompt .kub-prompt-input {
+  font-size: 100%;
+  margin-top: 5px;
+  width: 100%;
+  border: 1px solid #f4f4f4;
+  padding: 0.5em;
+  background: #fff;
+  box-sizing: border-box;
+}
+.kub-prompt .kub-prompt-input:focus {
+  outline: 0;
+}
+.kub-loader {
+  z-index: 10002;
+}
+.kub-loader .kub-dialog {
+  width: 36%;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 0.8em;
+}
+.kub-loader .kub-dialog .kub-dialog-body {
+  color: #fff;
+  padding: 2em 1em;
+  text-align: center;
+}
+.kub-datepicker-dialog .kub-dialog-body {
+  padding: 0.75em;
+}
+.kub-datepicker {
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+}
+.kub-datepicker ul,
+.kub-datepicker li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.kub-datepicker .kub-datepicker-overlay {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  height: 50px;
+  width: 100%;
+  z-index: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+.kub-datepicker .kub-datepicker-column {
+  position: relative;
+  height: 150px;
+  padding: 0 0.6em;
+  display: inline-block;
+  overflow: hidden;
+  z-index: 1;
+}
+.kub-datepicker .kub-datepicker-column:after {
+  position: absolute;
+  font-size: 0.5em;
+  top: 50px;
+  right: 0;
+}
+.kub-datepicker .kub-datepicker-column ul li {
+  line-height: 50px;
+  height: 50px;
+  display: none;
+}
+.kub-datepicker .kub-datepicker-column ul .kub-datepicker-show {
+  display: block;
+}
+.kub-datepicker .year:after {
+  content: "年";
+}
+.kub-datepicker .month:after {
+  content: "月";
+}
+.kub-datepicker .day:after {
+  content: "日";
+}
+.kub-datepicker .hour:after {
+  content: "时";
+}
+.kub-datepicker .minute:after {
+  content: "分";
+}
+.kub-datepicker .second:after {
+  content: "秒";
+}
+.kub-datepicker-en .year:after {
+  content: "y";
+}
+.kub-datepicker-en .month:after {
+  content: "m";
+}
+.kub-datepicker-en .day:after {
+  content: "d";
+}
+.kub-datepicker-en .hour:after {
+  content: "h";
+}
+.kub-datepicker-en .minute:after {
+  content: "min";
+}
+.kub-datepicker-en .second:after {
+  content: "s";
+}

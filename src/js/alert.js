@@ -21,7 +21,7 @@ var core = require('./core'),
     Dialog = require('./dialog')
 
 function Alert(options) {
-    var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {})
+    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.confirmText,

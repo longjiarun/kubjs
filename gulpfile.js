@@ -7,70 +7,146 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     htmlmin = require('gulp-htmlmin'),
     template = require('gulp-underscore-tpl'),
-    path = require('path');
+    banner = require('gulp-banner'),
+    path = require('path'),
+    exec = require('child_process').execSync,
+    pkg = require('./package.json');
 
 var src = 'src',
     build = 'build',
+    dist = 'dist',
     static = 'static',
-    staticPath = path.join(build,static),
-    watch = true,
-    min = true;
+    compress = true;
+
+var staticPath = path.join(build, static);
+
+var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>  (https://github.com/longjiarun/kubjs.git)*/\n\r';
 
 //clean
 gulp.task('clean', function() {
     del.sync(build);
+    del.sync(dist);
 });
 
-//css
-gulp.task('css', function() {
-    var stream = gulp.src([src + '/css/kub.less'])
+//less
+gulp.task('less', function() {
+    var target = path.join(dist,'css');
+
+    var stream = gulp.src([src + '/less/kub.less'])
         .pipe(less())
-        .pipe(rename(function (path) {
-            path.basename = 'index';
+        .pipe(banner(comment, {
+            pkg: pkg
         }))
 
-    min && (stream = stream.pipe(cleancss()));
+    //output unmin css
+    stream = stream.pipe(gulp.dest(target));
+
+    //min css
+    compress && (stream = stream.pipe(cleancss()));
+
+    //rename css
+    stream = stream.pipe(rename(function(path) {
+        path.basename += '.min';
+    }))
+
+    //output min css
+    stream = stream.pipe(gulp.dest(target));
+
+    //output build
+    stream = stream.pipe(rename(function(path) {
+        path.basename = 'index';
+    }))
 
     return stream.pipe(gulp.dest(staticPath));
 });
 
 //js
 gulp.task('js', function() {
-    var stream = gulp.src(src + '/js/kub.js')
-        .pipe(webpack({
-            watch: watch
+    var target = path.join(dist,'js');
+
+    var stream = gulp.src([src + '/js/kub.js'])
+        .pipe(webpack())
+        .pipe(banner(comment, {
+            pkg: pkg
         }))
-        .pipe(rename(function (path) {
-            path.basename = 'index';
+        .pipe(rename(function(path) {
+            path.basename = 'kub';
         }))
 
-    min && (stream = stream.pipe(uglify()));
+    //output unmin css
+    stream = stream.pipe(gulp.dest(target));
+
+    //min css
+    compress && (stream = stream.pipe(uglify()));
+
+    //rename css
+    stream = stream.pipe(rename(function(path) {
+        path.basename += '.min';
+    }))
+
+    //add banner
+    compress && (stream = stream.pipe(banner(comment, {
+        pkg: pkg
+    })))
+
+    //output min css
+    stream = stream.pipe(gulp.dest(target));
+
+    //output build
+    stream = stream.pipe(rename(function(path) {
+        path.basename = 'index';
+    }))
 
     return stream.pipe(gulp.dest(staticPath));
 });
 
 //tpl
 gulp.task('tpl', function() {
-    return gulp.src(src + '/js/tpl/html/*.html')
+    var target = path.join(src,'js/tpl');
+
+    return gulp.src([src + '/js/tpl/html/*.html'])
         .pipe(htmlmin({
             collapseWhitespace: true,
             removeComments: true
         }))
         .pipe(template({
-            variable:'data'
+            variable: 'data'
         }))
-        .pipe(gulp.dest(src + '/js/tpl'))
+        .pipe(gulp.dest(target))
 });
 
-gulp.task('default', ['clean','tpl'], function() {
-    watch = false;
-    gulp.start('css', 'js');
+
+//只生成文档
+//docker -i src/js -o build/pages/docs -x tpl
+
+//监听文档并生成文档
+//docker -i src/js -o build/pages/docs -x tpl -w
+
+gulp.task('docs', function(cb) {
+    var target = path.join(build, 'pages/docs', 'v' + pkg.version),
+        source = path.join(src, 'js');
+    try {
+        exec('docker -i ' + source + ' -o ' + target + ' -x tpl');
+        cb();
+    } catch (e) {
+        console.log(e.message);
+        process.exit(0);
+    }
+});
+
+gulp.task('default', ['clean', 'tpl'], function() {
+    gulp.start('less', 'js');
+});
+
+//发布到CDN
+gulp.task('publish', ['default'], function() {
+    gulp.start('docs');
 });
 
 gulp.task('watch', ['default'], function() {
-    min = false;
+    compress = false;
     gulp.watch([src + '/**/*.less'], function() {
-        gulp.start('css');
+        gulp.start('less');
     });
 
     gulp.watch([src + '/**/*.js'], function() {
@@ -81,9 +157,3 @@ gulp.task('watch', ['default'], function() {
         gulp.start('tpl');
     });
 });
-
-//只生成文档
-//docker -i src -o docs -x lib,build
-
-//监听文档并生成文档
-//docker -i src -o docs -x lib,build -w

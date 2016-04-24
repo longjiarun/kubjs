@@ -40,7 +40,7 @@ var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 
 function Swiper(element, options) {
 
-    this.options = core.extend({}, Swiper.prototype.defaults, options || {})
+    this.options = core.extend({}, _prototype.defaults, options || {})
 
     this.$element = $(element)
 

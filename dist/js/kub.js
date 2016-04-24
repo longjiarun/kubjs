@@ -1,4 +1,5 @@
-/******/ (function(modules) { // webpackBootstrap
+/*! Kub Mobile JavaScript Library v2.0.0  (https://github.com/longjiarun/kubjs.git)*/
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -70,9 +71,9 @@
 
 	    Kub.Loader = __webpack_require__(14)
 
-	    Kub.Swiper = __webpack_require__(16)
+	    Kub.Swiper = __webpack_require__(15)
 
-	    Kub.DatePicker = __webpack_require__(17)
+	    Kub.DatePicker = __webpack_require__(16)
 
 	    if (true) {
 	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -81,6 +82,7 @@
 	    } else if (typeof module !== 'undefined' && module.exports) {
 	        module.exports = Kub
 	    }
+
 	// } catch (e) {
 	//     alert(e.message)
 	// }
@@ -1051,7 +1053,7 @@
 	function LazyLoad(element, options) {
 	    this.$element = $(element)
 
-	    this.options = core.extend({}, LazyLoad.prototype.defaults, options || {})
+	    this.options = core.extend({}, _prototype.defaults, options || {})
 	    this.$window = $(window)
 	    this.$container = (this.options.container === undefined ||
 	        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
@@ -1391,7 +1393,7 @@
 	    template = __webpack_require__(8)
 
 	function Dialog(options) {
-	    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {})
+	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    init(this)
 	}
@@ -1604,7 +1606,7 @@
 	    Dialog = __webpack_require__(7)
 
 	function Alert(options) {
-	    var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {})
+	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    opts.buttons = [{
 	        text: opts.confirmText,
@@ -1684,7 +1686,7 @@
 	    Dialog = __webpack_require__(7)
 
 	function Confirm(options) {
-	    var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {})
+	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    opts.buttons = [{
 	        text: opts.cancelText,
@@ -1771,7 +1773,7 @@
 
 	function Prompt(options) {
 	    var self = this,
-	        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {})
+	        opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    opts.buttons = [{
 	        text: opts.cancelText,
@@ -1884,7 +1886,7 @@
 
 	function Toast(options){
 	    var self = this,
-	        opts = this.options = core.extend({},Toast.prototype.defaults, options||{})
+	        opts = this.options = core.extend({}, _prototype.defaults, options||{})
 
 	    Dialog.call(this, opts)
 
@@ -1962,15 +1964,11 @@
 	 */
 	var core = __webpack_require__(2),
 	    $ = __webpack_require__(1),
-	    Dialog = __webpack_require__(7),
-	    template = __webpack_require__(15)
+	    Dialog = __webpack_require__(7)
 
 	function Loader(options) {
 	    var self = this,
-	        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {}),
-	        message = opts.message
-
-	    opts.message = message ? message : template(this.options)
+	        opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    Dialog.call(this, opts)
 	}
@@ -1996,7 +1994,7 @@
 	    scrollable: true,
 	    className: 'kub-loader',
 	    modal: true,
-	    message: null,
+	    message: '加载中…',
 	    showHeader: false,
 	    buttons: null
 	}
@@ -2006,16 +2004,6 @@
 
 /***/ },
 /* 15 */
-/***/ function(module, exports) {
-
-	module.exports = function(data){
-	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-	__p+='<div class="kub-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div><div class="kub-loader-message">加载中…</div>';
-	return __p;
-	};
-
-/***/ },
-/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2060,7 +2048,7 @@
 
 	function Swiper(element, options) {
 
-	    this.options = core.extend({}, Swiper.prototype.defaults, options || {})
+	    this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    this.$element = $(element)
 
@@ -2486,7 +2474,7 @@
 
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2530,7 +2518,7 @@
 	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7),
 	    date = __webpack_require__(4),
-	    template = __webpack_require__(18)
+	    template = __webpack_require__(17)
 
 	var HEIGHT_UNIT = 50,
 	    COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
@@ -2547,7 +2535,7 @@
 
 	function DatePicker(element, options) {
 	    this.$element = $(element)
-	    this.options = core.extend({}, DatePicker.prototype.defaults, options || {})
+	    this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    init(this)
 	}
@@ -2933,7 +2921,7 @@
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){

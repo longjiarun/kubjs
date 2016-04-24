@@ -36,7 +36,7 @@ var core = require('./core'),
     template = require('./tpl/dialog')
 
 function Dialog(options) {
-    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {})
+    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
     init(this)
 }

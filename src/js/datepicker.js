@@ -56,7 +56,7 @@ var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 
 function DatePicker(element, options) {
     this.$element = $(element)
-    this.options = core.extend({}, DatePicker.prototype.defaults, options || {})
+    this.options = core.extend({}, _prototype.defaults, options || {})
 
     init(this)
 }

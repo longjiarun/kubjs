@@ -22,7 +22,7 @@ var $ = require('./lite'),
 function LazyLoad(element, options) {
     this.$element = $(element)
 
-    this.options = core.extend({}, LazyLoad.prototype.defaults, options || {})
+    this.options = core.extend({}, _prototype.defaults, options || {})
     this.$window = $(window)
     this.$container = (this.options.container === undefined ||
         this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))

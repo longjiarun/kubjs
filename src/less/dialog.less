@@ -1,5 +1,4 @@
 @import "animate";
-@import "spinner";
 
 @kub-dialog-white:#fff;
 @kub-dialog-black:rgba(0,0,0,0.7);
@@ -36,8 +35,7 @@
 
     z-index:10000;
 
-    overflow-x: hidden;
-    overflow-y: auto;
+
 }
 .kub-modal{
     background: @kub-dialog-modal-background;
@@ -155,13 +153,11 @@
         width:@kub-loader-width;
         background-color:@kub-dialog-black;
         border-radius: @kub-loader-border-radius;
-        .kub-loader-message{
-            color: @kub-dialog-white;
-            text-align: center;
-            padding-top: @kub-prompt-input-margin;
-        }
+
         .kub-dialog-body{
-            padding:@kub-dialog-header-padding
+            color: @kub-dialog-white;
+            padding:@kub-dialog-header-padding * 2 @kub-dialog-header-padding;
+            text-align: center;
         }
     }
 }

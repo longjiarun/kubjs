@@ -19,15 +19,11 @@
  */
 var core = require('./core'),
     $ = require('./lite'),
-    Dialog = require('./dialog'),
-    template = require('./tpl/loader')
+    Dialog = require('./dialog')
 
 function Loader(options) {
     var self = this,
-        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {}),
-        message = opts.message
-
-    opts.message = message ? message : template(this.options)
+        opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
     Dialog.call(this, opts)
 }
@@ -53,7 +49,7 @@ _prototype.defaults = {
     scrollable: true,
     className: 'kub-loader',
     modal: true,
-    message: null,
+    message: '加载中…',
     showHeader: false,
     buttons: null
 }
