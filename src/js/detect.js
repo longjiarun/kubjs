@@ -12,33 +12,33 @@ var ua = navigator.userAgent,
     ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
     iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
     wp = ua.match(/Windows Phone ([\d.]+)/),
-    os = {};
+    os = {}
 
 //android
-android ? (os.android = true, os.version = android[2]) : (os.android = false);
+android ? (os.android = true, os.version = android[2]) : (os.android = false)
 
 //iphone
-iphone && !ipod ? ( os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.') ) : (os.iphone  = false);
+iphone && !ipod ? ( os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.') ) : (os.iphone  = false)
 
 //ipad
-ipad ? ( os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.') ) : (os.ipad  = false);
+ipad ? ( os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.') ) : (os.ipad  = false)
 
 //ipod
-ipod ? ( os.ios = os.ipod = true, os.version = ipod[3].replace(/_/g, '.') ) : (os.ipod = false);
+ipod ? ( os.ios = os.ipod = true, os.version = ipod[3].replace(/_/g, '.') ) : (os.ipod = false)
 
 //window phone
-wp ? ( os.wp = true, os.version = wp[1]) : (os.wp = false);
+wp ? ( os.wp = true, os.version = wp[1]) : (os.wp = false)
 
 //ios
-!os.iphone && !os.ipad && !os.ipod && (os.ios = false);
+!os.iphone && !os.ipad && !os.ipod && (os.ios = false)
 
 //手机
-os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false;
+os.phone = os.android && /mobile/i.test(ua) || os.iphone || os.wp ? true : false
 
 //平板
-os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false;
+os.tablet = !os.phone && ( os.android || os.ipad || /window/i.test(ua) && /touch/i.test(ua) ) ? true : false
 
 //移动端
-os.mobile = os.phone || os.tablet;
+os.mobile = os.phone || os.tablet
 
-module.exports = os;
+module.exports = os

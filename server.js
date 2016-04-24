@@ -3,7 +3,6 @@ var koa = require('koa'),
     send = require('koa-send'),
     app = koa();
 
-
 var port = 3300;
 
 app.use(function*(next) {
@@ -17,7 +16,6 @@ app.use(function*(next) {
     });
 });
 
-
 app.listen(port);
 
-console.log('服务启动。地址 http://dev.weidian.com:' + port);
+console.log('服务启动。地址 http://127.0.0.1:' + port);

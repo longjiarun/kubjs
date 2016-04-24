@@ -1,0 +1,35 @@
+{
+  "name": "swiped",
+  "version": "0.1.4",
+  "homepage": "https://github.com/mishk0/swiped",
+  "authors": [
+    "mishk0 <mokrushin.ms@yandex.ru>"
+  ],
+  "description": "touch swipe for your mobile application, written in vanilla JS",
+  "main": "./dist/swiped.js",
+  "ignore": [
+    ".*",
+    "package.json",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "keywords": [
+    "touch",
+    "swipe",
+    "mobile",
+    "slider",
+    "slide"
+  ],
+  "license": "MIT",
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.4",
+    "commit": "9f07006712d540952cb3244eefcf851dcefc4ed7"
+  },
+  "_source": "https://github.com/mishk0/swiped.git",
+  "_target": "^0.1.4",
+  "_originalSource": "swiped",
+  "_direct": true
+}

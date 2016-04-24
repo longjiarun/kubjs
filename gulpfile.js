@@ -4,15 +4,17 @@ var gulp = require('gulp'),
     cleancss = require('gulp-clean-css'),
     del = require('del'),
     webpack = require('webpack-stream'),
-    named = require('vinyl-named'),
+    rename = require('gulp-rename'),
     htmlmin = require('gulp-htmlmin'),
-    template = require('gulp-underscore-template'),
-    replace = require('gulp-replace'),
+    template = require('gulp-underscore-tpl'),
     path = require('path');
 
 var src = 'src',
     build = 'build',
-    watch = true;
+    static = 'static',
+    staticPath = path.join(build,static),
+    watch = true,
+    min = true;
 
 //clean
 gulp.task('clean', function() {
@@ -21,30 +23,33 @@ gulp.task('clean', function() {
 
 //css
 gulp.task('css', function() {
-    return gulp.src([src + '/**/*.less'])
+    var stream = gulp.src([src + '/css/kub.less'])
         .pipe(less())
-        .pipe(gulp.dest(build))
+        .pipe(rename(function (path) {
+            path.basename = 'index';
+        }))
+
+    min && (stream = stream.pipe(cleancss()));
+
+    return stream.pipe(gulp.dest(staticPath));
 });
 
 //js
 gulp.task('js', function() {
-    //[src + '/**/*.js' , '!' + src + '/js/tpl/**/*']
-    return gulp.src(src + '/js/kub.js')
-        .pipe(named(function(file) {
-            var args = path.parse(file.path),
-                basenameParent = args.dir.replace(new RegExp('^' + path.resolve(src) + '\/?'), '');
-            return path.join(basenameParent, args.name);
-        }))
+    var stream = gulp.src(src + '/js/kub.js')
         .pipe(webpack({
-            watch: watch,
-            module: {
-                loaders: []
-            }
+            watch: watch
         }))
-        //.pipe(uglify())
-        .pipe(gulp.dest(build))
+        .pipe(rename(function (path) {
+            path.basename = 'index';
+        }))
+
+    min && (stream = stream.pipe(uglify()));
+
+    return stream.pipe(gulp.dest(staticPath));
 });
 
+//tpl
 gulp.task('tpl', function() {
     return gulp.src(src + '/js/tpl/html/*.html')
         .pipe(htmlmin({
@@ -52,11 +57,8 @@ gulp.task('tpl', function() {
             removeComments: true
         }))
         .pipe(template({
-            name:function(file){
-                return 'tpl'
-            }
+            variable:'data'
         }))
-        .pipe(replace("exports['tpl']",'module.exports'))
         .pipe(gulp.dest(src + '/js/tpl'))
 });
 
@@ -66,6 +68,7 @@ gulp.task('default', ['clean','tpl'], function() {
 });
 
 gulp.task('watch', ['default'], function() {
+    min = false;
     gulp.watch([src + '/**/*.less'], function() {
         gulp.start('css');
     });
@@ -74,7 +77,7 @@ gulp.task('watch', ['default'], function() {
         gulp.start('js');
     });
 
-    gulp.watch([src + '/js/tpl' + '/html/*.html'], function() {
+    gulp.watch([src + '/**/*.html'], function() {
         gulp.start('tpl');
     });
 });

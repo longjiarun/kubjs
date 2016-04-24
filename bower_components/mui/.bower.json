@@ -1,0 +1,15 @@
+{
+  "name": "mui",
+  "homepage": "https://github.com/dcloudio/mui",
+  "version": "2.9.0",
+  "_release": "2.9.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.9.0",
+    "commit": "525048cfca0e5735e2f647585402defdb53f31bf"
+  },
+  "_source": "https://github.com/dcloudio/mui.git",
+  "_target": "^2.9.0",
+  "_originalSource": "https://github.com/dcloudio/mui.git",
+  "_direct": true
+}

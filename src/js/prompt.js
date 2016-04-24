@@ -15,46 +15,44 @@
  * var prompt = new Kub.Prompt({
  *     confirm:function(event,dialog){
  *         //输入框输入的值
- *         console.log(dialog.value);
+ *         console.log(dialog.value)
  *     }
- * });
+ * })
  * ```
  */
 
 var core = require('./core'),
     $ = require('./lite'),
     Dialog = require('./dialog'),
-    template = require('./tpl/prompt');
+    template = require('./tpl/prompt')
+
+var INPUT_SELECTOR = '.J_input'
 
 function Prompt(options) {
     var self = this,
-        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {});
+        opts = this.options = core.extend({}, Prompt.prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.cancelText,
         handler: opts.cancel || function(e, dialog) {
-            dialog.close();
+            dialog.close()
         }
     }, {
         text: opts.confirmText,
         handler: function(e, dialog) {
-            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value;
-            opts.confirm && opts.confirm.call(this, e, dialog);
+            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value
+            opts.confirm && opts.confirm.call(this, e, dialog)
         }
-    }];
+    }]
 
-    opts.message = template({
-        data: opts
-    });
+    opts.message = template(opts)
 
-    Dialog.call(this, opts);
+    Dialog.call(this, opts)
 }
 
-var proto = Prompt.prototype = Object.create(Dialog.prototype);
+var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 
-var INPUT_SELECTOR = '#J_input';
-
-proto.constructor = Prompt;
+_prototype.constructor = Prompt
 
 /**
  * ## defaults
@@ -81,7 +79,7 @@ proto.constructor = Prompt;
  *
  * * `defaultValue`: 输入框默认值。
  */
-proto.defaults = {
+_prototype.defaults = {
     confirmText: '确定',
     confirm: null,
     cancelText: '取消',
@@ -93,6 +91,6 @@ proto.defaults = {
     inputType: 'text',
     placeholder: '',
     defaultValue: ''
-};
+}
 
-module.exports = Prompt;
+module.exports = Prompt

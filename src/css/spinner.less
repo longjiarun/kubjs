@@ -1,39 +1,43 @@
 @import "animate";
 
+@kub-spinner-size:60px;
+@kub-spinner-background:#f00;
+@kub-spinner-column-width:6px;
+@kub-spinner-delay:1.2s;
+
 .kub-spinner {
 
-    @background-color: #f00;
     margin: 0 auto;
-    width: 60px;
-    height: 60px;
+    width: @kub-spinner-size;
+    height: @kub-spinner-size;
     text-align: center;
-    font-size: 10px;
-    > div {
-        background-color:@background-color;
+    div {
+        background-color:@kub-spinner-background;
         height: 100%;
-        width: 6px;
+        width: @kub-spinner-column-width;
         display: inline-block;
-        -webkit-animation: kubStretch 1.2s infinite ease-in-out;
-        animation: kubStretch 1.2s infinite ease-in-out;
+
+        -webkit-animation: kubStretch @kub-spinner-delay infinite ease-in-out;
+        animation: kubStretch @kub-spinner-delay infinite ease-in-out;
     }
     .rect1 {
-        -webkit-animation-delay: -1.2s;
-        animation-delay: -1.2s;
+        -webkit-animation-delay: -@kub-spinner-delay;
+        animation-delay: -@kub-spinner-delay;
     }
     .rect2 {
-        -webkit-animation-delay: -1.1s;
-        animation-delay: -1.1s;
+        -webkit-animation-delay: -@kub-spinner-delay + 0.1;
+        animation-delay: -@kub-spinner-delay + 0.1;
     }
     .rect3 {
-        -webkit-animation-delay: -1.0s;
-        animation-delay: -1.0s;
+        -webkit-animation-delay: -@kub-spinner-delay + 0.2;
+        animation-delay: -@kub-spinner-delay + 0.2;
     }
     .rect4 {
-        -webkit-animation-delay: -0.9s;
-        animation-delay: -0.9s;
+        -webkit-animation-delay: @kub-spinner-delay + 0.3;
+        animation-delay: -@kub-spinner-delay + 0.3;
     }
     .rect5 {
-        -webkit-animation-delay: -0.8s;
-        animation-delay: -0.8s;
+        -webkit-animation-delay: -@kub-spinner-delay + 0.4;
+        animation-delay: -@kub-spinner-delay + 0.4;
     }
 }

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <link href="//wd.geilicdn.com/b747a78d2aea708252d2ecec0e38f776.png" rel="Shortcut Icon" type="image/x-icon">
+    <title>slider 测试页面</title>
+</head>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        .wrapper {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+        .mask {
+          position: absolute;
+          z-index: 1;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+          background-color: rgba(0, 0, 0, 0.8);
+        }
+        .viewport {
+          position: absolute;
+          z-index: 2;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+        .viewport .container {
+          height: 100%;
+          width: 300%;
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: flex;
+        }
+        .viewport .container .frame {
+          -webkit-box-flex: 1;
+          -webkit-flex: 1;
+                  flex: 1;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.6);
+          position: relative;
+        }
+        .viewport .container .frame img {
+          position: absolute;
+          margin: auto;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          max-width: 100%;
+        }
+        .indicator {
+          position: absolute;
+          z-index: 3;
+          bottom: 24px;
+          left: 0;
+          right: 0;
+          width: 100%;
+          text-align: center;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .indicator .pointer {
+          display: inline-block;
+          margin-right: 9px;
+          height: 7px;
+          width: 7px;
+          border-radius: 8px;
+          background-color: #fff;
+        }
+        .indicator .pointer:last-child {
+          margin-right: 0;
+        }
+        .indicator .pointer.active {
+          background-color: #FA5C5D;
+        }
+
+        .ctrl-1, .ctrl-2 {
+            position: absolute;
+            right: 0;
+            z-index: 10;
+            -webkit-appearance: none;
+            padding: 0;
+            border: 1px solid red;
+            margin: 0;
+            line-height: 30px;
+            height: 30px;
+            padding: 0 2em;
+            background-color: #fff;
+        }
+
+        .ctrl-2 {
+            top: 40px;
+        }
+    </style>
+<body>
+    <button type="button" class="ctrl-1">过渡到第3页（带动画）</button>
+    <button type="button" class="ctrl-2">过渡到第3页（不带动画）</button>
+    <div class="wrapper">
+        <div class="mask"></div>
+        <div class="viewport" id="viewport">
+            <div class="container" id="container" style="width: 1400%; transition: transform 250ms cubic-bezier(0, 0, 0.25, 1); transform: translate3d(-4500px, 0px, 0px);">
+                
+                <div class="frame"><img src="//wd.geilicdn.com/VCYmST6QiZYmp9V1EE_720_1280.jpg?w=640" alt=""></div>
+                
+                <div class="frame"><img src="//wd.geilicdn.com/VCzbVpwSRQb6OzDlOw_960_235.png?w=640" alt=""></div>
+                
+                <div class="frame"><img src="//wd.geilicdn.com/VCyuJaHPjcmKmmiQhY_515_652.png?w=640" alt=""></div>
+                <div class="frame"><img src="//wd.geilicdn.com/VCSD2T6B210b6daEAb_859_1483.png?w=640" alt=""></div>
+                <div class="frame"><img src="//wd.geilicdn.com/VC5sHCGF4VYfP2Nnuv_720_1280.jpg?w=640" alt=""></div>
+                <div class="frame"><img src="//wd.geilicdn.com/VCRWLyRWWEdO39S4Ya_960_1280.jpg?w=640" alt=""></div>
+            </div>
+        </div>
+        <div class="indicator">
+            
+            <span class="pointer active" data-frame-index="index"></span>
+            
+            <span class="pointer" data-frame-index="index"></span>
+            
+            <span class="pointer" data-frame-index="index"></span>
+            
+            <span class="pointer" data-frame-index="index"></span>
+            
+            <span class="pointer" data-frame-index="index"></span>
+            
+            <span class="pointer" data-frame-index="index"></span>
+            
+        </div>
+    </div>
+    <script src="//static.koudai.com/hzcdn/zepto-1.1.6.min.js"></script>
+    <script type="text/javascript" src='./index.js'></script>
+    <script>
+         var slider = new Kub.Slider(document.getElementById('container')); 
+
+        slider.addEventListener('snapDidMoved', function(e) {
+            var index = slider.getIndex();
+
+            if (e.prevIndex < e.curIndex) {
+                console.log('向左滑动图片');
+            } else if (e.prevIndex > e.curIndex) {
+                console.log('向右滑动图片');
+            }
+
+            $('.pointer').removeClass('active')
+                .eq(index).addClass('active');
+        });
+
+        $('.ctrl-1').on('click', function(e){
+            slider.goTo(3);
+        });
+        $('.ctrl-2').on('click', function(e){
+            slider.goTo(3, true);
+        });
+    </script>
+</body>
+</html>

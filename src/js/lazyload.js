@@ -12,27 +12,58 @@
  *
  * 使用：
  * ```js
- * var lazyload = new Kub.LazyLoad($('img'));
+ * var lazyload = new Kub.LazyLoad($('img'))
  * ```
  */
 
 var $ = require('./lite'),
-    core = require('./core');
+    core = require('./core')
 
 function LazyLoad(element, options) {
-    this.$element = $(element);
+    this.$element = $(element)
 
-    this.options = core.extend({}, LazyLoad.prototype.defaults, options || {});
-    this.$window = $(window);
+    this.options = core.extend({}, LazyLoad.prototype.defaults, options || {})
+    this.$window = $(window)
     this.$container = (this.options.container === undefined ||
-        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container));
-    _init.call(this);
+        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
+    _init(this)
 }
 
-var proto = LazyLoad.prototype;
 
-proto.constructor = LazyLoad;
 
+var _loadAllIfTimeout = function(lazyload) {
+    var options = lazyload.options
+    typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (lazyload._waitTimer = setTimeout(function() {
+        lazyload.loadAll()
+    }, options.waitTime))
+    return lazyload
+}
+
+var _init = function(lazyload) {
+    var options = lazyload.options
+
+    lazyload._handle = function() {
+        if (lazyload.completed) {
+            return
+        }
+        lazyload._timer && clearTimeout(lazyload._timer)
+        lazyload._waitTimer && clearTimeout(lazyload._waitTimer)
+        lazyload._timer = setTimeout(function() {
+            lazyload.loadElementsInViewport()
+            _loadAllIfTimeout(lazyload)
+        }, options.delay)
+    }
+
+    lazyload.loadElementsInViewport()
+    _loadAllIfTimeout(lazyload)
+
+    lazyload.$container.on(options.eventName, lazyload._handle)
+    //有可能 window resize 会影响到元素的位置
+    !lazyload.containerIsWindow && lazyload.$window.on('resize', lazyload._handle)
+}
+
+
+var _prototype = LazyLoad.prototype
 /**
  * ## defaults
  *
@@ -52,23 +83,23 @@ proto.constructor = LazyLoad;
  *
  *   `eventName` : 监听的事件名称
  */
-proto.defaults = {
+_prototype.defaults = {
     container: window,
     threshold: 50,
     waitTime: -1,
     delay: 150,
     attributeName: 'original',
     eventName: 'scroll resize'
-};
+}
 
 //更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
-proto.updateElement = function(element) {
-    var self = this;
-    self.$element = element;
+_prototype.updateElement = function(element) {
+    var self = this
+    self.$element = element
     //更新 dom 以后立即验证是否有元素已经显示
-    self.loadElementsInViewport();
-    return self;
-};
+    self.loadElementsInViewport()
+    return self
+}
 
 /**
  * ## getUnloadedElements
@@ -77,15 +108,15 @@ proto.updateElement = function(element) {
  *
  * @return {instance} 当前实例
  */
-proto.getUnloadedElements = function() {
-    var self = this,dom = [];
+_prototype.getUnloadedElements = function() {
+    var self = this,dom = []
 
     return self.$element.each(function(index) {
-        !this.loaded && dom.push(this);
-    });
+        !this.loaded && dom.push(this)
+    })
 
-    return $(dom);
-};
+    return $(dom)
+}
 
 /**
  * ## loadAll
@@ -94,35 +125,35 @@ proto.getUnloadedElements = function() {
  *
  * @return {instance} 当前实例
  */
-proto.loadAll = function() {
+_prototype.loadAll = function() {
     var self = this,
         options = self.options,
-        elements;
-    elements = self.getUnloadedElements();
+        elements
+    elements = self.getUnloadedElements()
     elements.each(function() {
-        var $this = $(this);
-        self.load($this, $this.attr('data-' + self.options.attributeName));
-    });
-    return self;
-};
+        var $this = $(this)
+        self.load($this, $this.attr('data-' + self.options.attributeName))
+    })
+    return self
+}
 
 //加载所有在可视区域内的图片
-proto.loadElementsInViewport = function() {
+_prototype.loadElementsInViewport = function() {
     var self = this,
         options = self.options,
-        elements;
+        elements
 
-    elements = self.getUnloadedElements();
-    elements.length == 0 && (self.completed = true);
+    elements = self.getUnloadedElements()
+    elements.length == 0 && (self.completed = true)
     elements.each(function() {
         var $this = $(this),
-            flag = true;
+            flag = true
 
-        flag = self.isVisible($this, options);
-        flag && self.load($this, $this.attr('data-' + self.options.attributeName));
-    });
-    return self;
-};
+        flag = self.isVisible($this, options)
+        flag && self.load($this, $this.attr('data-' + self.options.attributeName))
+    })
+    return self
+}
 
 /**
  * ## isVisible
@@ -132,53 +163,21 @@ proto.loadElementsInViewport = function() {
  * @param {Object}  options  参数
  * @return {Boolean}         true ：可见 false ：不可见
  */
-proto.isVisible = function($this, options) {
-    var self = this;
+_prototype.isVisible = function($this, options) {
+    var self = this
     if (self.abovethetop($this, options)) {
-        return false;
+        return false
     } else if (self.belowthefold($this, options)) {
-        return false;
+        return false
     }
     if (self.leftofbegin($this, options)) {
-        return false;
+        return false
     } else if (self.rightoffold($this, options)) {
-        return false;
+        return false
     }
-    return true;
+    return true
 }
 
-var _loadAllIfTimeout = function() {
-    var self = this,
-        options = self.options;
-    typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (self._waitTimer = setTimeout(function() {
-        self.loadAll();
-    }, options.waitTime));
-    return self;
-}
-
-var _init = function() {
-    var self = this,
-        options = self.options;
-
-    this._handle = function() {
-        if (self.completed) {
-            return;
-        }
-        self._timer && clearTimeout(self._timer);
-        self._waitTimer && clearTimeout(self._waitTimer);
-        self._timer = setTimeout(function() {
-            self.loadElementsInViewport();
-            _loadAllIfTimeout.call(self);
-        }, options.delay);
-    };
-
-    self.loadElementsInViewport();
-    _loadAllIfTimeout.call(self);
-
-    self.$container.on(options.eventName, self._handle);
-    //有可能 window resize 会影响到元素的位置
-    !self.containerIsWindow && self.$window.on('resize', self._handle);
-};
 
 /**
  * ## load
@@ -189,19 +188,19 @@ var _init = function() {
  * @param {String} original 图片地址
  * @return {instance}       当前实例
  */
-proto.load = function($element, original) {
+_prototype.load = function($element, original) {
     //如果原图片为空
     if (!original) {
-        return;
+        return
     }
     if ($element[0].nodeName === 'IMG') {
-        $element.attr('src', original);
+        $element.attr('src', original)
     } else {
-        $element.css('background-image', 'url(' + original + ')');
+        $element.css('background-image', 'url(' + original + ')')
     }
-    $element[0].loaded = true;
-    return this;
-};
+    $element[0].loaded = true
+    return this
+}
 
 /**
  * ## destroy
@@ -209,18 +208,18 @@ proto.load = function($element, original) {
  * 销毁对象
  * @return {instance} 当前实例
  */
-proto.destroy = function() {
+_prototype.destroy = function() {
     var self = this,
-        options = self.options;
+        options = self.options
     //取消监听
-    self.$container.off(options.eventName, self._handle);
-    !self.containerIsWindow && self.$window.off('resize', self._handle);
+    self.$container.off(options.eventName, self._handle)
+    !self.containerIsWindow && self.$window.off('resize', self._handle)
     //clear timeout
-    self._timer && clearTimeout(self._timer);
-    self._waitTimer && clearTimeout(self._waitTimer);
+    self._timer && clearTimeout(self._timer)
+    self._waitTimer && clearTimeout(self._waitTimer)
 
-    return self;
-};
+    return self
+}
 
 /**
  * 是否在可视区域内
@@ -228,9 +227,9 @@ proto.destroy = function() {
  * @param {zepto} element 检查的元素
  * @return {Boolean} 是：true 否 ：false
  */
-proto.isInViewport = function($this) {
-    return !this.belowthefold($this[0], this.options) && !this.abovethetop($this[0], this.options) && !this.rightoffold($this[0], this.options) && !this.leftofbegin($this[0], this.options);
-};
+_prototype.isInViewport = function($this) {
+    return !this.belowthefold($this[0], this.options) && !this.abovethetop($this[0], this.options) && !this.rightoffold($this[0], this.options) && !this.leftofbegin($this[0], this.options)
+}
 
 /**
  * ## belowthefold
@@ -241,18 +240,18 @@ proto.isInViewport = function($this) {
  * @param {Object} settings 被检查时的参数
  * @return {Boolean}        是：true 否 ：false
  */
-proto.belowthefold = function(element, settings) {
-    var fold;
+_prototype.belowthefold = function(element, settings) {
+    var fold
     if (settings.container === undefined || settings.container === window) {
-        fold = window.innerHeight  + window.scrollY;
+        fold = window.innerHeight  + window.scrollY
     } else {
-        var offset = $(settings.container).offset();
+        var offset = $(settings.container).offset()
 
-        fold = offset.top + offset.height;
+        fold = offset.top + offset.height
     }
 
-    return fold <= $(element).offset().top - settings.threshold;
-};
+    return fold <= $(element).offset().top - settings.threshold
+}
 
 /**
  * ## abovethetop
@@ -263,18 +262,18 @@ proto.belowthefold = function(element, settings) {
  * @param {Object} settings 被检查时的参数
  * @return {Boolean}        是：true 否 ：false
  */
-proto.abovethetop = function(element, settings) {
-    var fold;
+_prototype.abovethetop = function(element, settings) {
+    var fold
 
     if (settings.container === undefined || settings.container === window) {
-        fold = window.scrollY;
+        fold = window.scrollY
     } else {
-        fold = $(settings.container).offset().top;
+        fold = $(settings.container).offset().top
     }
 
-    var offset = $(element).offset();
-    return fold >= offset.top + settings.threshold + offset.height;
-};
+    var offset = $(element).offset()
+    return fold >= offset.top + settings.threshold + offset.height
+}
 
 /**
  * ## rightoffold
@@ -285,16 +284,16 @@ proto.abovethetop = function(element, settings) {
  * @param {Object} settings 被检查时的参数
  * @return {Boolean}        是：true 否 ：false
  */
-proto.rightoffold = function(element, settings) {
-    var fold;
+_prototype.rightoffold = function(element, settings) {
+    var fold
     if (settings.container === undefined || settings.container === window) {
-        fold = window.innerWidth + window.scrollX;
+        fold = window.innerWidth + window.scrollX
     } else {
-        var offset = $(settings.container).offset();
-        fold = offset.left + offset.width;
+        var offset = $(settings.container).offset()
+        fold = offset.left + offset.width
     }
-    return fold <= $(element).offset().left - settings.threshold;
-};
+    return fold <= $(element).offset().left - settings.threshold
+}
 
 /**
  * ## leftofbegin
@@ -305,17 +304,17 @@ proto.rightoffold = function(element, settings) {
  * @param {Object} settings 被检查时的参数
  * @return {Boolean}        是：true 否 ：false
  */
-proto.leftofbegin = function(element, settings) {
-    var fold;
+_prototype.leftofbegin = function(element, settings) {
+    var fold
     if (settings.container === undefined || settings.container === window) {
-        fold = window.scrollX;
+        fold = window.scrollX
     } else {
-        fold = $(settings.container).offset().left;
+        fold = $(settings.container).offset().left
     }
 
-    var offset = $(element).offset();
+    var offset = $(element).offset()
 
-    return fold >= offset.left + settings.threshold + offset.width;
-};
+    return fold >= offset.left + settings.threshold + offset.width
+}
 
-module.exports = LazyLoad;
+module.exports = LazyLoad

@@ -14,35 +14,35 @@
  * ```js
  * var confirm = new Kub.Confirm({
  *     confirm:function(e,dialog){
- *         console.log("确认按钮");
- *         dialog.close();
+ *         console.log("确认按钮")
+ *         dialog.close()
  *     }
- * });
+ * })
  * ```
  */
 var core = require('./core'),
     $ = require('./lite'),
-    Dialog = require('./dialog');
+    Dialog = require('./dialog')
 
 function Confirm(options) {
-    var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {});
+    var opts = this.options = core.extend({}, Confirm.prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.cancelText,
         handler: opts.cancel || function(e, dialog) {
-            dialog.close();
+            dialog.close()
         }
     }, {
         text: opts.confirmText,
         handler: opts.confirm
-    }];
+    }]
 
-    Dialog.call(this, opts);
+    Dialog.call(this, opts)
 }
 
-var proto = Confirm.prototype = Object.create(Dialog.prototype);
+var _prototype = Confirm.prototype = Object.create(Dialog.prototype)
 
-proto.constructor = Confirm;
+_prototype.constructor = Confirm
 
 /**
  * ## defaults
@@ -63,7 +63,7 @@ proto.constructor = Confirm;
  *
  * * `modal`: 是否显示遮罩层。
  */
-proto.defaults = {
+_prototype.defaults = {
     confirmText: '确定',
     confirm: null,
     cancelText: '取消',
@@ -71,6 +71,6 @@ proto.defaults = {
     showHeader: false,
     className: "kub-confirm",
     modal: true
-};
+}
 
-module.exports = Confirm;
+module.exports = Confirm

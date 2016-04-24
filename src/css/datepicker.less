@@ -1,112 +1,107 @@
 @import "animate";
 @import "dialog";
 
-.kub-datepicker-dialog{
-    .kub-dialog-body{
-        overflow-y: hidden;
-        overflow-x: auto;
-        padding: 0.75em;
+@kub-datepicker-dialog-body-padding: 0.75em;
+@kub-datepicker-column-height: 50px;
+@kub-datepicker-column-padding: 0.6em;
+@kub-datepicker-column-font-size: 0.5em;
+@kub-datepicker-overlay-border-radius: 6px;
+@kub-datepicker-font-size: 16px;
+@kub-datepicker-color: #333;
+
+.kub-datepicker-dialog {
+    .kub-dialog-body {
+        padding: @kub-datepicker-dialog-body-padding;
     }
 }
-.kub-datepicker{
-    @height:50px;
-    @padding:0.6em;
-    @font-size:16px;
+.kub-datepicker {
 
-
-    font-size:@font-size;
-    position: relative;
-    color:#333;
+    font-size: @kub-datepicker-font-size;
+    color: @kub-datepicker-color;
     text-align: center;
-    white-space:nowrap;
-    .kub-overlay{
-        position: absolute;
-        top:0;
-        bottom:0;
-        left:0;
-        height:@height*3 ;
+    white-space: nowrap;
+    position: relative;
 
-        width: 100%;
-        z-index:0;
-        border:1px solid rgba(0,0,0,0.1);
-
-        top:@height;
-        height: @height;
-        box-shadow: 0 0 @height*2 rgba(0,0,0,0.3);
-        border-radius: 6px;
-    }
-    ul,li{
-        list-style:none;
-        margin:0;
+    ul, li {
+        list-style: none;
+        margin: 0;
         padding: 0;
     }
+
+    .kub-datepicker-overlay {
+        position: absolute;
+        top: @kub-datepicker-column-height;
+        left: 0;
+        height: @kub-datepicker-column-height;
+        width: 100%;
+        z-index: 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: @kub-datepicker-overlay-border-radius;
+        box-shadow: 0 0 @kub-datepicker-column-height * 2 rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+    }
+
     .kub-datepicker-column {
         position: relative;
-        top:0;
-        height: @height * 3;
-        padding:0 @padding;
+        height: @kub-datepicker-column-height * 3;
+        padding: 0 @kub-datepicker-column-padding;
         display: inline-block;
-        overflow:hidden;
-        z-index:10;
-        &:after{
-            position: absolute;
-            font-size:0.5em;
-            top:@height;
-            right:0
-        }
-        ul{
-            li{
-                line-height: @height;
-                height:@height;
+        overflow: hidden;
+        z-index: 1;
 
-                opacity: 1;
+        &:after {
+            position: absolute;
+            font-size: @kub-datepicker-column-font-size;
+            top: @kub-datepicker-column-height;
+            right: 0
+        }
+        ul {
+            li {
+                line-height: @kub-datepicker-column-height;
+                height: @kub-datepicker-column-height;
                 display: none;
             }
-            .kub-datepicker-show{
+            .kub-datepicker-show {
                 display: block;
-            }
-            .kub-datepicker-active{
-                opacity: 1;
             }
         }
     }
-
-    .year:after{
-        content:"年";
+    .year:after {
+        content: "年";
     }
-    .month:after{
-        content:"月";
+    .month:after {
+        content: "月";
     }
-    .day:after{
-        content:"日";
+    .day:after {
+        content: "日";
     }
-    .hour:after{
-        content:"时";
+    .hour:after {
+        content: "时";
     }
-    .minute:after{
-        content:"分";
+    .minute:after {
+        content: "分";
     }
-    .second:after{
-        content:"秒";
+    .second:after {
+        content: "秒";
     }
 }
-.kub-datepicker-en{
-    .year:after{
-        content:"y";
+.kub-datepicker-en {
+    .year:after {
+        content: "y";
     }
-    .month:after{
-        content:"m";
+    .month:after {
+        content: "m";
     }
-    .day:after{
-        content:"d";
+    .day:after {
+        content: "d";
     }
-    .hour:after{
-        content:"h";
+    .hour:after {
+        content: "h";
     }
-    .minute:after{
-        content:"min";
+    .minute:after {
+        content: "min";
     }
-    .second:after{
-        content:"s";
+    .second:after {
+        content: "s";
     }
 }

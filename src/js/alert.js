@@ -12,30 +12,30 @@
  *
  * 使用方法：
  * ```js
- * var alert = new Kub.Alert();
+ * var alert = new Kub.Alert()
  * ```
  */
 
 var core = require('./core'),
     $ = require('./lite'),
-    Dialog = require('./dialog');
+    Dialog = require('./dialog')
 
 function Alert(options) {
-    var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {});
+    var opts = this.options = core.extend({}, Alert.prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.confirmText,
         handler: this.options.confirm || function(e, dialog) {
-            dialog.close();
+            dialog.close()
         }
-    }];
+    }]
 
-    Dialog.call(this, opts);
+    Dialog.call(this, opts)
 }
 
-var proto = Alert.prototype = Object.create(Dialog.prototype);
+var _prototype = Alert.prototype = Object.create(Dialog.prototype)
 
-proto.constructor = Alert;
+_prototype.constructor = Alert
 
 /**
  * ## defaults
@@ -57,7 +57,7 @@ proto.constructor = Alert;
  * * `modal`: 是否显示遮罩层。
  */
 
-proto.defaults = {
+_prototype.defaults = {
     confirmText:'确定',
     confirm: null,
     showHeader: false,
@@ -65,6 +65,6 @@ proto.defaults = {
     className: 'kub-alert',
     locale: 'zh',
     modal: true
-};
+}
 
-module.exports = Alert;
+module.exports = Alert

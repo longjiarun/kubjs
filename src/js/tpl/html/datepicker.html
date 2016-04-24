@@ -2,8 +2,8 @@
     <div class="kub-datepicker-column year" data-type="year">
         <ul>
             <li class="kub-datepicker-show"></li>
-            <%for(var i=data.yearRange[0];i<=data.yearRange[1];i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i%>">
+            <%for(var i=data.yearRange[0],j=0;i<=data.yearRange[1];i++,j++){%>
+                <li class="kub-datepicker-show" data-value="<%= i%>" data-index="<%= j%>">
                     <%= i %>
                 </li>
             <%}%>
@@ -15,7 +15,7 @@
             <li class="kub-datepicker-show">
             </li>
             <%for(var i=1 ;i<= 12; i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i-1%>">
+                <li class="kub-datepicker-show" data-value="<%= i-1%>" data-index="<%= i-1%>">
                     <%= ( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
@@ -26,7 +26,7 @@
         <ul>
             <li class="kub-datepicker-show"></li>
             <%for(var i=1 ;i<=31;i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i%>">
+                <li class="kub-datepicker-show" data-value="<%= i%>" data-index="<%= i-1%>">
                     <%=( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
@@ -37,7 +37,7 @@
         <ul>
             <li class="kub-datepicker-show"></li>
             <%for(var i=0 ;i<=23;i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i%>">
+                <li class="kub-datepicker-show" data-value="<%= i%>" data-index="<%= i%>">
                     <%=( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
@@ -48,7 +48,7 @@
         <ul>
             <li class="kub-datepicker-show"></li>
             <%for(var i=0 ;i<=59;i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i%>">
+                <li class="kub-datepicker-show" data-value="<%= i%>" data-index="<%= i%>">
                     <%= ( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
@@ -59,12 +59,12 @@
         <ul>
             <li class="kub-datepicker-show"></li>
             <%for(var i=0 ;i<=59;i++){%>
-                <li class="kub-datepicker-show" data-value="<%= i%>">
+                <li class="kub-datepicker-show" data-value="<%= i%>" data-index="<%= i%>">
                     <%= ( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
             <li class="kub-datepicker-show"></li>
         </ul>
     </div>
-    <div class="kub-overlay"></div>
+    <div class="kub-datepicker-overlay"></div>
 </div>

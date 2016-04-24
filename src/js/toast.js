@@ -14,28 +14,29 @@
  * ```js
  * var toast = new Kub.Toast({
  *     message:'操作成功。'
- * });
+ * })
  * ```
  */
 
 var core = require('./core'),
-    Dialog = require('./dialog');
+    Dialog = require('./dialog')
 
 function Toast(options){
     var self = this,
-        opts = this.options = core.extend({},Toast.prototype.defaults, options||{});
+        opts = this.options = core.extend({},Toast.prototype.defaults, options||{})
 
-    Dialog.call(this, opts);
+    Dialog.call(this, opts)
 
     //自动关闭
     setTimeout(function(){
-        self.close();
-    }, opts.delay);
+        self.close()
+    }, opts.delay)
 }
 
-var proto = Toast.prototype = Object.create(Dialog.prototype);
+var _prototype = Toast.prototype = Object.create(Dialog.prototype)
 
-proto.constructor = Toast;
+
+_prototype.constructor = Toast
 
 /**
  * ## defaults
@@ -52,7 +53,7 @@ proto.constructor = Toast;
  *
  * * `delay`: 延迟时间
  */
-proto.defaults = {
+_prototype.defaults = {
     message:'',
     className:'kub-toast',
     top:50,
@@ -61,15 +62,15 @@ proto.defaults = {
     showHeader:false,
     buttons:null,
     modal:false
-};
+}
 
-proto.setPosition = function(){
-    var top = this.options.top;
+_prototype.setPosition = function(){
+    var top = this.options.top
 
     this.$element.css({
         top:core.isNumber(top) ? top + 'px' : top
-    });
-    return this;
-};
+    })
+    return this
+}
 
-module.exports = Toast;
+module.exports = Toast

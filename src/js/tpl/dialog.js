@@ -1,6 +1,5 @@
-module.exports=function(obj){
+module.exports = function(data){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
 __p+='<div class="kub-dialog-modal '+
 ((__t=( data.className))==null?'':__t)+
 ' ';
@@ -9,17 +8,15 @@ __p+=' kub-modal ';
 }
 __p+='"><div class="kub-dialog-wrapper"><div class="kub-dialog-container"><div class="kub-dialog J_dialog"> ';
 if(data.showHeader){
-__p+=' <div class="kub-dialog-header"><strong> '+
+__p+=' <div class="kub-dialog-header"> '+
 ((__t=( data.title))==null?'':__t)+
-' </strong></div> ';
+' </div> ';
 }
 __p+=' <div class="kub-dialog-body"> '+
 ((__t=( data.message))==null?'':__t)+
 ' </div> ';
 if(data.buttons && data.buttons.length){
-__p+=' <div class="kub-dialog-footer kub-column'+
-((__t=( data.buttons.length))==null?'':__t)+
-'"> ';
+__p+=' <div class="kub-dialog-footer"> ';
  for (var i=0,j=data.buttons.length;i<j;i++){
 __p+=' <button class="kub-dialog-button J_dialogButton '+
 ((__t=( data.buttons[i].className || ''))==null?'':__t)+
@@ -32,6 +29,5 @@ __p+=' <button class="kub-dialog-button J_dialogButton '+
 __p+=' </div> ';
 }
 __p+=' </div></div></div></div>';
-}
 return __p;
 };

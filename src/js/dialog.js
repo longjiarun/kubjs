@@ -24,34 +24,71 @@
  *          text:'取消',
  *          handler:function(e,dialog){
  *               //返回 event 与 dialog对象
- *               dialog.close();
+ *               dialog.close()
  *          }
  *       }]
- *   });
+ *   })
  * ```
  */
 
 var core = require('./core'),
     $ = require('./lite'),
-    template = require('./tpl/dialog');
+    template = require('./tpl/dialog')
 
 function Dialog(options) {
-    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {});
+    var opts = this.options = core.extend({}, Dialog.prototype.defaults, options || {})
 
-    //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
-    //opts.buttons && opts.buttons.length > 5 && (opts.buttons.length = 5);
-    init.call(this);
+    init(this)
 }
 
 var $body = $('body'),
-    proto = Dialog.prototype;
+    _prototype = Dialog.prototype
 
-var ZOOMIN_CLASS = 'kub-animated kub-zoomIn',
+var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
     DIALOG_SELECTOR = '.J_dialog',
     DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
-    EVENT_NAME = 'click';
+    EVENT_NAME = 'click'
 
-proto.constructor = Dialog;
+var render = function(dialog,data) {
+    var html = template(data)
+    dialog.$element = $(html).appendTo($body)
+    return this
+}
+
+var fixed = function(){
+    //解决 iphone 下，fixed定位问题
+    setTimeout(function() {
+        window.scrollTo(window.scrollX, window.scrollY)
+    }, 5)
+}
+
+var bindEvents = function(dialog){
+    var options = dialog.options
+
+    //注册按钮事件
+    dialog.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
+        var index = parseInt($(this).attr('data-index')),
+            button = options.buttons[index]
+
+        button.handler && button.handler.call(dialog, e, dialog)
+    })
+}
+
+var init = function(dialog) {
+
+    fixed()
+
+    //渲染数据
+    render(dialog, dialog.options)
+
+    dialog.$dialog = dialog.$element.find(DIALOG_SELECTOR)
+
+    dialog.setPosition && dialog.setPosition()
+
+    dialog.show()
+
+    bindEvents(dialog)
+}
 
 /**
  * ## defaults
@@ -86,7 +123,7 @@ proto.constructor = Dialog;
  * }]
  * ```
  */
-proto.defaults = {
+_prototype.defaults = {
     modal: true,
     title: '',
     showHeader: true,
@@ -95,52 +132,7 @@ proto.defaults = {
     scrollable: true,
     animated: true,
     buttons: null
-};
-
-var render = function(data) {
-    var html = template({
-        data: data
-    });
-    this.$element = $(html).appendTo($body);
-    return this;
-};
-
-var fixed = function(){
-    //解决 iphone 下，fixed定位问题
-    setTimeout(function() {
-        window.scrollTo(window.scrollX, window.scrollY);
-    }, 5);
-};
-
-var bindEvents = function(){
-    var self = this,
-        options = self.options;
-
-    //注册按钮事件
-    self.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
-        var index = parseInt($(this).attr('data-index')),
-            button = options.buttons[index];
-
-        button.handler && button.handler.call(this, e, self);
-    });
-};
-
-var init = function() {
-
-    fixed();
-
-    //渲染数据
-    render.call(this, this.options);
-
-    this.$dialog = this.$element.find(DIALOG_SELECTOR);
-
-    this.setPosition && this.setPosition();
-
-    this.show();
-
-    bindEvents.call(this);
-};
-
+}
 
 /**
  * ## show
@@ -148,13 +140,13 @@ var init = function() {
  * 显示弹窗
  * @return {instance} 返回当前实例
  */
-proto.show = function() {
+_prototype.show = function() {
 
-    this.$element.show();
-    this.options.animated && this.$dialog.addClass(ZOOMIN_CLASS);
+    this.$element.show()
+    this.options.animated && this.$dialog.addClass(ZOOMIN_CLASS)
 
-    return this;
-};
+    return this
+}
 
 /**
  * ## hide
@@ -162,13 +154,13 @@ proto.show = function() {
  * 隐藏弹窗
  * @return {instance} 返回当前实例
  */
-proto.hide = function() {
+_prototype.hide = function() {
 
-    this.$element.hide();
-    this.options.animated && this.$dialog.removeClass(ZOOMIN_CLASS);
+    this.$element.hide()
+    this.options.animated && this.$dialog.removeClass(ZOOMIN_CLASS)
 
-    return this;
-};
+    return this
+}
 
 /**
  * ## close
@@ -176,17 +168,17 @@ proto.hide = function() {
  * 关闭弹窗
  * @return {instance} 返回当前实例
  */
-proto.close = function() {
-    var opts = this.options;
+_prototype.close = function() {
+    var opts = this.options
 
     if (opts.closeHandler && opts.closeHandler.call(this) === false) {
-        return this;
+        return this
     }
 
-    this.hide();
-    this.$element.remove();
+    this.hide()
+    this.$element.remove()
 
-    return this;
-};
+    return this
+}
 
-module.exports = Dialog;
+module.exports = Dialog

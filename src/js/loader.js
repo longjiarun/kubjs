@@ -12,30 +12,29 @@
  *
  * 使用方法：
  * ```js
- * var loader = new Kub.Loader();
+ * var loader = new Kub.Loader()
  * //隐藏loader
- * loader.hide();
+ * loader.hide()
  * ```
  */
 var core = require('./core'),
     $ = require('./lite'),
     Dialog = require('./dialog'),
-    template = require('./tpl/loader');
+    template = require('./tpl/loader')
 
 function Loader(options) {
     var self = this,
-        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {});
+        opts = this.options = core.extend({}, Loader.prototype.defaults, options || {}),
+        message = opts.message
 
-    opts.message = template({
-        data: this.options
-    });
+    opts.message = message ? message : template(this.options)
 
-    Dialog.call(this, opts);
+    Dialog.call(this, opts)
 }
 
-var proto = Loader.prototype = Object.create(Dialog.prototype);
+var _prototype = Loader.prototype = Object.create(Dialog.prototype)
 
-proto.constructor = Loader;
+_prototype.constructor = Loader
 
 /**
  * ## defaults
@@ -50,14 +49,13 @@ proto.constructor = Loader;
  *
  * * `modal`: 是否显示遮罩层。
  */
-proto.defaults = {
+_prototype.defaults = {
     scrollable: true,
     className: 'kub-loader',
     modal: true,
-    message: '加载中...',
-
+    message: null,
     showHeader: false,
     buttons: null
-};
+}
 
-module.exports = Loader;
+module.exports = Loader

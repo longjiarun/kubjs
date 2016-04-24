@@ -50,22 +50,58 @@
  * 使用：
  * ```js
  * //String to Date
- * '2015-05-20'.parseDate('yyyy-MM-dd');
+ * '2015-05-20'.parseDate('yyyy-MM-dd')
  *
  * //格式化日期
- * (new Date()).format('yyyy-MM-dd,hh:mm:ss');
+ * (new Date()).format('yyyy-MM-dd,hh:mm:ss')
  * ```
  */
 function DateHelper() {
 
 }
 
-var proto = DateHelper.prototype;
+var get2Year = function(date) {
+    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0
+}
 
-proto.constructor = DateHelper;
+var get2 = function(value) {
+    return value < 10 ? '0' + value : value
+}
+
+var getAmPm = function(date) {
+    return date.getHours() < 12 ? 0 : 1
+}
+
+//获取相对应的日期相关数据
+var getValueByPattern = function(datehelper, fmt, date) {
+
+    var patterns = {
+        yyyy: date.getFullYear(),
+        yy: date.getFullYear() - get2Year(date),
+        MMMM: datehelper.i18n[datehelper.locale].month.full[date.getMonth()],
+        MMM: datehelper.i18n[datehelper.locale].month.abbr[date.getMonth()],
+        MM: get2(date.getMonth() + 1),
+        M: date.getMonth() + 1,
+        dddd: datehelper.i18n[datehelper.locale].day.full[date.getDay()],
+        ddd: datehelper.i18n[datehelper.locale].day.abbr[date.getDay()],
+        dd: get2(date.getDate()),
+        d: date.getDate(),
+        HH: get2(date.getHours()),
+        H: date.getHours(),
+        mm: get2(date.getMinutes()),
+        m: date.getMinutes(),
+        ss: get2(date.getSeconds()),
+        s: date.getSeconds(),
+        aa: datehelper.i18n[datehelper.locale].amPm.full[getAmPm(date)],
+        a: datehelper.i18n[datehelper.locale].amPm.abbr[getAmPm(date)]
+    }
+    return patterns[fmt]
+}
+
+var _prototype = DateHelper.prototype
 
 //本地化，目前包含`en`与`zh`
-proto.i18n = {
+_prototype.i18n = {
     en: {
         month: {
             abbr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -94,10 +130,10 @@ proto.i18n = {
             full: ['上午', '下午']
         }
     }
-};
+}
 
 //默认中文
-proto.locale = 'zh';
+_prototype.locale = 'zh'
 
 /**
  * ## addLocale
@@ -108,10 +144,10 @@ proto.locale = 'zh';
  * @param {Object} locale 本地化数据
  * @return {instance}     当前实例
  */
-proto.addLocale = function(name, locale) {
-    name && locale && (this.i18n[name] = locale);
-    return this;
-};
+_prototype.addLocale = function(name, locale) {
+    name && locale && (this.i18n[name] = locale)
+    return this
+}
 
 /**
  * ## setLocale
@@ -121,48 +157,10 @@ proto.addLocale = function(name, locale) {
  * @param {String} name 本地化名称
  * @return {instance}     当前实例
  */
-proto.setLocale = function(name) {
-    this.locale = name;
-    return this;
-};
-
-var _get2Year = function(date) {
-    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0;
-};
-
-var _get2 = function(value) {
-    return value < 10 ? '0' + value : value;
-};
-
-var _getAmPm = function(date) {
-    return date.getHours() < 12 ? 0 : 1;
-};
-
-//获取相对应的日期相关数据
-var _getValueByPattern = function(fmt, date) {
-    var self = this;
-    var patterns = {
-        yyyy: date.getFullYear(),
-        yy: date.getFullYear() - _get2Year(date),
-        MMMM: self.i18n[self.locale].month.full[date.getMonth()],
-        MMM: self.i18n[self.locale].month.abbr[date.getMonth()],
-        MM: _get2(date.getMonth() + 1),
-        M: date.getMonth() + 1,
-        dddd: self.i18n[self.locale].day.full[date.getDay()],
-        ddd: self.i18n[self.locale].day.abbr[date.getDay()],
-        dd: _get2(date.getDate()),
-        d: date.getDate(),
-        HH: _get2(date.getHours()),
-        H: date.getHours(),
-        mm: _get2(date.getMinutes()),
-        m: date.getMinutes(),
-        ss: _get2(date.getSeconds()),
-        s: date.getSeconds(),
-        aa: self.i18n[self.locale].amPm.full[_getAmPm(date)],
-        a: self.i18n[self.locale].amPm.abbr[_getAmPm(date)]
-    };
-    return patterns[fmt];
-};
+_prototype.setLocale = function(name) {
+    this.locale = name
+    return this
+}
 
 /**
  * ## format
@@ -173,17 +171,17 @@ var _getValueByPattern = function(fmt, date) {
  * @param {String} format 日期格式
  * @return {String}        格式化以后的日期
  */
-proto.format = function(date, format) {
-    var self = this;
-    if (!date) return;
+_prototype.format = function(date, format) {
+    var self = this
+    if (!date) return
 
-    format = format || 'yyyy-MM-dd';
+    format = format || 'yyyy-MM-dd'
 
     format = format.replace(/(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|mm|m|ss|s|aa|a)/g, function(part) {
-        return _getValueByPattern.call(self, part, date);
-    });
-    return format;
-};
+        return getValueByPattern(self, part, date)
+    })
+    return format
+}
 
 /**
  * ## parse
@@ -194,31 +192,31 @@ proto.format = function(date, format) {
  *
  * ```js
  * //1112会被计算在MM内。
- * dateHelper.parse('2015-1112','yyyy-MMdd');
+ * dateHelper.parse('2015-1112','yyyy-MMdd')
  * ```
  *
  * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
  *
  * ```js
- * dateHelper.parse('2015-11-12','yyyy-MM-dd');
+ * dateHelper.parse('2015-11-12','yyyy-MM-dd')
  * ```
  *
  * @param {String} input  字符串
  * @param {String} format 格式化字符串
  * @return {Date}          格式化的日期
  */
-proto.parse = function(input, format) {
-    if (!input || !format) return;
+_prototype.parse = function(input, format) {
+    if (!input || !format) return
     var parts = input.match(/(\d+)/g),
         i = 0,
-        fmt = {};
+        fmt = {}
 
     // extract date-part indexes from the format
     format.replace(/(yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s)/g, function(part) {
-        fmt[part] = i++;
-    });
+        fmt[part] = i++
+    })
 
-    var year = parts[fmt['yyyy']] || (parseInt(parts[fmt['yy']], 10) + _get2Year(new Date())) || 0,
+    var year = parts[fmt['yyyy']] || (parseInt(parts[fmt['yy']], 10) + get2Year(new Date())) || 0,
 
         month = (parts[fmt['MM']] - 1) || (parts[fmt['M']] - 1) || 0,
 
@@ -228,21 +226,21 @@ proto.parse = function(input, format) {
 
         minute = parts[fmt['mm']] || parts[fmt['m']] || 0,
 
-        second = parts[fmt['ss']] || parts[fmt['s']] || 0;
+        second = parts[fmt['ss']] || parts[fmt['s']] || 0
 
-    return new Date(year, month, day, hour, minute, second);
-};
+    return new Date(year, month, day, hour, minute, second)
+}
 
-var dateHelper = new DateHelper();
+var dateHelper = new DateHelper()
 
 // 将 parseDate 方法绑定在 `String` 原型上
 String.prototype.parseDate = function(format) {
-    return dateHelper.parse(this, format);
-};
+    return dateHelper.parse(this, format)
+}
 
 // 将 format 方法绑定在 `Date` 原型上
 Date.prototype.format = function(format) {
-    return dateHelper.format(this, format);
-};
+    return dateHelper.format(this, format)
+}
 
-module.exports = dateHelper;
+module.exports = dateHelper

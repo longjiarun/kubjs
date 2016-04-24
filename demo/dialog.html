@@ -16,20 +16,90 @@
     }
 </style>
 
-<link rel="stylesheet" type="text/css" href="../build/css/kub.css">
-<script type="text/javascript" src="../build/js/kub.js"></script>
+<link rel="stylesheet" type="text/css" href="../build/static/index.css">
+<script type="text/javascript" src="../build/static/index.js"></script>
 
 <script type="text/javascript">
 function test(){
 
     var $ = Kub.$;
 
+     //loading 弹窗，用于在loading时，阻塞用户行为
+    var loader = new Kub.Loader();
+
+    return false;
+    var prompt = new Kub.Prompt({
+        message:"这是个prompt:",
+        placeholder:"输入提示文字",
+        inputType:"tel",//定制输入类型
+        defaultValue:"",
+        cancel:function(){
+            //可定制取消按钮事件
+        },
+        confirm:function(e,dialog){
+            //输入值被绑定在kub-dialog中
+            console.log(dialog.value);
+
+            //可定制确定按钮
+            //如果定制confirm事件，则必须手动关闭对话框
+            //手动关闭对话框
+            new Kub.Alert({
+                message:dialog.value,
+                confirm:function(e,dialog){
+                    prompt.close();
+
+                    dialog.close();
+                }
+            });
+        }
+    });
+    return false;
+
+    //1.5s以后消失
+    var toast = new Kub.Toast({
+        message:"Loading",
+        delay:150000
+    });
+
+    return false;
+
+    //弹窗
+    //可定制多个按钮
+    var dialog = new Kub.Dialog({
+        message:"这是个弹窗这是个弹窗这是个弹窗这是个弹窗这是个弹窗这是个弹窗这是个弹窗这是个弹窗<div style='height:100px;width:1000px'></div>",
+        title:"弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗弹窗",
+        buttons:[{
+            text:"确定确定确定确定确定确定确定确定确定确定确定",
+            handler:function(){
+
+            }
+        },{
+            text:"取消取消取消取消取消取消取消取消取消取消取消取消",
+            handler:function(e,dialog){
+                //返回 event 与 kub-dialog对象
+                dialog.close();
+            }
+        },{
+            text:"取消取消取消取消取消取消取消取消取消取消取消取消",
+            handler:function(e,dialog){
+                //返回 event 与 kub-dialog对象
+                dialog.close();
+            }
+        }]
+    });
+    console.log($)
+
+    return false;
     new Kub.Confirm({
+        title:"12",
+        showHeader:true,
         message:"这是一个confirm",
         confirm:function(){
             //监听确认事件，需要手动关闭对话框
         }
     });
+
+
 
 
 
@@ -49,26 +119,7 @@ function test(){
 
     //return false;
 
-    //弹窗
-    //可定制多个按钮
-    var dialog = new Kub.Dialog({
-        message:"这是个弹窗",
-        title:"弹窗",
-        buttons:[{
-            text:"确定",
-            handler:function(){
 
-            }
-        },{
-            text:"取消",
-            handler:function(e,dialog){
-                //返回 event 与 kub-dialog对象
-                dialog.close();
-            }
-        }]
-    });
-    console.log($)
-    debugger;
 
     $("#J_button").on("click",function(){
         var alert = new Kub.Alert({
