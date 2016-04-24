@@ -58,7 +58,7 @@ _prototype.constructor = Alert
  */
 
 _prototype.defaults = {
-    confirmText:'确定',
+    confirmText: '确定',
     confirm: null,
     showHeader: false,
     closable: false,

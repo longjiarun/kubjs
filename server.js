@@ -18,4 +18,4 @@ app.use(function*(next) {
 
 app.listen(port);
 
-console.log('服务启动。地址 http://127.0.0.1:' + port);
+console.log('Start server. Url : http://127.0.0.1:' + port);

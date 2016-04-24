@@ -20,7 +20,7 @@ var src = 'src',
 
 var staticPath = path.join(build, static);
 
-var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>  (https://github.com/longjiarun/kubjs.git)*/\n\r';
+var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>. (https://github.com/longjiarun/kubjs.git)*/\n\r';
 
 //clean
 gulp.task('clean', function() {
@@ -30,7 +30,7 @@ gulp.task('clean', function() {
 
 //less
 gulp.task('less', function() {
-    var target = path.join(dist,'css');
+    var target = path.join(dist, 'css');
 
     var stream = gulp.src([src + '/less/kub.less'])
         .pipe(less())
@@ -62,7 +62,7 @@ gulp.task('less', function() {
 
 //js
 gulp.task('js', function() {
-    var target = path.join(dist,'js');
+    var target = path.join(dist, 'js');
 
     var stream = gulp.src([src + '/js/kub.js'])
         .pipe(webpack())
@@ -102,7 +102,7 @@ gulp.task('js', function() {
 
 //tpl
 gulp.task('tpl', function() {
-    var target = path.join(src,'js/tpl');
+    var target = path.join(src, 'js/tpl');
 
     return gulp.src([src + '/js/tpl/html/*.html'])
         .pipe(htmlmin({

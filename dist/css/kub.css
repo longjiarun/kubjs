@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Library v2.0.0  (https://github.com/longjiarun/kubjs.git)*/
+/*! Kub Mobile JavaScript Library v2.0.0. (https://github.com/longjiarun/kubjs.git)*/
 .kub-animated {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
@@ -100,7 +100,7 @@
   position: fixed;
   bottom: auto;
   height: auto;
-  z-index: 10003;
+  z-index: 10002;
 }
 .kub-toast .kub-dialog {
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -124,7 +124,7 @@
   outline: 0;
 }
 .kub-loader {
-  z-index: 10002;
+  z-index: 10001;
 }
 .kub-loader .kub-dialog {
   width: 36%;

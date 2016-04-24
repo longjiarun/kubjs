@@ -1,40 +1,43 @@
 var $ = Lite = function Lite(selector, context) {
-    context = context || document
+    context = context || _document
+    var type = typeof selector;
 
     if (!selector) {
         return wrap()
     }
 
-    if (typeof selector === 'function') {
+    if (type === 'function') {
         return $.ready(selector)
+    }
+
+    if (selector._l) {
+        return selector
     }
 
     if (isArray(selector)) {
         //$([document,document.body]) not $(window)
-        return wrap(slice.call(selector), selector)
+        return wrap(slice.call(selector).filter(function(item){
+            return item != null
+        }), selector)
     }
 
-    if (typeof selector === 'object') {
-        if (selector._l) {
-
-            return selector
-        } else {
-
-            //$(document)
-            return wrap([selector], selector)
-        }
+    if (type === 'object') {
+        //$(document)
+        return wrap([selector], '')
     }
 
-    if (typeof selector === 'string') {
+    if (type === 'string') {
+        selector = selector.trim()
+
         if (selector[0] === '<') {
             var nodes = $.fragment(selector)
-            return wrap(nodes, nodes)
+            return wrap(nodes, '')
         }
 
         if (idSelectorRE.test(selector)) {
-            var found = context.getElementById(RegExp.$1)
+            var found = _document.getElementById(RegExp.$1)
 
-            return wrap(found ? [found] : [])
+            return wrap(found ? [found] : [],selector)
         }
 
         return wrap($.qsa(selector, context), selector)
@@ -50,6 +53,11 @@ var slice = Array.prototype.slice,
     tagSelectorRE = /^[\w-]+$/,
     spaceRE = /\s+/g
 
+var _document = document,
+    _window = window
+
+var ELEMENT_NODE = 1
+
 function wrap(dom, selector) {
     dom = dom || []
 
@@ -57,14 +65,6 @@ function wrap(dom, selector) {
 
     dom.selector = selector || ''
     return dom
-}
-
-function dasherize(str) {
-    return str.replace(/::/g, '/')
-        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
-        .replace(/([a-z\d])([A-Z])/g, '$1_$2')
-        .replace(/_/g, '-')
-        .toLowerCase()
 }
 
 var isArray = Array.isArray ||
@@ -75,12 +75,13 @@ var isArray = Array.isArray ||
 !(function() {
 
     this.qsa = function(selector, context) {
+        context = context || _document
         selector = selector.trim()
         return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector))
     }
 
     this.fragment = function(html) {
-        var div = document.createElement('div'),
+        var div = _document.createElement('div'),
             nodes
         div.innerHTML = html
         nodes = div.children
@@ -89,10 +90,10 @@ var isArray = Array.isArray ||
     }
 
     this.ready = function(callback) {
-        if (readyRE.test(document.readyState) && document.body) {
+        if (readyRE.test(_document.readyState) && _document.body) {
             callback($)
         } else {
-            document.addEventListener('DOMContentLoaded', function() {
+            _document.addEventListener('DOMContentLoaded', function() {
                 callback($)
             }, false)
         }
@@ -121,6 +122,7 @@ var isArray = Array.isArray ||
         },
 
         //only support find(selector)
+        //zepto has a bug
         find: function(selector) {
             var dom = []
 
@@ -139,7 +141,7 @@ var isArray = Array.isArray ||
 
         show: function() {
             return this.each(function() {
-                this.style.display == 'none' && (this.style.display = '')
+                this.style.display === 'none' && (this.style.display = '')
             })
         },
 
@@ -150,14 +152,16 @@ var isArray = Array.isArray ||
         },
 
         css: function(property, value) {
-            var isObject = typeof property == 'object'
+            var isObject = typeof property === 'object'
+
             //get
             if (value == null && !isObject) {
                 var el = this[0]
 
-                if (el.nodeType !== 1) return
+                //not element
+                if (el.nodeType !== ELEMENT_NODE) return
 
-                return getComputedStyle(el).getPropertyValue(property)
+                return _window.getComputedStyle(el).getPropertyValue(property)
             }
 
             var css = ''
@@ -165,16 +169,16 @@ var isArray = Array.isArray ||
                 for (var key in property) {
                     property[key] == null ? this.each(function() {
                         this.style.removeProperty(key)
-                    }) : (css += dasherize(key) + ':' + property[key] + ';')
+                    }) : (css += key + ':' + property[key] + ';')
                 }
             } else {
-                css += dasherize(key) + ':' + property[key] + ';'
+                css += key + ':' + property[key] + ';'
             }
 
             //set
-            return this.each(function() {
+            return css ? this.each(function() {
                 this.style.cssText += ';' + css
-            })
+            }) : this
 
         },
 
@@ -184,8 +188,8 @@ var isArray = Array.isArray ||
 
             var obj = this[0].getBoundingClientRect()
             return {
-                left: obj.left + window.pageXOffset,
-                top: obj.top + window.pageYOffset,
+                left: obj.left + _window.pageXOffset,
+                top: obj.top + _window.pageYOffset,
                 width: Math.round(obj.width),
                 height: Math.round(obj.height)
             }
@@ -216,7 +220,8 @@ var isArray = Array.isArray ||
 
                 var className = this.className
 
-                name.trim().split(/\s+/g).forEach(function(klass) {
+                name.trim().split(spaceRE).forEach(function(klass) {
+                    //zepto has a bug
                     className = className.replace(new RegExp('(^|\\s)' + klass + '(\\s|$)', 'g'), ' ')
                 })
 
@@ -225,12 +230,13 @@ var isArray = Array.isArray ||
         },
 
         eq: function(idx) {
-            return idx === -1 ? this.slice(idx) : this.slice(idx, +idx + 1)
+            idx = idx < 0 ? idx + this.length : idx;
+            return $(this[idx]);
         },
 
         off: function(name, callback) {
             return this.each(function() {
-                callback ? this.removeEventListener(name, callback, false) : this.removeEventListener(name)
+                this.removeEventListener(name, callback, false)
             })
         },
 
@@ -253,14 +259,14 @@ var isArray = Array.isArray ||
         attr: function(name, value) {
             var result
 
-            return (typeof name === 'string' && !value) ?
-                (!this.length || this[0].nodeType !== 1 ? undefined :
+            return (typeof name === 'string' && value == undefined) ?
+                (!this.length || this[0].nodeType !== ELEMENT_NODE ? undefined :
                     (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
                 ) :
                 this.each(function(idx) {
-                    if (this.nodeType !== 1) return
+                    if (this.nodeType !== ELEMENT_NODE) return
 
-                    if (typeof name == 'object'){
+                    if (typeof name === 'object'){
                         for (key in name) {
                             this.setAttribute(key, name[key])
                         }
@@ -273,7 +279,7 @@ var isArray = Array.isArray ||
         removeAttr: function(name) {
             return this.each(function() {
                 var self = this
-                this.nodeType === 1 && name.split(spaceRE).forEach(function(attribute) {
+                this.nodeType === ELEMENT_NODE && name.split(spaceRE).forEach(function(attribute) {
                     self.removeAttribute(attribute)
                 })
             })
@@ -330,6 +336,14 @@ var isArray = Array.isArray ||
                     this.innerHTML = html
                 }) :
                 (this[0] ? this[0].innerHTML : null)
+        },
+
+        text: function(text) {
+            return html ?
+                this.each(function() {
+                    this.textContent = text
+                }) :
+                (this[0] ? this[0].textContent : null)
         }
     }
 }).call(Lite)

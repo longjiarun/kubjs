@@ -1,12 +1,15 @@
 {
   "name": "kub",
   "version": "2.0.0",
-  "description": "mobile js library",
+  "description": "Kub Mobile JavaScript Library",
   "main": "src/js/kub.js",
   "directories": {},
   "scripts": {
-    "start": "node server",
-    "build": "gulp"
+    "server": "node server",
+    "docs": "gulp docs",
+    "build": "gulp",
+    "pre": "gulp publish",
+    "prod":"gulp publish"
   },
   "repository": {
     "type": "git",
@@ -14,12 +17,15 @@
   },
   "keywords": [
     "kub",
-    "webpack",
-    "component",
     "mobile",
-    "ui"
+    "ui",
+    "webpack",
+    "component"
   ],
-  "author": "longjia",
+  "author": {
+    "name": "longjia",
+    "email": "longjiarun@qq.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "del": "^2.2.0",
