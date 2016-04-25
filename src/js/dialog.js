@@ -46,7 +46,7 @@ var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
     DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
     EVENT_NAME = 'click'
 
-var $body = $('body')
+var $body = $(document.body)
 
 var _window = window;
     _prototype = Dialog.prototype

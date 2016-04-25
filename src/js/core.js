@@ -14,6 +14,7 @@
  * //获取url参数
  * var params = Kub.core.getQuerystring()
  *
+ *
  * ```
  */
 
@@ -28,30 +29,46 @@ var paramsRegxp = /([^=&]+)(=([^&#]*))?/g
 
 var toString = Object.prototype.toString,
     _window = window,
+    _href = _window.location.href,
     _prototype = Core.prototype
 
-/**
- * 获取 params string
- * @param {String} url url地址，未传值取 `window.location.href`。
- * @return {String} params string
- */
+//获取 params string
+//url地址，未传值取 `window.location.href`。
 var getParamsString = function(url) {
     var matchs
-    url = url || _window.location.href
+    url = url || _href
     return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/)) && matchs[1]
 }
 
+/**
+ * ## os
+ *
+ * 系统版本与类型对象
+ *
+ * 详见 [detect 模块](./detect.js.html)
+ *
+ */
 _prototype.os = os
 
+/**
+ * ## extend
+ *
+ * @param {Boolean} [deep] `可选` 是否深度拷贝
+ * @param {Object/Array} target 目标
+ * @param {Object/Array} source 源对象，可为多个
+ * @return {Object/Array} target
+ */
 _prototype.extend = function(target, source) {
-    var deep, args = Array.prototype.slice.call(arguments, 1),
+    var deep,
+        args = Array.prototype.slice.call(arguments, 1),
         length
-    if (typeof target === 'boolean') {
+
+    if (this.isBoolean(target)) {
         deep = target
         target = args.shift()
     }
     length = args.length
-    for (var i = 0 ;i < length; i++) {
+    for (var i = 0; i < length; i++) {
         source = args[i]
         for (var key in source) {
             if (source.hasOwnProperty(key)) {
@@ -72,28 +89,28 @@ _prototype.extend = function(target, source) {
     return target
 }
 
-;['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array'].forEach(function(name) {
+//类型判断
+;
+['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean'].forEach(function(name) {
     _prototype['is' + name] = function(obj) {
         return toString.call(obj) === '[object ' + name + ']'
     }
 })
-
-//function also is object
-_prototype.isObject = function(obj) {
-    return this.isFunction(obj) || toString.call(obj) === '[object Object]'
-}
 
 /**
  * ## htmlToText
  *
  * 将html转换为text
  *
+ * 0. 去掉标签；
+ * 0. 去掉换行符与制表符；
+ * 0. 去掉空格符；
+ *
  * @param {String} value html
  * @return {String} 处理以后的文本
  */
 _prototype.htmlToText = function(value) {
-    //.replace(/&nbsp|&#160/gi, '')
-    return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '')
+    return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '').replace(/&nbsp|&#160|\s*/gi, '')
 }
 
 /**
@@ -108,21 +125,20 @@ _prototype.htmlToText = function(value) {
  *
  * //默认采用`window.location.href`
  * Kub.core.setQuerystring({
- *     name:'kubjs'
+ *     name:'kub'
  * })
  *
  * //传入url
  * Kub.core.setQuerystring('http://www.weidian.com?userId=123',{
- *     name:'kubjs'
+ *     name:'kub'
  * })
  *
  * //追加参数
  *
  * //如果不存在名称为 name 的参数，则新增参数。如果存在则替换其值
  * Kub.core.setQuerystring({
- *     name:'kubjs'
- * },{
- *     append:true
+ *     name:'kub',
+ *     addr:'hangzhou'
  * })
  *
  * ```
@@ -131,19 +147,19 @@ _prototype.htmlToText = function(value) {
  *
  * @param {Object} params 参数对象
  *
- * @param {Object} opts   配置参数。 raw : 配置是否 encodeURIComponent ，append：是否追加参数。true：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
+ * @param {Object} opts   配置参数。 raw : 配置是否 `encodeURIComponent` ，append：是否追加参数。true(default)：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
  */
 _prototype.setQuerystring = function(url, params, opts) {
     //验证url是否传值，如果 url 未传值，则使用当前页面 url
     if (this.isObject(url)) {
         opts = params
         params = url
-        url = _window.location.href
+        url = _href
     }
     params = params || {}
 
     opts = this.extend({
-        append: false,
+        append: true,
         raw: false
     }, opts || {})
 
@@ -190,14 +206,27 @@ _prototype.setQuerystring = function(url, params, opts) {
  *
  * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
  *
+ * 使用：
+ * ```js
+ *
+ * //设置当前地址参数
+ *
+ * //默认采用`window.location.href`
+ * var params = Kub.core.getQuerystring(),name = params.name
+ *
+ * //传入url
+ * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123'),userId = params.userId
+ *
+ * ```
+ *
  * @param {String} url url地址，未传值取 `window.location.href`。
  *
- * @param {Object} opts 配置参数，配置是否 decodeURIComponent
+ * @param {Object} opts 配置参数，配置是否 `decodeURIComponent`
  *
  * @return {Object} 返回参数对象
  */
 _prototype.getQuerystring = function(url, opts) {
-    var href = _window.location.href
+    var href = _href
 
     if (this.isObject(url)) {
         opts = url
