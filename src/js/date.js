@@ -60,6 +60,8 @@ function DateHelper() {
 
 }
 
+var _prototype = DateHelper.prototype
+
 var get2Year = function(date) {
     return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0
 }
@@ -97,8 +99,6 @@ var getValueByPattern = function(datehelper, fmt, date) {
     }
     return patterns[fmt]
 }
-
-var _prototype = DateHelper.prototype
 
 //本地化，目前包含`en`与`zh`
 _prototype.i18n = {

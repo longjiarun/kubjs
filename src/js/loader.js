@@ -23,7 +23,10 @@ var core = require('./core'),
 
 function Loader(options) {
     var self = this,
-        opts = this.options = core.extend({}, _prototype.defaults, options || {})
+        opts = this.options = core.extend({}, _prototype.defaults, options || {},{
+            showHeader: false,
+            buttons: null
+        })
 
     Dialog.call(this, opts)
 }
@@ -46,12 +49,9 @@ _prototype.constructor = Loader
  * * `modal`: 是否显示遮罩层。
  */
 _prototype.defaults = {
-    scrollable: true,
     className: 'kub-loader',
     modal: true,
-    message: '加载中…',
-    showHeader: false,
-    buttons: null
+    message: '加载中…'
 }
 
 module.exports = Loader

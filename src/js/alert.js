@@ -48,11 +48,7 @@ _prototype.constructor = Alert
  *
  * * `showHeader`: 是否显示头部。
  *
- * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
- *
  * * `className`: 弹窗类名，不建议修改，会影响样式。
- *
- * * `locale`: 本地化。与`Dialog`保持一致。
  *
  * * `modal`: 是否显示遮罩层。
  */
@@ -61,9 +57,7 @@ _prototype.defaults = {
     confirmText: '确定',
     confirm: null,
     showHeader: false,
-    closable: false,
     className: 'kub-alert',
-    locale: 'zh',
     modal: true
 }
 

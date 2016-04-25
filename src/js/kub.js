@@ -1,4 +1,4 @@
-//try {
+try {
     var _window = window,
         Kub = _window.Kub = _window.Kub || {}
 
@@ -36,6 +36,6 @@
         module.exports = Kub
     }
 
-// } catch (e) {
-//     alert(e.message)
-// }
+} catch (e) {
+    alert(e.message)
+}

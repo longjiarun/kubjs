@@ -26,8 +26,6 @@ var core = require('./core'),
     Dialog = require('./dialog'),
     template = require('./tpl/prompt')
 
-var INPUT_SELECTOR = '.J_input'
-
 function Prompt(options) {
     var self = this,
         opts = this.options = core.extend({}, _prototype.defaults, options || {})
@@ -50,6 +48,8 @@ function Prompt(options) {
     Dialog.call(this, opts)
 }
 
+var INPUT_SELECTOR = '.J_input'
+
 var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 
 _prototype.constructor = Prompt
@@ -67,8 +67,6 @@ _prototype.constructor = Prompt
  *
  * * `showHeader`: 是否显示头部。
  *
- * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
- *
  * * `className`: 弹窗类名，不建议修改，会影响样式。
  *
  * * `modal`: 是否显示遮罩层。
@@ -85,7 +83,6 @@ _prototype.defaults = {
     cancelText: '取消',
     cancel: null,
     showHeader: false,
-    closable: false,
     className: 'kub-prompt',
     modal: true,
     inputType: 'text',

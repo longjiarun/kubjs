@@ -23,7 +23,11 @@ function Core() {
 
 }
 
+//解析 param string 正则表达式
+var paramsRegxp = /([^=&]+)(=([^&#]*))?/g
+
 var toString = Object.prototype.toString,
+    _window = window,
     _prototype = Core.prototype
 
 /**
@@ -33,14 +37,9 @@ var toString = Object.prototype.toString,
  */
 var getParamsString = function(url) {
     var matchs
-    url = url || window.location.href
+    url = url || _window.location.href
     return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/)) && matchs[1]
 }
-
-//解析 param string 正则表达式
-var paramsRegxp = /([^=&]+)(=([^&#]*))?/g
-
-_prototype.constructor = Core
 
 _prototype.os = os
 
@@ -139,7 +138,7 @@ _prototype.setQuerystring = function(url, params, opts) {
     if (this.isObject(url)) {
         opts = params
         params = url
-        url = window.location.href
+        url = _window.location.href
     }
     params = params || {}
 
@@ -198,7 +197,7 @@ _prototype.setQuerystring = function(url, params, opts) {
  * @return {Object} 返回参数对象
  */
 _prototype.getQuerystring = function(url, opts) {
-    var href = window.location.href
+    var href = _window.location.href
 
     if (this.isObject(url)) {
         opts = url

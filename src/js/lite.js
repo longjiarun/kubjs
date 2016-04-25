@@ -46,6 +46,8 @@ var $ = Lite = function Lite(selector, context) {
     return wrap()
 }
 
+var ELEMENT_NODE = 1
+
 var slice = Array.prototype.slice,
     readyRE = /complete|loaded|interactive/,
     idSelectorRE = /^#([\w-]+)$/,
@@ -55,8 +57,6 @@ var slice = Array.prototype.slice,
 
 var _document = document,
     _window = window
-
-var ELEMENT_NODE = 1
 
 function wrap(dom, selector) {
     dom = dom || []

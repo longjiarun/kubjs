@@ -45,7 +45,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;//try {
+	var __WEBPACK_AMD_DEFINE_RESULT__;try {
 	    var _window = window,
 	        Kub = _window.Kub = _window.Kub || {}
 
@@ -83,9 +83,9 @@
 	        module.exports = Kub
 	    }
 
-	// } catch (e) {
-	//     alert(e.message)
-	// }
+	} catch (e) {
+	    alert(e.message)
+	}
 
 
 /***/ },
@@ -140,6 +140,8 @@
 	    return wrap()
 	}
 
+	var ELEMENT_NODE = 1
+
 	var slice = Array.prototype.slice,
 	    readyRE = /complete|loaded|interactive/,
 	    idSelectorRE = /^#([\w-]+)$/,
@@ -149,8 +151,6 @@
 
 	var _document = document,
 	    _window = window
-
-	var ELEMENT_NODE = 1
 
 	function wrap(dom, selector) {
 	    dom = dom || []
@@ -474,7 +474,11 @@
 
 	}
 
+	//解析 param string 正则表达式
+	var paramsRegxp = /([^=&]+)(=([^&#]*))?/g
+
 	var toString = Object.prototype.toString,
+	    _window = window,
 	    _prototype = Core.prototype
 
 	/**
@@ -484,14 +488,9 @@
 	 */
 	var getParamsString = function(url) {
 	    var matchs
-	    url = url || window.location.href
+	    url = url || _window.location.href
 	    return url && (matchs = url.match(/^[^\?#]*\?([^#]*)/)) && matchs[1]
 	}
-
-	//解析 param string 正则表达式
-	var paramsRegxp = /([^=&]+)(=([^&#]*))?/g
-
-	_prototype.constructor = Core
 
 	_prototype.os = os
 
@@ -590,7 +589,7 @@
 	    if (this.isObject(url)) {
 	        opts = params
 	        params = url
-	        url = window.location.href
+	        url = _window.location.href
 	    }
 	    params = params || {}
 
@@ -649,7 +648,7 @@
 	 * @return {Object} 返回参数对象
 	 */
 	_prototype.getQuerystring = function(url, opts) {
-	    var href = window.location.href
+	    var href = _window.location.href
 
 	    if (this.isObject(url)) {
 	        opts = url
@@ -791,6 +790,8 @@
 
 	}
 
+	var _prototype = DateHelper.prototype
+
 	var get2Year = function(date) {
 	    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0
 	}
@@ -828,8 +829,6 @@
 	    }
 	    return patterns[fmt]
 	}
-
-	var _prototype = DateHelper.prototype
 
 	//本地化，目前包含`en`与`zh`
 	_prototype.i18n = {
@@ -1068,15 +1067,16 @@
 	    this.$element = $(element)
 
 	    this.options = core.extend({}, _prototype.defaults, options || {})
-	    this.$window = $(window)
+	    this.$window = $(_window)
 	    this.$container = (this.options.container === undefined ||
-	        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
-	    _init(this)
+	        this.options.container === _window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
+	    init(this)
 	}
 
+	var _window = window,
+	    _prototype = LazyLoad.prototype
 
-
-	var _loadAllIfTimeout = function(lazyload) {
+	var loadAllIfTimeout = function(lazyload) {
 	    var options = lazyload.options
 	    typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (lazyload._waitTimer = setTimeout(function() {
 	        lazyload.loadAll()
@@ -1084,7 +1084,7 @@
 	    return lazyload
 	}
 
-	var _init = function(lazyload) {
+	var init = function(lazyload) {
 	    var options = lazyload.options
 
 	    lazyload._handle = function() {
@@ -1095,12 +1095,12 @@
 	        lazyload._waitTimer && clearTimeout(lazyload._waitTimer)
 	        lazyload._timer = setTimeout(function() {
 	            lazyload.loadElementsInViewport()
-	            _loadAllIfTimeout(lazyload)
+	            loadAllIfTimeout(lazyload)
 	        }, options.delay)
 	    }
 
 	    lazyload.loadElementsInViewport()
-	    _loadAllIfTimeout(lazyload)
+	    loadAllIfTimeout(lazyload)
 
 	    lazyload.$container.on(options.eventName, lazyload._handle)
 	    //有可能 window resize 会影响到元素的位置
@@ -1108,7 +1108,6 @@
 	}
 
 
-	var _prototype = LazyLoad.prototype
 	/**
 	 * ## defaults
 	 *
@@ -1129,7 +1128,7 @@
 	 *   `eventName` : 监听的事件名称
 	 */
 	_prototype.defaults = {
-	    container: window,
+	    container: _window,
 	    threshold: 50,
 	    waitTime: -1,
 	    delay: 150,
@@ -1287,8 +1286,8 @@
 	 */
 	_prototype.belowthefold = function(element, settings) {
 	    var fold
-	    if (settings.container === undefined || settings.container === window) {
-	        fold = window.innerHeight  + window.scrollY
+	    if (settings.container === undefined || settings.container === _window) {
+	        fold = _window.innerHeight  + _window.scrollY
 	    } else {
 	        var offset = $(settings.container).offset()
 
@@ -1310,8 +1309,8 @@
 	_prototype.abovethetop = function(element, settings) {
 	    var fold
 
-	    if (settings.container === undefined || settings.container === window) {
-	        fold = window.scrollY
+	    if (settings.container === undefined || settings.container === _window) {
+	        fold = _window.scrollY
 	    } else {
 	        fold = $(settings.container).offset().top
 	    }
@@ -1331,8 +1330,8 @@
 	 */
 	_prototype.rightoffold = function(element, settings) {
 	    var fold
-	    if (settings.container === undefined || settings.container === window) {
-	        fold = window.innerWidth + window.scrollX
+	    if (settings.container === undefined || settings.container === _window) {
+	        fold = _window.innerWidth + _window.scrollX
 	    } else {
 	        var offset = $(settings.container).offset()
 	        fold = offset.left + offset.width
@@ -1351,8 +1350,8 @@
 	 */
 	_prototype.leftofbegin = function(element, settings) {
 	    var fold
-	    if (settings.container === undefined || settings.container === window) {
-	        fold = window.scrollX
+	    if (settings.container === undefined || settings.container === _window) {
+	        fold = _window.scrollX
 	    } else {
 	        fold = $(settings.container).offset().left
 	    }
@@ -1412,13 +1411,15 @@
 	    init(this)
 	}
 
-	var $body = $('body'),
-	    _prototype = Dialog.prototype
-
 	var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
 	    DIALOG_SELECTOR = '.J_dialog',
 	    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
 	    EVENT_NAME = 'click'
+
+	var $body = $('body')
+
+	var _window = window;
+	    _prototype = Dialog.prototype
 
 	var render = function(dialog,data) {
 	    var html = template(data)
@@ -1429,7 +1430,7 @@
 	var fixed = function(){
 	    //解决 iphone 下，fixed定位问题
 	    setTimeout(function() {
-	        window.scrollTo(window.scrollX, window.scrollY)
+	        _window.scrollTo(_window.scrollX, _window.scrollY)
 	    }, 5)
 	}
 
@@ -1478,8 +1479,6 @@
 	 *
 	 * * `className`: 弹窗类名；
 	 *
-	 * * `scrollable`: 是否禁用页面滚动条；
-	 *
 	 * * `animated`: 是否开启动画效果；
 	 *
 	 * * `buttons`: 弹窗按钮；
@@ -1500,7 +1499,6 @@
 	    showHeader: true,
 	    message: '',
 	    className: '',
-	    scrollable: true,
 	    animated: true,
 	    buttons: null
 	}
@@ -1647,11 +1645,7 @@
 	 *
 	 * * `showHeader`: 是否显示头部。
 	 *
-	 * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
-	 *
 	 * * `className`: 弹窗类名，不建议修改，会影响样式。
-	 *
-	 * * `locale`: 本地化。与`Dialog`保持一致。
 	 *
 	 * * `modal`: 是否显示遮罩层。
 	 */
@@ -1660,9 +1654,7 @@
 	    confirmText: '确定',
 	    confirm: null,
 	    showHeader: false,
-	    closable: false,
 	    className: 'kub-alert',
-	    locale: 'zh',
 	    modal: true
 	}
 
@@ -1734,8 +1726,6 @@
 	 *
 	 * * `className`: 弹窗类名，不建议修改，会影响样式。
 	 *
-	 * * `locale`: 本地化。与`Dialog`保持一致。
-	 *
 	 * * `modal`: 是否显示遮罩层。
 	 */
 	_prototype.defaults = {
@@ -1783,8 +1773,6 @@
 	    Dialog = __webpack_require__(7),
 	    template = __webpack_require__(12)
 
-	var INPUT_SELECTOR = '.J_input'
-
 	function Prompt(options) {
 	    var self = this,
 	        opts = this.options = core.extend({}, _prototype.defaults, options || {})
@@ -1807,6 +1795,8 @@
 	    Dialog.call(this, opts)
 	}
 
+	var INPUT_SELECTOR = '.J_input'
+
 	var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 
 	_prototype.constructor = Prompt
@@ -1824,8 +1814,6 @@
 	 *
 	 * * `showHeader`: 是否显示头部。
 	 *
-	 * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
-	 *
 	 * * `className`: 弹窗类名，不建议修改，会影响样式。
 	 *
 	 * * `modal`: 是否显示遮罩层。
@@ -1842,7 +1830,6 @@
 	    cancelText: '取消',
 	    cancel: null,
 	    showHeader: false,
-	    closable: false,
 	    className: 'kub-prompt',
 	    modal: true,
 	    inputType: 'text',
@@ -1900,7 +1887,10 @@
 
 	function Toast(options){
 	    var self = this,
-	        opts = this.options = core.extend({}, _prototype.defaults, options||{})
+	        opts = this.options = core.extend({}, _prototype.defaults, options||{},{
+	            showHeader:false,
+	            buttons:null
+	        })
 
 	    Dialog.call(this, opts)
 
@@ -1911,7 +1901,6 @@
 	}
 
 	var _prototype = Toast.prototype = Object.create(Dialog.prototype)
-
 
 	_prototype.constructor = Toast
 
@@ -1935,9 +1924,6 @@
 	    className:'kub-toast',
 	    top:50,
 	    delay:2000,
-
-	    showHeader:false,
-	    buttons:null,
 	    modal:false
 	}
 
@@ -1982,7 +1968,10 @@
 
 	function Loader(options) {
 	    var self = this,
-	        opts = this.options = core.extend({}, _prototype.defaults, options || {})
+	        opts = this.options = core.extend({}, _prototype.defaults, options || {},{
+	            showHeader: false,
+	            buttons: null
+	        })
 
 	    Dialog.call(this, opts)
 	}
@@ -2005,12 +1994,9 @@
 	 * * `modal`: 是否显示遮罩层。
 	 */
 	_prototype.defaults = {
-	    scrollable: true,
 	    className: 'kub-loader',
 	    modal: true,
-	    message: '加载中…',
-	    showHeader: false,
-	    buttons: null
+	    message: '加载中…'
 	}
 
 	module.exports = Loader
@@ -2048,18 +2034,6 @@
 	var core = __webpack_require__(2),
 	    $ = __webpack_require__(1)
 
-	var $document = $(document),
-	    isTouch = core.os.mobile
-
-	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
-	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
-	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
-	    TRANSITIONEND_EVENT = 'transitionend',
-	    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
-	    HORIZONTAL = 'horizontal',
-	    //粘性
-	    VISCOSITY = 5
-
 	function Swiper(element, options) {
 
 	    this.options = core.extend({}, _prototype.defaults, options || {})
@@ -2071,10 +2045,27 @@
 	        paginations: $(options.paginationSelector)
 	    }
 
-	    ui.slideLength = ui.slides.length
+	    ui.slidesLength = ui.slides.length
 
 	    init(this)
 	}
+
+	var $document = $(document),
+	    isTouch = core.os.mobile
+
+	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+	    TRANSITIONEND_EVENT = 'transitionend',
+	    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
+	    HORIZONTAL = 'horizontal',
+	    //粘性
+	    VISCOSITY = 5,
+	    //触摸点偏移量
+	    TOUCH_THRESHOLD = 5
+
+	var _window = window,
+	    _prototype = Swiper.prototype
 
 	//获取触摸点
 	var getCoords = function(event) {
@@ -2104,28 +2095,37 @@
 	    var offset = swiper._ui.slides.offset(),
 	        w = offset.width,
 	        h = offset.height,
-	        l = swiper._ui.slideLength,
+	        l = swiper._ui.slidesLength,
 	        index = swiper._ui.active,
 	        active = index,
-	        threshold = swiper.options.threshold
+	        threshold = swiper.options.threshold,
+	        reach,
+	        _distanceY = Math.abs(distanceY),
+	        _distanceX = Math.abs(distanceX)
 
 	    if (swiper.options.direction === HORIZONTAL) {
+
+	        //达到门槛
+	        reach = threshold < _distanceX
+
 	        //横向
 	        if (distanceX > 0 && index == 0) {
 	            //最左侧
-	            distanceX = Math.round(distanceX / VISCOSITY)
+	            distanceX = distanceX / VISCOSITY
+
 	            index = 0
 
 	        } else if (distanceX < 0 && index == l - 1) {
 	            //最右侧
-	            distanceX = Math.round(distanceX / VISCOSITY)
+	            distanceX = distanceX / VISCOSITY
+
 	            index = l - 1
 
-	        } else if (threshold < Math.abs(distanceX)) {
+	        } else if (reach) {
 	            //达到最小偏移量
 
 	            //取整
-	            var s = Math.round(Math.abs(distanceX) / w)
+	            var s = Math.round(_distanceX / w)
 
 	            s = s == 0 ? 1 : s
 
@@ -2136,24 +2136,29 @@
 	        return {
 	            x: distanceX + (-w * active),
 	            y: 0,
-	            index: index
+	            index: index,
+	            isDefaultPrevented: !(!reach && _distanceX < _distanceY && TOUCH_THRESHOLD < _distanceY)
 	        }
 
 	    } else {
+
+	        //达到门槛
+	        reach = threshold < _distanceY
+
 	        //垂直
 	        if (distanceY > 0 && index == 0) {
 	            //最上
-	            distanceY = Math.round(distanceY / VISCOSITY)
+	            distanceY = distanceY / VISCOSITY
 	            index = 0
 
 	        } else if (distanceY < 0 && index == l - 1) {
 	            //最下
-	            distanceY = Math.round(distanceY / VISCOSITY)
+	            distanceY = distanceY / VISCOSITY
 	            index = l - 1
 
-	        } else if (threshold < Math.abs(distanceY)) {
+	        } else if (reach) {
 	            //达到最小偏移
-	            var s = Math.round(Math.abs(distanceY) / h)
+	            var s = Math.round(_distanceY / h)
 
 	            s = s == 0 ? 1 : s
 
@@ -2163,7 +2168,8 @@
 	        return {
 	            x: 0,
 	            y: distanceY + (-h * active),
-	            index: index
+	            index: index,
+	            isDefaultPrevented: true
 	        }
 	    }
 	}
@@ -2197,20 +2203,20 @@
 	    if (swiper.options.infinite) {
 	        var $slides = swiper._ui.slides,
 	            first = $slides[0],
-	            last = $slides[swiper._ui.slideLength - 1],
-	            parentNode = first.parentNode
+	            last = $slides[swiper._ui.slidesLength - 1],
+	            parentElement = first.parentElement
 
-	        parentNode.insertBefore(last.cloneNode(true), first)
-	        parentNode.appendChild(first.cloneNode(true))
+	        parentElement.insertBefore(last.cloneNode(true), first)
+	        parentElement.appendChild(first.cloneNode(true))
 
-	        swiper._ui.slideLength += 2
+	        swiper._ui.slidesLength += 2
 	    }
 	}
 
 	//重置索引值
 	var resetSlideIndex = function(swiper) {
 	    var index = swiper._ui.active,
-	        length = swiper._ui.slideLength
+	        length = swiper._ui.slidesLength
 
 	    if (swiper.options.infinite) {
 
@@ -2238,8 +2244,6 @@
 	            startCoords = getCoords(event)
 
 	            setDuration(swiper.$element, null)
-
-	            event.preventDefault()
 	        },
 	        move = function(event) {
 	            if (!flag) return
@@ -2248,7 +2252,7 @@
 	            var distance = getDistance(event, startCoords),
 	                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
 
-	            setTranslate(swiper.$element, coordinates.x, coordinates.y)
+	            coordinates.isDefaultPrevented && (setTranslate(swiper.$element, coordinates.x, coordinates.y), event.preventDefault())
 	        },
 	        end = function(event) {
 	            if (!flag) return
@@ -2286,6 +2290,7 @@
 
 	        resetSlideIndex(swiper)
 
+	        //计算出真实索引值
 	        swiper.options.infinite && (index = swiper._ui.active - 1)
 
 	        callback && callback.call(swiper, index)
@@ -2307,7 +2312,7 @@
 	            swiper.slide(swiper._ui.active)
 	        }, 200)
 	    }
-	    $(window).on('onorientationchange' in window ? 'orientationchange' : 'resize', handler)
+	    $(_window).on('onorientationchange' in _window ? 'orientationchange' : 'resize', handler)
 	}
 
 	//偏移到指定的位置
@@ -2319,12 +2324,12 @@
 	        //横向
 	        var w = offset.width
 
-	        swiper.setTranslate(-index * w, 0, duration)
+	        setContainerTranslate(swiper, -index * w, 0, duration)
 	    } else {
 	        //垂直
 	        var h = offset.height
 
-	        swiper.setTranslate(0, -index * h, duration)
+	        setContainerTranslate(swiper, 0, -index * h, duration)
 	    }
 	}
 
@@ -2340,12 +2345,22 @@
 	    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
 	}
 
+	//设置容器偏移量
+	var setContainerTranslate = function(swiper, x, y, duration) {
+	    var $element = swiper.$element
+
+	    duration = duration || 0
+
+	    setDuration($element, duration)
+	    setTranslate($element, x, y)
+	}
+
 	//设置偏移量
 	var setTranslate = function($element, x, y) {
 	    core.isNumber(x) && (x += 'px')
 	    core.isNumber(y) && (y += 'px')
 
-	    var t = 'translate(' + x + ',' + y + ')'
+	    var t = 'translate3d(' + x + ',' + y + ',0)'
 
 	    $element.css({
 	        '-webkit-transform': t,
@@ -2366,8 +2381,6 @@
 	var getActualIndex = function(index, length) {
 	    return index < 0 ? 0 : index >= length ? length - 1 : index
 	}
-
-	var _prototype = Swiper.prototype
 
 	/**
 	 * ## defaults
@@ -2395,7 +2408,7 @@
 	 * * `slide`: 切换回调函数
 	 */
 
-	_prototype.defaults =  {
+	_prototype.defaults = {
 	    //vertical
 	    direction: HORIZONTAL,
 	    threshold: 50,
@@ -2418,26 +2431,6 @@
 	}
 
 	/**
-	 * ## setTranslate
-	 *
-	 * 设置偏移量
-	 *
-	 * @param {String} x     x偏移。注意值应该包含单位。例如 100px,或者10%。
-	 * @param {String} y     y偏移。注意值应该包含单位。例如 100px,或者10%。
-	 * @param {Number} duration 滚动速度
-	 */
-	_prototype.setTranslate = function(x, y, duration) {
-	    var $element = this.$element
-
-	    duration = duration || 0
-
-	    setDuration($element, duration)
-	    setTranslate($element, x, y)
-
-	    return this
-	}
-
-	/**
 	 * ## slide
 	 *
 	 * 滚动到指定索引值位置
@@ -2453,7 +2446,7 @@
 	    duration = duration == null ? options.duration : duration
 
 	    //取出实际的索引值,保存当前索引值
-	    this._ui.active = index = getActualIndex(index, this._ui.slideLength)
+	    this._ui.active = index = getActualIndex(index, this._ui.slidesLength)
 
 	    //通过索引值设置偏移
 	    slide(this, index, duration)
@@ -2534,6 +2527,13 @@
 	    date = __webpack_require__(4),
 	    template = __webpack_require__(17)
 
+	function DatePicker(element, options) {
+	    this.$element = $(element)
+	    this.options = core.extend({}, _prototype.defaults, options || {})
+
+	    init(this)
+	}
+
 	var HEIGHT_UNIT = 50,
 	    COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
 	    COLUMN_SELECTOR = '.kub-datepicker-column',
@@ -2547,12 +2547,7 @@
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
 	    END_EVENT = isTouch ? 'touchend' : 'mouseup'
 
-	function DatePicker(element, options) {
-	    this.$element = $(element)
-	    this.options = core.extend({}, _prototype.defaults, options || {})
-
-	    init(this)
-	}
+	var _prototype = DatePicker.prototype
 
 	//获取触摸点
 	var getCoords = function(event) {
@@ -2615,7 +2610,7 @@
 	    core.isNumber(x) && (x += 'px')
 	    core.isNumber(y) && (y += 'px')
 
-	    t = 'translate(' + x + ',' + y + ')'
+	    t = 'translate3d(' + x + ',' + y + ',0)'
 
 	    !$container && ($container = $this[0].$container = $this.find(COLUMN_CONTAINER_SELECTOR))
 
@@ -2797,7 +2792,6 @@
 	    return value ? parseInt(value) : 0
 	}
 
-	var _prototype = DatePicker.prototype
 
 	/**
 	 * ## defaults

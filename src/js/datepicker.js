@@ -41,6 +41,13 @@ var core = require('./core'),
     date = require('./date'),
     template = require('./tpl/datepicker')
 
+function DatePicker(element, options) {
+    this.$element = $(element)
+    this.options = core.extend({}, _prototype.defaults, options || {})
+
+    init(this)
+}
+
 var HEIGHT_UNIT = 50,
     COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
     COLUMN_SELECTOR = '.kub-datepicker-column',
@@ -54,12 +61,7 @@ var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
     MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
     END_EVENT = isTouch ? 'touchend' : 'mouseup'
 
-function DatePicker(element, options) {
-    this.$element = $(element)
-    this.options = core.extend({}, _prototype.defaults, options || {})
-
-    init(this)
-}
+var _prototype = DatePicker.prototype
 
 //获取触摸点
 var getCoords = function(event) {
@@ -122,7 +124,7 @@ var setTranslate = function($this, x, y) {
     core.isNumber(x) && (x += 'px')
     core.isNumber(y) && (y += 'px')
 
-    t = 'translate(' + x + ',' + y + ')'
+    t = 'translate3d(' + x + ',' + y + ',0)'
 
     !$container && ($container = $this[0].$container = $this.find(COLUMN_CONTAINER_SELECTOR))
 
@@ -304,7 +306,6 @@ var getValue = function(datepicker, name) {
     return value ? parseInt(value) : 0
 }
 
-var _prototype = DatePicker.prototype
 
 /**
  * ## defaults

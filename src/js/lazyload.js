@@ -23,15 +23,16 @@ function LazyLoad(element, options) {
     this.$element = $(element)
 
     this.options = core.extend({}, _prototype.defaults, options || {})
-    this.$window = $(window)
+    this.$window = $(_window)
     this.$container = (this.options.container === undefined ||
-        this.options.container === window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
-    _init(this)
+        this.options.container === _window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
+    init(this)
 }
 
+var _window = window,
+    _prototype = LazyLoad.prototype
 
-
-var _loadAllIfTimeout = function(lazyload) {
+var loadAllIfTimeout = function(lazyload) {
     var options = lazyload.options
     typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (lazyload._waitTimer = setTimeout(function() {
         lazyload.loadAll()
@@ -39,7 +40,7 @@ var _loadAllIfTimeout = function(lazyload) {
     return lazyload
 }
 
-var _init = function(lazyload) {
+var init = function(lazyload) {
     var options = lazyload.options
 
     lazyload._handle = function() {
@@ -50,12 +51,12 @@ var _init = function(lazyload) {
         lazyload._waitTimer && clearTimeout(lazyload._waitTimer)
         lazyload._timer = setTimeout(function() {
             lazyload.loadElementsInViewport()
-            _loadAllIfTimeout(lazyload)
+            loadAllIfTimeout(lazyload)
         }, options.delay)
     }
 
     lazyload.loadElementsInViewport()
-    _loadAllIfTimeout(lazyload)
+    loadAllIfTimeout(lazyload)
 
     lazyload.$container.on(options.eventName, lazyload._handle)
     //有可能 window resize 会影响到元素的位置
@@ -63,7 +64,6 @@ var _init = function(lazyload) {
 }
 
 
-var _prototype = LazyLoad.prototype
 /**
  * ## defaults
  *
@@ -84,7 +84,7 @@ var _prototype = LazyLoad.prototype
  *   `eventName` : 监听的事件名称
  */
 _prototype.defaults = {
-    container: window,
+    container: _window,
     threshold: 50,
     waitTime: -1,
     delay: 150,
@@ -242,8 +242,8 @@ _prototype.isInViewport = function($this) {
  */
 _prototype.belowthefold = function(element, settings) {
     var fold
-    if (settings.container === undefined || settings.container === window) {
-        fold = window.innerHeight  + window.scrollY
+    if (settings.container === undefined || settings.container === _window) {
+        fold = _window.innerHeight  + _window.scrollY
     } else {
         var offset = $(settings.container).offset()
 
@@ -265,8 +265,8 @@ _prototype.belowthefold = function(element, settings) {
 _prototype.abovethetop = function(element, settings) {
     var fold
 
-    if (settings.container === undefined || settings.container === window) {
-        fold = window.scrollY
+    if (settings.container === undefined || settings.container === _window) {
+        fold = _window.scrollY
     } else {
         fold = $(settings.container).offset().top
     }
@@ -286,8 +286,8 @@ _prototype.abovethetop = function(element, settings) {
  */
 _prototype.rightoffold = function(element, settings) {
     var fold
-    if (settings.container === undefined || settings.container === window) {
-        fold = window.innerWidth + window.scrollX
+    if (settings.container === undefined || settings.container === _window) {
+        fold = _window.innerWidth + _window.scrollX
     } else {
         var offset = $(settings.container).offset()
         fold = offset.left + offset.width
@@ -306,8 +306,8 @@ _prototype.rightoffold = function(element, settings) {
  */
 _prototype.leftofbegin = function(element, settings) {
     var fold
-    if (settings.container === undefined || settings.container === window) {
-        fold = window.scrollX
+    if (settings.container === undefined || settings.container === _window) {
+        fold = _window.scrollX
     } else {
         fold = $(settings.container).offset().left
     }

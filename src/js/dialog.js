@@ -41,13 +41,15 @@ function Dialog(options) {
     init(this)
 }
 
-var $body = $('body'),
-    _prototype = Dialog.prototype
-
 var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
     DIALOG_SELECTOR = '.J_dialog',
     DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
     EVENT_NAME = 'click'
+
+var $body = $('body')
+
+var _window = window;
+    _prototype = Dialog.prototype
 
 var render = function(dialog,data) {
     var html = template(data)
@@ -58,7 +60,7 @@ var render = function(dialog,data) {
 var fixed = function(){
     //解决 iphone 下，fixed定位问题
     setTimeout(function() {
-        window.scrollTo(window.scrollX, window.scrollY)
+        _window.scrollTo(_window.scrollX, _window.scrollY)
     }, 5)
 }
 
@@ -107,8 +109,6 @@ var init = function(dialog) {
  *
  * * `className`: 弹窗类名；
  *
- * * `scrollable`: 是否禁用页面滚动条；
- *
  * * `animated`: 是否开启动画效果；
  *
  * * `buttons`: 弹窗按钮；
@@ -129,7 +129,6 @@ _prototype.defaults = {
     showHeader: true,
     message: '',
     className: '',
-    scrollable: true,
     animated: true,
     buttons: null
 }

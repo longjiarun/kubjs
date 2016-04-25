@@ -26,18 +26,6 @@
 var core = require('./core'),
     $ = require('./lite')
 
-var $document = $(document),
-    isTouch = core.os.mobile
-
-var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
-    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
-    END_EVENT = isTouch ? 'touchend' : 'mouseup',
-    TRANSITIONEND_EVENT = 'transitionend',
-    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
-    HORIZONTAL = 'horizontal',
-    //粘性
-    VISCOSITY = 5
-
 function Swiper(element, options) {
 
     this.options = core.extend({}, _prototype.defaults, options || {})
@@ -49,10 +37,27 @@ function Swiper(element, options) {
         paginations: $(options.paginationSelector)
     }
 
-    ui.slideLength = ui.slides.length
+    ui.slidesLength = ui.slides.length
 
     init(this)
 }
+
+var $document = $(document),
+    isTouch = core.os.mobile
+
+var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+    TRANSITIONEND_EVENT = 'transitionend',
+    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
+    HORIZONTAL = 'horizontal',
+    //粘性
+    VISCOSITY = 5,
+    //触摸点偏移量
+    TOUCH_THRESHOLD = 5
+
+var _window = window,
+    _prototype = Swiper.prototype
 
 //获取触摸点
 var getCoords = function(event) {
@@ -82,28 +87,37 @@ var getCoordinates = function(swiper, distanceX, distanceY) {
     var offset = swiper._ui.slides.offset(),
         w = offset.width,
         h = offset.height,
-        l = swiper._ui.slideLength,
+        l = swiper._ui.slidesLength,
         index = swiper._ui.active,
         active = index,
-        threshold = swiper.options.threshold
+        threshold = swiper.options.threshold,
+        reach,
+        _distanceY = Math.abs(distanceY),
+        _distanceX = Math.abs(distanceX)
 
     if (swiper.options.direction === HORIZONTAL) {
+
+        //达到门槛
+        reach = threshold < _distanceX
+
         //横向
         if (distanceX > 0 && index == 0) {
             //最左侧
-            distanceX = Math.round(distanceX / VISCOSITY)
+            distanceX = distanceX / VISCOSITY
+
             index = 0
 
         } else if (distanceX < 0 && index == l - 1) {
             //最右侧
-            distanceX = Math.round(distanceX / VISCOSITY)
+            distanceX = distanceX / VISCOSITY
+
             index = l - 1
 
-        } else if (threshold < Math.abs(distanceX)) {
+        } else if (reach) {
             //达到最小偏移量
 
             //取整
-            var s = Math.round(Math.abs(distanceX) / w)
+            var s = Math.round(_distanceX / w)
 
             s = s == 0 ? 1 : s
 
@@ -114,24 +128,29 @@ var getCoordinates = function(swiper, distanceX, distanceY) {
         return {
             x: distanceX + (-w * active),
             y: 0,
-            index: index
+            index: index,
+            isDefaultPrevented: !(!reach && _distanceX < _distanceY && TOUCH_THRESHOLD < _distanceY)
         }
 
     } else {
+
+        //达到门槛
+        reach = threshold < _distanceY
+
         //垂直
         if (distanceY > 0 && index == 0) {
             //最上
-            distanceY = Math.round(distanceY / VISCOSITY)
+            distanceY = distanceY / VISCOSITY
             index = 0
 
         } else if (distanceY < 0 && index == l - 1) {
             //最下
-            distanceY = Math.round(distanceY / VISCOSITY)
+            distanceY = distanceY / VISCOSITY
             index = l - 1
 
-        } else if (threshold < Math.abs(distanceY)) {
+        } else if (reach) {
             //达到最小偏移
-            var s = Math.round(Math.abs(distanceY) / h)
+            var s = Math.round(_distanceY / h)
 
             s = s == 0 ? 1 : s
 
@@ -141,7 +160,8 @@ var getCoordinates = function(swiper, distanceX, distanceY) {
         return {
             x: 0,
             y: distanceY + (-h * active),
-            index: index
+            index: index,
+            isDefaultPrevented: true
         }
     }
 }
@@ -175,20 +195,20 @@ var appendCloneChildren = function(swiper) {
     if (swiper.options.infinite) {
         var $slides = swiper._ui.slides,
             first = $slides[0],
-            last = $slides[swiper._ui.slideLength - 1],
-            parentNode = first.parentNode
+            last = $slides[swiper._ui.slidesLength - 1],
+            parentElement = first.parentElement
 
-        parentNode.insertBefore(last.cloneNode(true), first)
-        parentNode.appendChild(first.cloneNode(true))
+        parentElement.insertBefore(last.cloneNode(true), first)
+        parentElement.appendChild(first.cloneNode(true))
 
-        swiper._ui.slideLength += 2
+        swiper._ui.slidesLength += 2
     }
 }
 
 //重置索引值
 var resetSlideIndex = function(swiper) {
     var index = swiper._ui.active,
-        length = swiper._ui.slideLength
+        length = swiper._ui.slidesLength
 
     if (swiper.options.infinite) {
 
@@ -216,8 +236,6 @@ var bindEvents = function(swiper) {
             startCoords = getCoords(event)
 
             setDuration(swiper.$element, null)
-
-            event.preventDefault()
         },
         move = function(event) {
             if (!flag) return
@@ -226,7 +244,7 @@ var bindEvents = function(swiper) {
             var distance = getDistance(event, startCoords),
                 coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
 
-            setTranslate(swiper.$element, coordinates.x, coordinates.y)
+            coordinates.isDefaultPrevented && (setTranslate(swiper.$element, coordinates.x, coordinates.y), event.preventDefault())
         },
         end = function(event) {
             if (!flag) return
@@ -264,6 +282,7 @@ var bindTransitionEndEvent = function(swiper) {
 
         resetSlideIndex(swiper)
 
+        //计算出真实索引值
         swiper.options.infinite && (index = swiper._ui.active - 1)
 
         callback && callback.call(swiper, index)
@@ -285,7 +304,7 @@ var bindOrientationChangeEvent = function(swiper) {
             swiper.slide(swiper._ui.active)
         }, 200)
     }
-    $(window).on('onorientationchange' in window ? 'orientationchange' : 'resize', handler)
+    $(_window).on('onorientationchange' in _window ? 'orientationchange' : 'resize', handler)
 }
 
 //偏移到指定的位置
@@ -297,12 +316,12 @@ var slide = function(swiper, index, duration) {
         //横向
         var w = offset.width
 
-        swiper.setTranslate(-index * w, 0, duration)
+        setContainerTranslate(swiper, -index * w, 0, duration)
     } else {
         //垂直
         var h = offset.height
 
-        swiper.setTranslate(0, -index * h, duration)
+        setContainerTranslate(swiper, 0, -index * h, duration)
     }
 }
 
@@ -318,12 +337,22 @@ var setActiveClass = function(swiper, index) {
     swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
 }
 
+//设置容器偏移量
+var setContainerTranslate = function(swiper, x, y, duration) {
+    var $element = swiper.$element
+
+    duration = duration || 0
+
+    setDuration($element, duration)
+    setTranslate($element, x, y)
+}
+
 //设置偏移量
 var setTranslate = function($element, x, y) {
     core.isNumber(x) && (x += 'px')
     core.isNumber(y) && (y += 'px')
 
-    var t = 'translate(' + x + ',' + y + ')'
+    var t = 'translate3d(' + x + ',' + y + ',0)'
 
     $element.css({
         '-webkit-transform': t,
@@ -344,8 +373,6 @@ var setDuration = function($element, duration) {
 var getActualIndex = function(index, length) {
     return index < 0 ? 0 : index >= length ? length - 1 : index
 }
-
-var _prototype = Swiper.prototype
 
 /**
  * ## defaults
@@ -373,7 +400,7 @@ var _prototype = Swiper.prototype
  * * `slide`: 切换回调函数
  */
 
-_prototype.defaults =  {
+_prototype.defaults = {
     //vertical
     direction: HORIZONTAL,
     threshold: 50,
@@ -396,26 +423,6 @@ _prototype.defaults =  {
 }
 
 /**
- * ## setTranslate
- *
- * 设置偏移量
- *
- * @param {String} x     x偏移。注意值应该包含单位。例如 100px,或者10%。
- * @param {String} y     y偏移。注意值应该包含单位。例如 100px,或者10%。
- * @param {Number} duration 滚动速度
- */
-_prototype.setTranslate = function(x, y, duration) {
-    var $element = this.$element
-
-    duration = duration || 0
-
-    setDuration($element, duration)
-    setTranslate($element, x, y)
-
-    return this
-}
-
-/**
  * ## slide
  *
  * 滚动到指定索引值位置
@@ -431,7 +438,7 @@ _prototype.slide = function(index, duration) {
     duration = duration == null ? options.duration : duration
 
     //取出实际的索引值,保存当前索引值
-    this._ui.active = index = getActualIndex(index, this._ui.slideLength)
+    this._ui.active = index = getActualIndex(index, this._ui.slidesLength)
 
     //通过索引值设置偏移
     slide(this, index, duration)

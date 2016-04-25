@@ -23,7 +23,10 @@ var core = require('./core'),
 
 function Toast(options){
     var self = this,
-        opts = this.options = core.extend({}, _prototype.defaults, options||{})
+        opts = this.options = core.extend({}, _prototype.defaults, options||{},{
+            showHeader:false,
+            buttons:null
+        })
 
     Dialog.call(this, opts)
 
@@ -34,7 +37,6 @@ function Toast(options){
 }
 
 var _prototype = Toast.prototype = Object.create(Dialog.prototype)
-
 
 _prototype.constructor = Toast
 
@@ -58,9 +60,6 @@ _prototype.defaults = {
     className:'kub-toast',
     top:50,
     delay:2000,
-
-    showHeader:false,
-    buttons:null,
     modal:false
 }
 

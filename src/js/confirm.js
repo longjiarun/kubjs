@@ -59,8 +59,6 @@ _prototype.constructor = Confirm
  *
  * * `className`: 弹窗类名，不建议修改，会影响样式。
  *
- * * `locale`: 本地化。与`Dialog`保持一致。
- *
  * * `modal`: 是否显示遮罩层。
  */
 _prototype.defaults = {
