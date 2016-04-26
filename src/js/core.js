@@ -194,7 +194,7 @@ _prototype.setQuerystring = function(url, params, opts) {
     }
 
     //替换掉原来 url 中的 querystring
-    return url.replace(/^([^#\?]*)[^#]*/, function(a, url, hash) {
+    return url.replace(/^([^#\?]*)[^#]*/, function(a, url) {
         return url + (_queryString ? '?' + _queryString : '')
     })
 }

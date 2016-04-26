@@ -21,7 +21,6 @@
  * ```
  */
 var core = require('./core'),
-    $ = require('./lite'),
     Dialog = require('./dialog')
 
 function Confirm(options) {

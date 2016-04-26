@@ -170,25 +170,6 @@ var returnFalse = function() {
     return false
 }
 
-//初始化
-var init = function(swiper) {
-    var options = swiper.options
-
-    appendCloneChildren(swiper)
-
-    //设置默认样式
-    swiper.$element.css(options.style.swiper)
-
-    var initialSlide = options.initialSlide || 0
-    options.infinite && (initialSlide = initialSlide + 1)
-
-    //滚动到默认位置
-    swiper.slide(initialSlide, 0)
-
-    //绑定事件
-    bindEvents(swiper)
-}
-
 //添加重复子节点
 var appendCloneChildren = function(swiper) {
 
@@ -371,6 +352,25 @@ var setDuration = function($element, duration) {
 
 var getActualIndex = function(index, length) {
     return index < 0 ? 0 : index >= length ? length - 1 : index
+}
+
+//初始化
+var init = function(swiper) {
+    var options = swiper.options
+
+    appendCloneChildren(swiper)
+
+    //设置默认样式
+    swiper.$element.css(options.style.swiper)
+
+    var initialSlide = options.initialSlide || 0
+    options.infinite && (initialSlide = initialSlide + 1)
+
+    //滚动到默认位置
+    swiper.slide(initialSlide, 0)
+
+    //绑定事件
+    bindEvents(swiper)
 }
 
 /**

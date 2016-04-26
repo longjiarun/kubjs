@@ -38,8 +38,9 @@
 var core = require('./core'),
     $ = require('./lite'),
     Dialog = require('./dialog'),
-    date = require('./date'),
     template = require('./tpl/datepicker')
+
+require('./date')
 
 function DatePicker(element, options) {
     this.$element = $(element)
@@ -272,7 +273,7 @@ var bindEvents = function(datepicker) {
 
 //绑定输入框聚焦事件
 var bindInputFocusEvent = function(datepicker) {
-    datepicker.$element.on(EVENT_NAME, function(e) {
+    datepicker.$element.on(EVENT_NAME, function() {
         //使输入框失去焦点
         datepicker.$element[0].blur()
 

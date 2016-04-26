@@ -8,8 +8,9 @@
     "server": "node server",
     "docs": "gulp docs",
     "build": "gulp",
+    "eslint": "gulp eslint",
     "pre": "gulp publish",
-    "prod":"gulp publish"
+    "prod": "gulp publish"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "gulp": "^3.9.1",
     "gulp-banner": "^0.1.3",
     "gulp-clean-css": "^2.0.6",
+    "gulp-eslint": "^2.0.0",
     "gulp-htmlmin": "^1.3.0",
     "gulp-less": "^3.0.5",
     "gulp-rename": "^1.2.2",

@@ -37,7 +37,6 @@ var core = require('./core'),
 
 function Dialog(options) {
     var opts = this.options = core.extend({}, _prototype.defaults, options || {})
-
     init(this)
 }
 

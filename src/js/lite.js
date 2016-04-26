@@ -199,7 +199,7 @@ var isArray = Array.isArray ||
         addClass: function(name) {
             if (!name) return this
 
-            return this.each(function(idx) {
+            return this.each(function() {
                 if (!('className' in this)) return
 
                 var classList = [],
@@ -214,7 +214,7 @@ var isArray = Array.isArray ||
         },
 
         removeClass: function(name) {
-            return this.each(function(idx) {
+            return this.each(function() {
                 if (!('className' in this)) return
 
                 if (name === undefined) return this.className = ''
@@ -260,11 +260,11 @@ var isArray = Array.isArray ||
         attr: function(name, value) {
             var result
 
-            return (typeof name === 'string' && value == undefined) ?
-                (!this.length || this[0].nodeType !== ELEMENT_NODE ? undefined :
+            return (typeof name === 'string' && value == null) ?
+                (!this.length || this[0].nodeType !== ELEMENT_NODE ? null :
                     (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
                 ) :
-                this.each(function(idx) {
+                this.each(function() {
                     if (this.nodeType !== ELEMENT_NODE) return
 
                     if (typeof name === 'object'){

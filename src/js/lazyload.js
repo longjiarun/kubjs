@@ -70,7 +70,7 @@ var init = function(lazyload) {
 var getUnloadedElements = function(lazyload) {
     var dom = []
 
-    lazyload.$element.each(function(index) {
+    lazyload.$element.each(function() {
         !this.loaded && dom.push(this)
     })
 
@@ -79,8 +79,7 @@ var getUnloadedElements = function(lazyload) {
 
 //加载所有在可视区域内的图片
 var loadElementsInViewport = function(lazyload) {
-    var options = lazyload.options,
-        elements
+    var elements
 
     elements = getUnloadedElements(lazyload)
 

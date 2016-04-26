@@ -22,13 +22,11 @@
  */
 
 var core = require('./core'),
-    $ = require('./lite'),
     Dialog = require('./dialog'),
     template = require('./tpl/prompt')
 
 function Prompt(options) {
-    var self = this,
-        opts = this.options = core.extend({}, _prototype.defaults, options || {})
+    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
     opts.buttons = [{
         text: opts.cancelText,

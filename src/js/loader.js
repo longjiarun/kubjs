@@ -18,15 +18,13 @@
  * ```
  */
 var core = require('./core'),
-    $ = require('./lite'),
     Dialog = require('./dialog')
 
 function Loader(options) {
-    var self = this,
-        opts = this.options = core.extend({}, _prototype.defaults, options || {},{
-            showHeader: false,
-            buttons: null
-        })
+    var opts = this.options = core.extend({}, _prototype.defaults, options || {}, {
+        showHeader: false,
+        buttons: null
+    })
 
     Dialog.call(this, opts)
 }

@@ -8,6 +8,7 @@ var gulp = require('gulp'),
     htmlmin = require('gulp-htmlmin'),
     template = require('gulp-underscore-tpl'),
     banner = require('gulp-banner'),
+    eslint = require('gulp-eslint'),
     path = require('path'),
     exec = require('child_process').execSync,
     pkg = require('./package.json');
@@ -61,7 +62,7 @@ gulp.task('less', function() {
 });
 
 //js
-gulp.task('js', function() {
+gulp.task('js',['tpl'], function() {
     var target = path.join(dist, 'js');
 
     var stream = gulp.src([src + '/js/kub.js'])
@@ -100,6 +101,7 @@ gulp.task('js', function() {
     return stream.pipe(gulp.dest(staticPath));
 });
 
+
 //tpl
 gulp.task('tpl', function() {
     var target = path.join(src, 'js/tpl');
@@ -115,6 +117,13 @@ gulp.task('tpl', function() {
         .pipe(gulp.dest(target))
 });
 
+//eslint
+gulp.task('eslint', function() {
+    var source = [path.join(src, 'js/**/*.js'), '!' + path.join(src, 'js/tpl/**/*.js')];
+    return gulp.src(source)
+        .pipe(eslint())
+        .pipe(eslint.format());
+});
 
 //只生成文档
 //docker -i src/js -o build/pages/docs -x tpl
@@ -134,7 +143,7 @@ gulp.task('docs', function(cb) {
     }
 });
 
-gulp.task('default', ['clean', 'tpl'], function() {
+gulp.task('default', ['clean'], function() {
     gulp.start('less', 'js');
 });
 
