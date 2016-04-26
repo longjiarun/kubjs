@@ -1,20 +1,12 @@
 @import "dialog";
-@kub-datepicker-dialog-body-padding: 0.75em;
-@kub-datepicker-column-height: 50px;
-@kub-datepicker-column-padding: 0.6em;
-@kub-datepicker-column-font-size: 0.5em;
-@kub-datepicker-overlay-border-radius: 6px;
-@kub-datepicker-font-size: 16px;
-@kub-datepicker-color: #333;
-
 .kub-datepicker-dialog {
     .kub-dialog-body {
-        padding: @kub-datepicker-dialog-body-padding;
+        padding: @datepicker-dialog-body-padding;
     }
 }
 .kub-datepicker {
-    font-size: @kub-datepicker-font-size;
-    color: @kub-datepicker-color;
+    font-size: @datepicker-font-size;
+    color: @datepicker-color;
     text-align: center;
     white-space: nowrap;
     position: relative;
@@ -26,34 +18,34 @@
     }
     .kub-datepicker-overlay {
         position: absolute;
-        top: @kub-datepicker-column-height;
+        top: @datepicker-column-height;
         left: 0;
-        height: @kub-datepicker-column-height;
+        height: @datepicker-column-height;
         width: 100%;
         z-index: 0;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: @kub-datepicker-overlay-border-radius;
-        box-shadow: 0 0 @kub-datepicker-column-height * 2 rgba(0, 0, 0, 0.3);
+        border: @datepicker-overlay-border;
+        border-radius: @datepicker-overlay-border-radius;
+        box-shadow: @datepicker-overlay-box-shadow;
         box-sizing: border-box;
     }
     .kub-datepicker-column {
         position: relative;
-        height: @kub-datepicker-column-height * 3;
-        padding: 0 @kub-datepicker-column-padding;
+        height: @datepicker-column-height * 3;
+        padding: 0 @datepicker-column-padding;
         display: inline-block;
         overflow: hidden;
         z-index: 1;
 
         &:after {
             position: absolute;
-            font-size: @kub-datepicker-column-font-size;
-            top: @kub-datepicker-column-height;
+            font-size: @datepicker-column-font-size;
+            top: @datepicker-column-height;
             right: 0
         }
         ul {
             li {
-                line-height: @kub-datepicker-column-height;
-                height: @kub-datepicker-column-height;
+                line-height: @datepicker-column-height;
+                height: @datepicker-column-height;
                 display: none;
             }
             .kub-datepicker-show {

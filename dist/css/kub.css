@@ -1,5 +1,14 @@
 /*! Kub Mobile JavaScript Library v2.0.0. (https://github.com/longjiarun/kubjs.git)*/
-.kub-animated {
+/**
+ * animate.less
+ */
+/**
+ * dialog.less
+ */
+/**
+ * datepicker.less
+ */
+.kub-animated {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
   -webkit-animation-fill-mode: both;

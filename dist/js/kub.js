@@ -293,7 +293,7 @@
 	        addClass: function(name) {
 	            if (!name) return this
 
-	            return this.each(function(idx) {
+	            return this.each(function() {
 	                if (!('className' in this)) return
 
 	                var classList = [],
@@ -308,7 +308,7 @@
 	        },
 
 	        removeClass: function(name) {
-	            return this.each(function(idx) {
+	            return this.each(function() {
 	                if (!('className' in this)) return
 
 	                if (name === undefined) return this.className = ''
@@ -354,11 +354,11 @@
 	        attr: function(name, value) {
 	            var result
 
-	            return (typeof name === 'string' && value == undefined) ?
-	                (!this.length || this[0].nodeType !== ELEMENT_NODE ? undefined :
+	            return (typeof name === 'string' && value == null) ?
+	                (!this.length || this[0].nodeType !== ELEMENT_NODE ? null :
 	                    (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
 	                ) :
-	                this.each(function(idx) {
+	                this.each(function() {
 	                    if (this.nodeType !== ELEMENT_NODE) return
 
 	                    if (typeof name === 'object'){
@@ -646,7 +646,7 @@
 	    }
 
 	    //替换掉原来 url 中的 querystring
-	    return url.replace(/^([^#\?]*)[^#]*/, function(a, url, hash) {
+	    return url.replace(/^([^#\?]*)[^#]*/, function(a, url) {
 	        return url + (_queryString ? '?' + _queryString : '')
 	    })
 	}
@@ -1144,7 +1144,7 @@
 	var getUnloadedElements = function(lazyload) {
 	    var dom = []
 
-	    lazyload.$element.each(function(index) {
+	    lazyload.$element.each(function() {
 	        !this.loaded && dom.push(this)
 	    })
 
@@ -1153,8 +1153,7 @@
 
 	//加载所有在可视区域内的图片
 	var loadElementsInViewport = function(lazyload) {
-	    var options = lazyload.options,
-	        elements
+	    var elements
 
 	    elements = getUnloadedElements(lazyload)
 
@@ -1410,7 +1409,6 @@
 
 	function Dialog(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
-
 	    init(this)
 	}
 
@@ -1617,7 +1615,6 @@
 	 */
 
 	var core = __webpack_require__(2),
-	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7)
 
 	function Alert(options) {
@@ -1691,7 +1688,6 @@
 	 * ```
 	 */
 	var core = __webpack_require__(2),
-	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7)
 
 	function Confirm(options) {
@@ -1772,13 +1768,11 @@
 	 */
 
 	var core = __webpack_require__(2),
-	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7),
 	    template = __webpack_require__(12)
 
 	function Prompt(options) {
-	    var self = this,
-	        opts = this.options = core.extend({}, _prototype.defaults, options || {})
+	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
 	    opts.buttons = [{
 	        text: opts.cancelText,
@@ -1966,15 +1960,13 @@
 	 * ```
 	 */
 	var core = __webpack_require__(2),
-	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7)
 
 	function Loader(options) {
-	    var self = this,
-	        opts = this.options = core.extend({}, _prototype.defaults, options || {},{
-	            showHeader: false,
-	            buttons: null
-	        })
+	    var opts = this.options = core.extend({}, _prototype.defaults, options || {}, {
+	        showHeader: false,
+	        buttons: null
+	    })
 
 	    Dialog.call(this, opts)
 	}
@@ -2181,25 +2173,6 @@
 	    return false
 	}
 
-	//初始化
-	var init = function(swiper) {
-	    var options = swiper.options
-
-	    appendCloneChildren(swiper)
-
-	    //设置默认样式
-	    swiper.$element.css(options.style.swiper)
-
-	    var initialSlide = options.initialSlide || 0
-	    options.infinite && (initialSlide = initialSlide + 1)
-
-	    //滚动到默认位置
-	    swiper.slide(initialSlide, 0)
-
-	    //绑定事件
-	    bindEvents(swiper)
-	}
-
 	//添加重复子节点
 	var appendCloneChildren = function(swiper) {
 
@@ -2384,6 +2357,25 @@
 	    return index < 0 ? 0 : index >= length ? length - 1 : index
 	}
 
+	//初始化
+	var init = function(swiper) {
+	    var options = swiper.options
+
+	    appendCloneChildren(swiper)
+
+	    //设置默认样式
+	    swiper.$element.css(options.style.swiper)
+
+	    var initialSlide = options.initialSlide || 0
+	    options.infinite && (initialSlide = initialSlide + 1)
+
+	    //滚动到默认位置
+	    swiper.slide(initialSlide, 0)
+
+	    //绑定事件
+	    bindEvents(swiper)
+	}
+
 	/**
 	 * ## defaults
 	 *
@@ -2531,8 +2523,9 @@
 	var core = __webpack_require__(2),
 	    $ = __webpack_require__(1),
 	    Dialog = __webpack_require__(7),
-	    date = __webpack_require__(4),
 	    template = __webpack_require__(17)
+
+	__webpack_require__(4)
 
 	function DatePicker(element, options) {
 	    this.$element = $(element)
@@ -2765,7 +2758,7 @@
 
 	//绑定输入框聚焦事件
 	var bindInputFocusEvent = function(datepicker) {
-	    datepicker.$element.on(EVENT_NAME, function(e) {
+	    datepicker.$element.on(EVENT_NAME, function() {
 	        //使输入框失去焦点
 	        datepicker.$element[0].blur()
 
