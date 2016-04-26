@@ -1458,7 +1458,7 @@
 
 	var fixed = function(){
 	    //解决 iphone 下，fixed定位问题
-	    setTimeout(function() {
+	    core.os.ios && setTimeout(function() {
 	        _window.scrollTo(_window.scrollX, _window.scrollY)
 	    }, 5)
 	}
@@ -1471,7 +1471,7 @@
 	        var index = parseInt($(this).attr('data-index')),
 	            button = options.buttons[index]
 
-	        button.handler && button.handler.call(dialog, e, dialog)
+	        button.handler && button.handler.call(this, e, dialog)
 	    })
 	}
 
@@ -1814,8 +1814,8 @@
 	    }, {
 	        text: opts.confirmText,
 	        handler: function(e, dialog) {
-	            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value
-	            opts.confirm && opts.confirm.call(this, e, dialog)
+	            var value = dialog.$element.find(INPUT_SELECTOR)[0].value
+	            opts.confirm && opts.confirm.call(this, e, dialog, value)
 	        }
 	    }]
 

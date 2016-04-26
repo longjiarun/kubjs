@@ -107,7 +107,7 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 .kub-toast .kub-dialog-body {
-  padding: 0.5em;
+  padding: 1em 0.5em;
   color: #fff;
   text-align: center;
 }

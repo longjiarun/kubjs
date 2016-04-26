@@ -38,8 +38,8 @@ function Prompt(options) {
     }, {
         text: opts.confirmText,
         handler: function(e, dialog) {
-            dialog.value = dialog.$element.find(INPUT_SELECTOR)[0].value
-            opts.confirm && opts.confirm.call(this, e, dialog)
+            var value = dialog.$element.find(INPUT_SELECTOR)[0].value
+            opts.confirm && opts.confirm.call(this, e, dialog, value)
         }
     }]
 
