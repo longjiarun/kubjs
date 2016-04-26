@@ -23,46 +23,75 @@ function LazyLoad(element, options) {
     this.$element = $(element)
 
     this.options = core.extend({}, _prototype.defaults, options || {})
-    this.$window = $(_window)
-    this.$container = (this.options.container === undefined ||
-        this.options.container === _window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
+
+    this.$container = $(this.options.container)
+
     init(this)
 }
 
 var _window = window,
     _prototype = LazyLoad.prototype
 
-var loadAllIfTimeout = function(lazyload) {
-    var options = lazyload.options
-    typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (lazyload._waitTimer = setTimeout(function() {
-        lazyload.loadAll()
-    }, options.waitTime))
-    return lazyload
-}
+var //横竖屏切换时 ，orientationchange 与 resize事件都会触发，所以只需监听 resize 即可
+    RESIZE_EVENT = 'resize',
+    //三星某款机型在监听非window容器的scroll事件时，会无限次触发，可以使用touchmove替代
+    //但可能会出现 页面加载时触发scroll无法触发scroll与惯性滚动停止时，无法触发的情况
+    //综上：依旧采用scroll解决，对于某些机型进行忽略
+    EVENT_NAME = 'scroll'
 
 var init = function(lazyload) {
-    var options = lazyload.options
+    var options = lazyload.options,
+        timer
 
-    lazyload._handle = function() {
+    var handler = function() {
         if (lazyload.completed) {
             return
         }
-        lazyload._timer && clearTimeout(lazyload._timer)
-        lazyload._waitTimer && clearTimeout(lazyload._waitTimer)
-        lazyload._timer = setTimeout(function() {
-            lazyload.loadElementsInViewport()
-            loadAllIfTimeout(lazyload)
+
+        timer && clearTimeout(timer)
+
+        timer = setTimeout(function() {
+
+            loadElementsInViewport(lazyload)
+
         }, options.delay)
     }
 
-    lazyload.loadElementsInViewport()
-    loadAllIfTimeout(lazyload)
+    //页面载入先执行下面
+    loadElementsInViewport(lazyload)
 
-    lazyload.$container.on(options.eventName, lazyload._handle)
-    //有可能 window resize 会影响到元素的位置
-    !lazyload.containerIsWindow && lazyload.$window.on('resize', lazyload._handle)
+    //页面紧接着触发scroll，走下面监听
+    lazyload.$container.on(EVENT_NAME, handler)
+
+    $(_window).on(RESIZE_EVENT, handler)
 }
 
+//获取所有还未被加载的节点
+var getUnloadedElements = function(lazyload) {
+    var dom = []
+
+    lazyload.$element.each(function(index) {
+        !this.loaded && dom.push(this)
+    })
+
+    return dom
+}
+
+//加载所有在可视区域内的图片
+var loadElementsInViewport = function(lazyload) {
+    var options = lazyload.options,
+        elements
+
+    elements = getUnloadedElements(lazyload)
+
+    lazyload.completed  = elements.length === 0 ? true : false
+
+    elements.forEach(function(element) {
+        var $this = $(element)
+
+        lazyload.isVisible($this) && lazyload.load($this)
+    })
+}
 
 /**
  * ## defaults
@@ -73,49 +102,29 @@ var init = function(lazyload) {
  *
  *   `container` : 图片存放容器，容器会监听事件
  *
- *   `threshold` : 提前加载距离，默认50px
- *
- *   `waitTime` : 等待时间，用户如果在 waitTime 时间内无操作，则会加载剩余默认图片
+ *   `threshold` : 提前加载距离
  *
  *   `delay` : 事件监听时的延迟时间
  *
  *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
  *
- *   `eventName` : 监听的事件名称
  */
 _prototype.defaults = {
     container: _window,
-    threshold: 50,
-    waitTime: -1,
-    delay: 150,
-    attributeName: 'original',
-    eventName: 'scroll resize'
+    threshold: 200,
+    delay: 100,
+    attributeName: 'original'
 }
 
 //更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
 _prototype.updateElement = function(element) {
-    var self = this
-    self.$element = element
+
+    this.$element = $(element)
+
     //更新 dom 以后立即验证是否有元素已经显示
-    self.loadElementsInViewport()
-    return self
-}
+    loadElementsInViewport(this)
 
-/**
- * ## getUnloadedElements
- *
- * 获取所有还未被加载的节点
- *
- * @return {instance} 当前实例
- */
-_prototype.getUnloadedElements = function() {
-    var self = this,dom = []
-
-    return self.$element.each(function(index) {
-        !this.loaded && dom.push(this)
-    })
-
-    return $(dom)
+    return this
 }
 
 /**
@@ -127,30 +136,16 @@ _prototype.getUnloadedElements = function() {
  */
 _prototype.loadAll = function() {
     var self = this,
-        options = self.options,
-        elements
-    elements = self.getUnloadedElements()
-    elements.each(function() {
-        var $this = $(this)
-        self.load($this, $this.attr('data-' + self.options.attributeName))
-    })
-    return self
-}
-
-//加载所有在可视区域内的图片
-_prototype.loadElementsInViewport = function() {
-    var self = this,
-        options = self.options,
         elements
 
-    elements = self.getUnloadedElements()
-    elements.length == 0 && (self.completed = true)
-    elements.each(function() {
-        var $this = $(this),
-            flag = true
+    elements = getUnloadedElements(self)
 
-        flag = self.isVisible($this, options)
-        flag && self.load($this, $this.attr('data-' + self.options.attributeName))
+    this.completed = true
+
+    elements.forEach(function(element) {
+        var $this = $(element)
+
+        self.load($this)
     })
     return self
 }
@@ -163,21 +158,21 @@ _prototype.loadElementsInViewport = function() {
  * @param {Object}  options  参数
  * @return {Boolean}         true ：可见 false ：不可见
  */
-_prototype.isVisible = function($this, options) {
-    var self = this
-    if (self.abovethetop($this, options)) {
+_prototype.isVisible = function($this) {
+    var options = this.options
+
+    if (this.abovethetop($this, options)) {
         return false
-    } else if (self.belowthefold($this, options)) {
+    } else if (this.belowthefold($this, options)) {
         return false
     }
-    if (self.leftofbegin($this, options)) {
+    if (this.leftofbegin($this, options)) {
         return false
-    } else if (self.rightoffold($this, options)) {
+    } else if (this.rightoffold($this, options)) {
         return false
     }
     return true
 }
-
 
 /**
  * ## load
@@ -188,7 +183,10 @@ _prototype.isVisible = function($this, options) {
  * @param {String} original 图片地址
  * @return {instance}       当前实例
  */
-_prototype.load = function($element, original) {
+_prototype.load = function($element) {
+
+    var original = $element.attr('data-' + this.options.attributeName)
+
     //如果原图片为空
     if (!original) {
         return
@@ -198,37 +196,9 @@ _prototype.load = function($element, original) {
     } else {
         $element.css('background-image', 'url(' + original + ')')
     }
+    //记录该节点已被加载
     $element[0].loaded = true
     return this
-}
-
-/**
- * ## destroy
- *
- * 销毁对象
- * @return {instance} 当前实例
- */
-_prototype.destroy = function() {
-    var self = this,
-        options = self.options
-    //取消监听
-    self.$container.off(options.eventName, self._handle)
-    !self.containerIsWindow && self.$window.off('resize', self._handle)
-    //clear timeout
-    self._timer && clearTimeout(self._timer)
-    self._waitTimer && clearTimeout(self._waitTimer)
-
-    return self
-}
-
-/**
- * 是否在可视区域内
- *
- * @param {zepto} element 检查的元素
- * @return {Boolean} 是：true 否 ：false
- */
-_prototype.isInViewport = function($this) {
-    return !this.belowthefold($this[0], this.options) && !this.abovethetop($this[0], this.options) && !this.rightoffold($this[0], this.options) && !this.leftofbegin($this[0], this.options)
 }
 
 /**
@@ -241,11 +211,12 @@ _prototype.isInViewport = function($this) {
  * @return {Boolean}        是：true 否 ：false
  */
 _prototype.belowthefold = function(element, settings) {
-    var fold
-    if (settings.container === undefined || settings.container === _window) {
+    var fold,container = settings.container
+
+    if (container === _window) {
         fold = _window.innerHeight  + _window.scrollY
     } else {
-        var offset = $(settings.container).offset()
+        var offset = $(container).offset()
 
         fold = offset.top + offset.height
     }
@@ -263,12 +234,12 @@ _prototype.belowthefold = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 _prototype.abovethetop = function(element, settings) {
-    var fold
+    var fold,container = settings.container
 
-    if (settings.container === undefined || settings.container === _window) {
+    if (container === _window) {
         fold = _window.scrollY
     } else {
-        fold = $(settings.container).offset().top
+        fold = $(container).offset().top
     }
 
     var offset = $(element).offset()
@@ -285,11 +256,12 @@ _prototype.abovethetop = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 _prototype.rightoffold = function(element, settings) {
-    var fold
-    if (settings.container === undefined || settings.container === _window) {
+    var fold,container = settings.container
+
+    if (container === _window) {
         fold = _window.innerWidth + _window.scrollX
     } else {
-        var offset = $(settings.container).offset()
+        var offset = $(container).offset()
         fold = offset.left + offset.width
     }
     return fold <= $(element).offset().left - settings.threshold
@@ -305,11 +277,12 @@ _prototype.rightoffold = function(element, settings) {
  * @return {Boolean}        是：true 否 ：false
  */
 _prototype.leftofbegin = function(element, settings) {
-    var fold
-    if (settings.container === undefined || settings.container === _window) {
+    var fold,container = settings.container
+
+    if (container === _window) {
         fold = _window.scrollX
     } else {
-        fold = $(settings.container).offset().left
+        fold = $(container).offset().left
     }
 
     var offset = $(element).offset()

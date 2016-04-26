@@ -12,7 +12,6 @@
  * 使用方法：
  * ```js
  *  new Kub.Swiper($swiperWrap.find('.swiper'),{
- *      auto:true,
  *      slideSelector:$swiperWrap.find('.slide'),
  *      slideActiveClass:'active',
  *      paginationSelector:$swiperWrap.find('.pagination li'),
@@ -48,6 +47,7 @@ var $document = $(document),
 var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
     MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
     END_EVENT = isTouch ? 'touchend' : 'mouseup',
+    RESIZE_EVENT = 'resize',
     TRANSITIONEND_EVENT = 'transitionend',
     WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
     HORIZONTAL = 'horizontal',
@@ -276,7 +276,7 @@ var bindEvents = function(swiper) {
 var bindTransitionEndEvent = function(swiper) {
     var $element = swiper.$element
 
-    var slide = function() {
+    var handler = function() {
         var callback = swiper.options.slide,
             index = swiper._ui.active
 
@@ -286,12 +286,11 @@ var bindTransitionEndEvent = function(swiper) {
         swiper.options.infinite && (index = swiper._ui.active - 1)
 
         callback && callback.call(swiper, index)
-
-        //设置选中状态Class
-        setActiveClass(swiper, index)
     }
 
-    $element.on(TRANSITIONEND_EVENT, slide).on(WEBKIT_TRANSITIONEND_EVENT, slide)
+    //duration == 0 无法触发
+    //translate 值未改变也无法触发
+    $element.on(TRANSITIONEND_EVENT, handler).on(WEBKIT_TRANSITIONEND_EVENT, handler)
 }
 
 //监听横竖屏切换
@@ -304,11 +303,11 @@ var bindOrientationChangeEvent = function(swiper) {
             swiper.slide(swiper._ui.active)
         }, 200)
     }
-    $(_window).on('onorientationchange' in _window ? 'orientationchange' : 'resize', handler)
+    $(_window).on(RESIZE_EVENT, handler)
 }
 
 //偏移到指定的位置
-var slide = function(swiper, index, duration) {
+var slideTo = function(swiper, index, duration) {
     var offset = swiper._ui.slides.offset()
 
     //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
@@ -385,7 +384,9 @@ var getActualIndex = function(index, length) {
  *
  * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
  *
- * * `duration`: 切换速度。
+ * * `duration`: 切换速度
+ *
+ * * `infinite`: 是否循环滚动 true：循环 false：不循环
  *
  * * `initialSlide`: 初始化滚动位置
  *
@@ -441,7 +442,10 @@ _prototype.slide = function(index, duration) {
     this._ui.active = index = getActualIndex(index, this._ui.slidesLength)
 
     //通过索引值设置偏移
-    slide(this, index, duration)
+    slideTo(this, index, duration)
+
+    //设置选中状态Class
+    setActiveClass(this, options.infinite ? index - 1 : index)
 
     return this
 }

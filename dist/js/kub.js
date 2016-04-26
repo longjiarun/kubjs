@@ -168,6 +168,7 @@
 
 	!(function() {
 
+	    //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
 	    this.qsa = function(selector, context) {
 	        context = context || _document
 	        selector = selector.trim()
@@ -1096,46 +1097,75 @@
 	    this.$element = $(element)
 
 	    this.options = core.extend({}, _prototype.defaults, options || {})
-	    this.$window = $(_window)
-	    this.$container = (this.options.container === undefined ||
-	        this.options.container === _window) ? (this.containerIsWindow = true, this.$window) : ($(this.options.container))
+
+	    this.$container = $(this.options.container)
+
 	    init(this)
 	}
 
 	var _window = window,
 	    _prototype = LazyLoad.prototype
 
-	var loadAllIfTimeout = function(lazyload) {
-	    var options = lazyload.options
-	    typeof options.waitTime === 'number' && !(options.waitTime !== +options.waitTime) && options.waitTime > 0 && (lazyload._waitTimer = setTimeout(function() {
-	        lazyload.loadAll()
-	    }, options.waitTime))
-	    return lazyload
-	}
+	var //横竖屏切换时 ，orientationchange 与 resize事件都会触发，所以只需监听 resize 即可
+	    RESIZE_EVENT = 'resize',
+	    //三星某款机型在监听非window容器的scroll事件时，会无限次触发，可以使用touchmove替代
+	    //但可能会出现 页面加载时触发scroll无法触发scroll与惯性滚动停止时，无法触发的情况
+	    //综上：依旧采用scroll解决，对于某些机型进行忽略
+	    EVENT_NAME = 'scroll'
 
 	var init = function(lazyload) {
-	    var options = lazyload.options
+	    var options = lazyload.options,
+	        timer
 
-	    lazyload._handle = function() {
+	    var handler = function() {
 	        if (lazyload.completed) {
 	            return
 	        }
-	        lazyload._timer && clearTimeout(lazyload._timer)
-	        lazyload._waitTimer && clearTimeout(lazyload._waitTimer)
-	        lazyload._timer = setTimeout(function() {
-	            lazyload.loadElementsInViewport()
-	            loadAllIfTimeout(lazyload)
+
+	        timer && clearTimeout(timer)
+
+	        timer = setTimeout(function() {
+
+	            loadElementsInViewport(lazyload)
+
 	        }, options.delay)
 	    }
 
-	    lazyload.loadElementsInViewport()
-	    loadAllIfTimeout(lazyload)
+	    //页面载入先执行下面
+	    loadElementsInViewport(lazyload)
 
-	    lazyload.$container.on(options.eventName, lazyload._handle)
-	    //有可能 window resize 会影响到元素的位置
-	    !lazyload.containerIsWindow && lazyload.$window.on('resize', lazyload._handle)
+	    //页面紧接着触发scroll，走下面监听
+	    lazyload.$container.on(EVENT_NAME, handler)
+
+	    $(_window).on(RESIZE_EVENT, handler)
 	}
 
+	//获取所有还未被加载的节点
+	var getUnloadedElements = function(lazyload) {
+	    var dom = []
+
+	    lazyload.$element.each(function(index) {
+	        !this.loaded && dom.push(this)
+	    })
+
+	    return dom
+	}
+
+	//加载所有在可视区域内的图片
+	var loadElementsInViewport = function(lazyload) {
+	    var options = lazyload.options,
+	        elements
+
+	    elements = getUnloadedElements(lazyload)
+
+	    lazyload.completed  = elements.length === 0 ? true : false
+
+	    elements.forEach(function(element) {
+	        var $this = $(element)
+
+	        lazyload.isVisible($this) && lazyload.load($this)
+	    })
+	}
 
 	/**
 	 * ## defaults
@@ -1146,49 +1176,29 @@
 	 *
 	 *   `container` : 图片存放容器，容器会监听事件
 	 *
-	 *   `threshold` : 提前加载距离，默认50px
-	 *
-	 *   `waitTime` : 等待时间，用户如果在 waitTime 时间内无操作，则会加载剩余默认图片
+	 *   `threshold` : 提前加载距离
 	 *
 	 *   `delay` : 事件监听时的延迟时间
 	 *
 	 *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
 	 *
-	 *   `eventName` : 监听的事件名称
 	 */
 	_prototype.defaults = {
 	    container: _window,
-	    threshold: 50,
-	    waitTime: -1,
-	    delay: 150,
-	    attributeName: 'original',
-	    eventName: 'scroll resize'
+	    threshold: 200,
+	    delay: 100,
+	    attributeName: 'original'
 	}
 
 	//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
 	_prototype.updateElement = function(element) {
-	    var self = this
-	    self.$element = element
+
+	    this.$element = $(element)
+
 	    //更新 dom 以后立即验证是否有元素已经显示
-	    self.loadElementsInViewport()
-	    return self
-	}
+	    loadElementsInViewport(this)
 
-	/**
-	 * ## getUnloadedElements
-	 *
-	 * 获取所有还未被加载的节点
-	 *
-	 * @return {instance} 当前实例
-	 */
-	_prototype.getUnloadedElements = function() {
-	    var self = this,dom = []
-
-	    return self.$element.each(function(index) {
-	        !this.loaded && dom.push(this)
-	    })
-
-	    return $(dom)
+	    return this
 	}
 
 	/**
@@ -1200,30 +1210,16 @@
 	 */
 	_prototype.loadAll = function() {
 	    var self = this,
-	        options = self.options,
-	        elements
-	    elements = self.getUnloadedElements()
-	    elements.each(function() {
-	        var $this = $(this)
-	        self.load($this, $this.attr('data-' + self.options.attributeName))
-	    })
-	    return self
-	}
-
-	//加载所有在可视区域内的图片
-	_prototype.loadElementsInViewport = function() {
-	    var self = this,
-	        options = self.options,
 	        elements
 
-	    elements = self.getUnloadedElements()
-	    elements.length == 0 && (self.completed = true)
-	    elements.each(function() {
-	        var $this = $(this),
-	            flag = true
+	    elements = getUnloadedElements(self)
 
-	        flag = self.isVisible($this, options)
-	        flag && self.load($this, $this.attr('data-' + self.options.attributeName))
+	    this.completed = true
+
+	    elements.forEach(function(element) {
+	        var $this = $(element)
+
+	        self.load($this)
 	    })
 	    return self
 	}
@@ -1236,21 +1232,21 @@
 	 * @param {Object}  options  参数
 	 * @return {Boolean}         true ：可见 false ：不可见
 	 */
-	_prototype.isVisible = function($this, options) {
-	    var self = this
-	    if (self.abovethetop($this, options)) {
+	_prototype.isVisible = function($this) {
+	    var options = this.options
+
+	    if (this.abovethetop($this, options)) {
 	        return false
-	    } else if (self.belowthefold($this, options)) {
+	    } else if (this.belowthefold($this, options)) {
 	        return false
 	    }
-	    if (self.leftofbegin($this, options)) {
+	    if (this.leftofbegin($this, options)) {
 	        return false
-	    } else if (self.rightoffold($this, options)) {
+	    } else if (this.rightoffold($this, options)) {
 	        return false
 	    }
 	    return true
 	}
-
 
 	/**
 	 * ## load
@@ -1261,7 +1257,10 @@
 	 * @param {String} original 图片地址
 	 * @return {instance}       当前实例
 	 */
-	_prototype.load = function($element, original) {
+	_prototype.load = function($element) {
+
+	    var original = $element.attr('data-' + this.options.attributeName)
+
 	    //如果原图片为空
 	    if (!original) {
 	        return
@@ -1271,37 +1270,9 @@
 	    } else {
 	        $element.css('background-image', 'url(' + original + ')')
 	    }
+	    //记录该节点已被加载
 	    $element[0].loaded = true
 	    return this
-	}
-
-	/**
-	 * ## destroy
-	 *
-	 * 销毁对象
-	 * @return {instance} 当前实例
-	 */
-	_prototype.destroy = function() {
-	    var self = this,
-	        options = self.options
-	    //取消监听
-	    self.$container.off(options.eventName, self._handle)
-	    !self.containerIsWindow && self.$window.off('resize', self._handle)
-	    //clear timeout
-	    self._timer && clearTimeout(self._timer)
-	    self._waitTimer && clearTimeout(self._waitTimer)
-
-	    return self
-	}
-
-	/**
-	 * 是否在可视区域内
-	 *
-	 * @param {zepto} element 检查的元素
-	 * @return {Boolean} 是：true 否 ：false
-	 */
-	_prototype.isInViewport = function($this) {
-	    return !this.belowthefold($this[0], this.options) && !this.abovethetop($this[0], this.options) && !this.rightoffold($this[0], this.options) && !this.leftofbegin($this[0], this.options)
 	}
 
 	/**
@@ -1314,11 +1285,12 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.belowthefold = function(element, settings) {
-	    var fold
-	    if (settings.container === undefined || settings.container === _window) {
+	    var fold,container = settings.container
+
+	    if (container === _window) {
 	        fold = _window.innerHeight  + _window.scrollY
 	    } else {
-	        var offset = $(settings.container).offset()
+	        var offset = $(container).offset()
 
 	        fold = offset.top + offset.height
 	    }
@@ -1336,12 +1308,12 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.abovethetop = function(element, settings) {
-	    var fold
+	    var fold,container = settings.container
 
-	    if (settings.container === undefined || settings.container === _window) {
+	    if (container === _window) {
 	        fold = _window.scrollY
 	    } else {
-	        fold = $(settings.container).offset().top
+	        fold = $(container).offset().top
 	    }
 
 	    var offset = $(element).offset()
@@ -1358,11 +1330,12 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.rightoffold = function(element, settings) {
-	    var fold
-	    if (settings.container === undefined || settings.container === _window) {
+	    var fold,container = settings.container
+
+	    if (container === _window) {
 	        fold = _window.innerWidth + _window.scrollX
 	    } else {
-	        var offset = $(settings.container).offset()
+	        var offset = $(container).offset()
 	        fold = offset.left + offset.width
 	    }
 	    return fold <= $(element).offset().left - settings.threshold
@@ -1378,11 +1351,12 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.leftofbegin = function(element, settings) {
-	    var fold
-	    if (settings.container === undefined || settings.container === _window) {
+	    var fold,container = settings.container
+
+	    if (container === _window) {
 	        fold = _window.scrollX
 	    } else {
-	        fold = $(settings.container).offset().left
+	        fold = $(container).offset().left
 	    }
 
 	    var offset = $(element).offset()
@@ -2049,7 +2023,6 @@
 	 * 使用方法：
 	 * ```js
 	 *  new Kub.Swiper($swiperWrap.find('.swiper'),{
-	 *      auto:true,
 	 *      slideSelector:$swiperWrap.find('.slide'),
 	 *      slideActiveClass:'active',
 	 *      paginationSelector:$swiperWrap.find('.pagination li'),
@@ -2085,6 +2058,7 @@
 	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
 	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+	    RESIZE_EVENT = 'resize',
 	    TRANSITIONEND_EVENT = 'transitionend',
 	    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
 	    HORIZONTAL = 'horizontal',
@@ -2313,7 +2287,7 @@
 	var bindTransitionEndEvent = function(swiper) {
 	    var $element = swiper.$element
 
-	    var slide = function() {
+	    var handler = function() {
 	        var callback = swiper.options.slide,
 	            index = swiper._ui.active
 
@@ -2323,12 +2297,11 @@
 	        swiper.options.infinite && (index = swiper._ui.active - 1)
 
 	        callback && callback.call(swiper, index)
-
-	        //设置选中状态Class
-	        setActiveClass(swiper, index)
 	    }
 
-	    $element.on(TRANSITIONEND_EVENT, slide).on(WEBKIT_TRANSITIONEND_EVENT, slide)
+	    //duration == 0 无法触发
+	    //translate 值未改变也无法触发
+	    $element.on(TRANSITIONEND_EVENT, handler).on(WEBKIT_TRANSITIONEND_EVENT, handler)
 	}
 
 	//监听横竖屏切换
@@ -2341,11 +2314,11 @@
 	            swiper.slide(swiper._ui.active)
 	        }, 200)
 	    }
-	    $(_window).on('onorientationchange' in _window ? 'orientationchange' : 'resize', handler)
+	    $(_window).on(RESIZE_EVENT, handler)
 	}
 
 	//偏移到指定的位置
-	var slide = function(swiper, index, duration) {
+	var slideTo = function(swiper, index, duration) {
 	    var offset = swiper._ui.slides.offset()
 
 	    //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
@@ -2422,7 +2395,9 @@
 	 *
 	 * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
 	 *
-	 * * `duration`: 切换速度。
+	 * * `duration`: 切换速度
+	 *
+	 * * `infinite`: 是否循环滚动 true：循环 false：不循环
 	 *
 	 * * `initialSlide`: 初始化滚动位置
 	 *
@@ -2478,7 +2453,10 @@
 	    this._ui.active = index = getActualIndex(index, this._ui.slidesLength)
 
 	    //通过索引值设置偏移
-	    slide(this, index, duration)
+	    slideTo(this, index, duration)
+
+	    //设置选中状态Class
+	    setActiveClass(this, options.infinite ? index - 1 : index)
 
 	    return this
 	}
@@ -2564,6 +2542,7 @@
 	}
 
 	var HEIGHT_UNIT = 50,
+	    DURATION = 200,
 	    COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
 	    COLUMN_SELECTOR = '.kub-datepicker-column',
 	    COLUMN_ITEM_SELECTOR = 'li',
@@ -2574,7 +2553,8 @@
 
 	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
-	    END_EVENT = isTouch ? 'touchend' : 'mouseup'
+	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+	    EVENT_NAME = 'click'
 
 	var _prototype = DatePicker.prototype
 
@@ -2622,12 +2602,12 @@
 	//设置偏移速度
 	var setDuration = function($this, duration) {
 	    var $container = $this[0].$container,
-	        transition = 'transform 200ms ease-out',
-	        webkiTransition = '-webkit-transform 200ms ease-out'
+	        transition = 'transform ' + duration + 'ms ease-out',
+	        webkiTransition = '-webkit-transform ' + duration + 'ms ease-out'
 
 	    $container.css({
-	        '-webkit-transition': duration != null ? webkiTransition : null,
-	        'transition': duration != null ? transition : null
+	        '-webkit-transition': duration != null ? webkiTransition : duration,
+	        'transition': duration != null ? transition : duration
 	    })
 	}
 
@@ -2659,6 +2639,7 @@
 
 	    $element = datepicker.$element[0].dialog.$element
 
+	    //缓存dom
 	    ui = datepicker._ui = {
 	        year: $element.find('.year'),
 	        month: $element.find('.month'),
@@ -2667,19 +2648,16 @@
 	        minute: $element.find('.minute'),
 	        second: $element.find('.second')
 	    }
-
 	    ui.columns = $element.find(COLUMN_SELECTOR)
 
+	    //设置块高度
 	    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
 
+	    //隐藏对话框
 	    datepicker.hide()
 
-	    options.format.indexOf('y') === -1 && (ui.year.remove())
-	    options.format.indexOf('M') === -1 && (ui.month.remove())
-	    options.format.indexOf('d') === -1 && (ui.day.remove())
-	    options.format.indexOf('H') === -1 && (ui.hour.remove())
-	    options.format.indexOf('m') === -1 && (ui.minute.remove())
-	    options.format.indexOf('s') === -1 && (ui.second.remove())
+	    //移除
+	    removeColumns(options.format, ui)
 
 	    //设置本地化
 	    $element.addClass('kub-datepicker-' + options.locale)
@@ -2687,7 +2665,18 @@
 	    //设置默认时间
 	    datepicker.setDate(options.date)
 
+	    //绑定事件
 	    bindEvents(datepicker)
+	}
+
+	//移除不需要的列
+	var removeColumns = function(format, ui) {
+	    format.indexOf('y') === -1 && ui.year.remove()
+	    format.indexOf('M') === -1 && ui.month.remove()
+	    format.indexOf('d') === -1 && ui.day.remove()
+	    format.indexOf('H') === -1 && ui.hour.remove()
+	    format.indexOf('m') === -1 && ui.minute.remove()
+	    format.indexOf('s') === -1 && ui.second.remove()
 	}
 
 	//渲染对话框
@@ -2708,9 +2697,8 @@
 	        }, {
 	            text: options.confirmText,
 	            handler: function(e, dialog) {
-	                var confirm = options.confirm
-
-	                var formatDate = datepicker.getDate().format(options.format)
+	                var confirm = options.confirm,
+	                    formatDate = datepicker.getDate().format(options.format)
 
 	                confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
 	                    datepicker.$element[0].value = formatDate
@@ -2758,7 +2746,7 @@
 
 	            resetDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
 
-	            setDuration($activeElement, 200)
+	            setDuration($activeElement, DURATION)
 
 	            setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
 	        }
@@ -2777,7 +2765,7 @@
 
 	//绑定输入框聚焦事件
 	var bindInputFocusEvent = function(datepicker) {
-	    datepicker.$element.on('click', function(e) {
+	    datepicker.$element.on(EVENT_NAME, function(e) {
 	        //使输入框失去焦点
 	        datepicker.$element[0].blur()
 
@@ -2802,13 +2790,16 @@
 	//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
 	var setValue = function(datepicker, name, value) {
 	    var $this = datepicker._ui[name],
-	        index
+	        index,
+	        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
 
-	    index = parseInt($this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]').attr('data-index'))
+	    if ($item.length) {
+	        index = parseInt($item.attr('data-index'))
 
-	    $this[0].index = index
+	        $this[0].index = index
 
-	    setTranslate($this, 0, -index * HEIGHT_UNIT)
+	        setTranslate($this, 0, -index * HEIGHT_UNIT)
+	    }
 	}
 
 	//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
@@ -2816,11 +2807,10 @@
 	    var $this = datepicker._ui[name],
 	        $items = $this.find(COLUMN_ITEM_SELECTOR),
 	        index = $this[0].index + 1,
-	        value = $items.eq(index).attr('data-value')
+	        value = parseInt($items.eq(index).attr('data-value'))
 
-	    return value ? parseInt(value) : 0
+	    return value ? value : 0
 	}
-
 
 	/**
 	 * ## defaults
@@ -2833,7 +2823,11 @@
 	 *
 	 * * `title`: 时间选择器弹窗名称。
 	 *
+	 * * `confirmText`: 确认按钮文本
+	 *
 	 * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗，并进行赋值。如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要手动填充输入框。
+	 *
+	 * * `cancelText`: 取消按钮文本
 	 *
 	 * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`datepicker.close()`手动关闭弹窗。
 	 *
@@ -2871,28 +2865,17 @@
 	        year = date.getFullYear(),
 	        month = date.getMonth()
 
-	    ;['year', 'month', 'day', 'hour', 'minute', 'second'].forEach(function(type) {
-	        switch (type) {
-	            case 'year':
-	                setValue(self, type, year)
-	                break
-	            case 'month':
-	                setValue(self, type, month)
-	                break
-	            case 'day':
-	                setValue(self, type, date.getDate())
-	                break
-	            case 'hour':
-	                setValue(self, type, date.getHours())
-	                break
-	            case 'minute':
-	                setValue(self, type, date.getMinutes())
-	                break
-	            case 'second':
-	                setValue(self, type, date.getSeconds())
-	                break
-	        }
-	    })
+	    setValue(self, 'year', year)
+
+	    setValue(self, 'month', month)
+
+	    setValue(self, 'day', date.getDate())
+
+	    setValue(self, 'hour', date.getHours())
+
+	    setValue(self, 'minute', date.getMinutes())
+
+	    setValue(self, 'second', date.getSeconds())
 
 	    //验证是否存在31,30,29天
 	    resetDays(self, year, month)
@@ -2905,7 +2888,6 @@
 	 *
 	 * 获取时间选择器选择的时间
 	 *
-	 * @param {Date} date 时间
 	 * @return {Date} 获取到的时间
 	 */
 	_prototype.getDate = function() {

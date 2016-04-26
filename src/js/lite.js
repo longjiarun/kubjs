@@ -74,6 +74,7 @@ var isArray = Array.isArray ||
 
 !(function() {
 
+    //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
     this.qsa = function(selector, context) {
         context = context || _document
         selector = selector.trim()
