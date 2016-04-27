@@ -1,3 +1,4 @@
+@import "variables";
 @import "animate";
 
 .kub-dialog-modal {
@@ -30,34 +31,38 @@
     font-size: @dialog-font-size;
     background: @dialog-background;
     border-radius: @dialog-border-radius;
-    color: @dialog-font-color;
+    color: @dialog-color;
     box-shadow: @dialog-box-shadow;
+
+    .kub-dialog-header {
+        border-radius: @dialog-border-radius @dialog-border-radius 0 0;
+        padding: @dialog-header-padding;
+        text-align: center;
+        background: @dialog-header-background;
+    }
+
+    .kub-dialog-body {
+        line-height: @dialog-body-line-height;
+        padding: @dialog-body-padding;
+        color: @dialog-body-color;
+    }
 
     .kub-dialog-button {
         display: block;
         background: none;
         border: none;
-        border-right: @dialog-border;
-        padding: @dialog-header-padding @dialog-header-padding/2;
-        font-size: 100%;
+        border-right: @dialog-button-border;
+        padding: @dialog-button-padding;
+        font-size: @dialog-button-font-size;
         text-align: center;
 
         &:focus {
             outline: 0;
         }
     }
-    .kub-dialog-header {
-        border-radius: @dialog-border-radius @dialog-border-radius 0 0;
-        padding: @dialog-header-padding + 0.1 @dialog-header-padding/2;
-        text-align: center;
-        background: @dialog-border-color;
-    }
-    .kub-dialog-body {
-        line-height: @dialog-line-height;
-        padding: @dialog-header-padding + 0.2 @dialog-header-padding;
-    }
+
     .kub-dialog-footer {
-        border-top: @dialog-border;
+        border-top: @dialog-button-border;
         display: -webkit-box;
         display: -webkit-flex;
         display: flex;
@@ -81,22 +86,23 @@
 
     .kub-dialog {
         border: @toast-border;
-        background-color: @dialog-black;
+        background: @toast-background;
     }
+
     .kub-dialog-body {
-        padding: @dialog-header-padding @dialog-header-padding/2;
-        color: @dialog-white;
+        padding: @toast-body-padding;
+        color: @toast-body-color;
         text-align: center;
     }
 }
 .kub-prompt {
     .kub-prompt-input {
-        font-size: 100%;
+        font-size: @prompt-input-font-size;
         margin-top: @prompt-input-margin;
         width: 100%;
         border: @prompt-input-border;
-        padding: @dialog-header-padding/2;
-        background: @dialog-white;
+        padding: @prompt-input-padding;
+        background: @prompt-input-background;
         box-sizing: border-box;
 
         &:focus {
@@ -105,16 +111,17 @@
     }
 }
 .kub-loader {
-    z-index: @dialog-z-index+1;
+    z-index: @dialog-z-index + 1;
 
     .kub-dialog {
         width: @loader-width;
-        background-color: @dialog-black;
+        background: @loader-background;
+
         border-radius: @loader-border-radius;
 
         .kub-dialog-body {
-            color: @dialog-white;
-            padding: @dialog-header-padding * 2 @dialog-header-padding;
+            color: @loader-body-color;
+            padding: @loader-body-padding;
             text-align: center;
         }
     }

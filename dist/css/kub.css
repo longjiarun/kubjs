@@ -69,6 +69,17 @@
   color: #333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.kub-dialog .kub-dialog-header {
+  border-radius: 6px 6px 0 0;
+  padding: 1.1em 0.5em;
+  text-align: center;
+  background: #f4f4f4;
+}
+.kub-dialog .kub-dialog-body {
+  line-height: 1.5;
+  padding: 1.2em 1em;
+  color: #333;
+}
 .kub-dialog .kub-dialog-button {
   display: block;
   background: none;
@@ -80,16 +91,6 @@
 }
 .kub-dialog .kub-dialog-button:focus {
   outline: 0;
-}
-.kub-dialog .kub-dialog-header {
-  border-radius: 6px 6px 0 0;
-  padding: 1.1em 0.5em;
-  text-align: center;
-  background: #f4f4f4;
-}
-.kub-dialog .kub-dialog-body {
-  line-height: 1.5;
-  padding: 1.2em 1em;
 }
 .kub-dialog .kub-dialog-footer {
   border-top: 2px solid #f4f4f4;
@@ -113,7 +114,7 @@
 }
 .kub-toast .kub-dialog {
   border: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.7);
 }
 .kub-toast .kub-dialog-body {
   padding: 1em 0.5em;
@@ -137,7 +138,7 @@
 }
 .kub-loader .kub-dialog {
   width: 36%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 0.8em;
 }
 .kub-loader .kub-dialog .kub-dialog-body {
