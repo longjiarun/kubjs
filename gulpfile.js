@@ -9,6 +9,8 @@ var gulp = require('gulp'),
     template = require('gulp-underscore-tpl'),
     banner = require('gulp-banner'),
     eslint = require('gulp-eslint'),
+    postcssClean = require('postcss-clean'),
+    named = require('vinyl-named'),
     path = require('path'),
     exec = require('child_process').execSync,
     pkg = require('./package.json');
@@ -21,7 +23,7 @@ var src = 'src',
 
 var staticPath = path.join(build, static);
 
-var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>. (https://github.com/longjiarun/kubjs.git)*/\n\r';
+var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>. (https://github.com/longjiarun/kubjs)*/\n';
 
 //clean
 gulp.task('clean', function() {
@@ -65,13 +67,26 @@ gulp.task('less', function() {
 gulp.task('js',['tpl'], function() {
     var target = path.join(dist, 'js');
 
-    var stream = gulp.src([src + '/js/kub.js'])
-        .pipe(webpack())
+    var stream = gulp.src([src + '/js/kub*.js'])
+        .pipe(named(function(file) {
+            var args = path.parse(file.path),
+                basenameParent = args.dir.replace(new RegExp('^' + path.resolve(src + '/js') + '\/?'), '');
+
+            return path.join(basenameParent, args.name);
+        }))
+        .pipe(webpack({
+            module: {
+                loaders: [{
+                    test: /\.less$/,
+                    loader: 'style?{"insertAt":"top"}!css!postcss!less'
+                }]
+            },
+            postcss: function() {
+                return [postcssClean()];
+            }
+        }))
         .pipe(banner(comment, {
             pkg: pkg
-        }))
-        .pipe(rename(function(path) {
-            path.basename = 'kub';
         }))
 
     //output unmin css
@@ -95,12 +110,11 @@ gulp.task('js',['tpl'], function() {
 
     //output build
     stream = stream.pipe(rename(function(path) {
-        path.basename = 'index';
+        path.basename = path.basename.replace('.min','').replace('kub','index');
     }))
 
     return stream.pipe(gulp.dest(staticPath));
 });
-
 
 //tpl
 gulp.task('tpl', function() {

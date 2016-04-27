@@ -28,14 +28,7 @@ try {
 
     Kub.DatePicker = require('./datepicker')
 
-    if (typeof define === 'function') {
-        define(function() {
-            return Kub
-        });
-    } else if (typeof module !== 'undefined' && module.exports) {
-        module.exports = Kub
-    }
-
+    module.exports = Kub
 } catch (e) {
     alert(e.message)
 }
