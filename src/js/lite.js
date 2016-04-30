@@ -1,8 +1,7 @@
 /**
  * # Lite
  *
- * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用基本保持与`Zepto`一致。
- *
+ * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
  *
  */
 var $, Lite
@@ -167,7 +166,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.each
          *
-         * 循环所有节点
+         * 循环所有节点。
          */
         each: function(callback) {
             var l = this.length,
@@ -185,7 +184,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.slice
          *
-         * 切割元素
+         * 切割节点。
          */
         slice: function() {
             return $(slice.apply(this, arguments))
@@ -194,7 +193,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.is
          *
-         * 判断是否是指定的节点
+         * 判断是否是指定的节点。
          */
         is: function(selector, element) {
             element = element ? element : this[0]
@@ -210,7 +209,8 @@ var createDelegator = function(handler, selector) {
          * ## Lite.prototype.closest
          *
          * 查找最近的节点。
-         * 原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+         *
+         * 原生closest不包含本身，`jQuery`与`Zepto`包含本身，保持与`Zepto`一致。
          *
          */
         closest: function(selector) {
@@ -239,7 +239,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.find
          *
-         * 查找节点，只支持查找选择器
+         * 查找节点，只支持选择器查找.
          */
         find: function(selector) {
             var dom = []
@@ -260,7 +260,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.show
          *
-         * 显示节点
+         * 显示。
          */
         show: function() {
             return this.each(function() {
@@ -271,7 +271,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.hide
          *
-         * 隐藏节点
+         * 隐藏。
          */
         hide: function() {
             return this.each(function() {
@@ -282,7 +282,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.css
          *
-         * 修改或获取样式
+         * 修改或获取节点样式。
          */
         css: function(property, value) {
             var isObject = typeof property === 'object'
@@ -319,7 +319,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.offset
          *
-         * 获取节点的offset，只支持获取，不支持设置
+         * 获取节点的`offset`，只支持获取，不支持设置。
          */
         offset: function() {
             if (!this.length) return null
@@ -337,7 +337,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.addClass
          *
-         * 添加class
+         * 添加`class`。
          */
         addClass: function(name) {
             if (!name) return this
@@ -359,7 +359,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.removeClass
          *
-         * 移除class
+         * 移除`class`。
          */
         removeClass: function(name) {
             return this.each(function() {
@@ -381,7 +381,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.eq
          *
-         * 获取某个节点
+         * 获取指定索引节点。
          */
         eq: function(idx) {
             idx = idx < 0 ? idx + this.length : idx
@@ -391,7 +391,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.off
          *
-         * 取消绑定事件，不支持移除代理事件
+         * 取消绑定事件，不支持移除代理事件。
          */
         off: function(type, handler) {
             var types = type && type.trim().split(spaceRE)
@@ -421,7 +421,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.on
          *
-         * 监听事件，支持事件代理
+         * 监听事件，支持事件代理。
          *
          */
         on: function(type, selector, handler) {
@@ -463,7 +463,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.trigger
          *
-         * 触发事件
+         * 触发事件。
          */
         trigger: function(type, detail) {
             return this.each(function() {
@@ -478,7 +478,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.attr
          *
-         * 取出或者设置节点属性
+         * 获取或者设置节点属性。
          */
         attr: function(name, value) {
             var result,
@@ -511,7 +511,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.removeAttr
          *
-         * 移除节点属性
+         * 移除节点属性。
          */
         removeAttr: function(name) {
             return this.each(function() {
@@ -525,7 +525,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.remove
          *
-         * 删除节点
+         * 删除节点。
          */
         remove: function() {
             return this.each(function() {
@@ -537,7 +537,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.appendTo
          *
-         * 在 html 插入到Dom节点内底部
+         * 将html插入到Dom节点内底部。
          */
         appendTo: function(target) {
             var dom = [],
@@ -556,7 +556,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.after
          *
-         * 在 Dom 节点之后插入html
+         * 在Dom节点之后插入html。
          */
         after: function(html) {
             return this.each(function() {
@@ -567,7 +567,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.before
          *
-         * 在 Dom 节点之前插入html
+         * 在Dom节点之前插入html。
          */
         before: function(html) {
             return this.each(function() {
@@ -578,7 +578,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.append
          *
-         * 在 Dom 节点内底部插入html
+         * 在Dom节点内底部插入html。
          */
         append: function(html) {
             return this.each(function() {
@@ -589,7 +589,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.prepend
          *
-         * 在 Dom 节点内头部插入html
+         * 在Dom节点内头部插入html。
          */
         prepend: function(html) {
             return this.each(function() {
@@ -600,7 +600,7 @@ var createDelegator = function(handler, selector) {
         /**
          * ## Lite.prototype.html
          *
-         * 设置 Dom html
+         * 设置或获取Dom html。
          *
          */
         html: function(html) {
@@ -613,7 +613,7 @@ var createDelegator = function(handler, selector) {
 
         /**
          * ## Lite.prototype.text
-         * 设置 Dom 文本内容
+         * 设置或获取Dom文本内容。
          */
         text: function(text) {
             return html ?
@@ -625,4 +625,4 @@ var createDelegator = function(handler, selector) {
     }
 }).call(Lite)
 
-module.exports = Lite
+module.exports = _window.jQuery || _window.Zepto || Lite
