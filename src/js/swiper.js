@@ -1,8 +1,17 @@
 /**
- * # Kub.Swiper
+ * # Swiper
  *
- * 图片切换组件
+ * 切换组件
  */
+
+/**
+ * @require [core](./core.js.html)
+ * @require [os](./detect.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    os = require('./detect'),
+    $ = require('./lite')
 
 /**
  * ## Swiper Constructor
@@ -22,9 +31,6 @@
  * })
  * ```
  */
-var core = require('./core'),
-    $ = require('./lite')
-
 function Swiper(element, options) {
 
     this.options = core.extend({}, _prototype.defaults, options || {})
@@ -42,7 +48,7 @@ function Swiper(element, options) {
 }
 
 var $document = $(document),
-    isTouch = core.os.mobile
+    isTouch = os.mobile
 
 var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
     MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
@@ -374,31 +380,31 @@ var init = function(swiper) {
 }
 
 /**
- * ## defaults
+ * ## Swiper.prototype.defaults
  *
  * `Swiper`默认配置项。
  *
  * 配置项说明：
  *
- * * `direction`: 切换方向。horizontal：横向， vertical：纵向
+ * * `direction`: `String` 切换方向。horizontal ：横向， vertical ：纵向。
  *
- * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
+ * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
  *
- * * `duration`: 切换速度
+ * * `duration`: `Number` 切换速度。
  *
- * * `infinite`: 是否循环滚动 true：循环 false：不循环
+ * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
  *
- * * `initialSlide`: 初始化滚动位置
+ * * `initialSlide`: `Number` 初始化滚动位置。
  *
- * * `slideSelector`: 滚动块元素选择器
+ * * `slideSelector`: `Selector` 滚动元素。
  *
- * * `slideActiveClass`: 滚动块元素选中的类名
+ * * `slideActiveClass`: `String` 滚动元素选中时的类名。
  *
- * * `paginationSelector`: 缩略图或者icon选择器
+ * * `paginationSelector`: `Selector` 缩略图或icon。
  *
- * * `paginationActiveClass`: 选中的类名
+ * * `paginationActiveClass`: `String` 缩略图或icon选中时的类名。
  *
- * * `slide`: 切换回调函数
+ * * `slide`: `Function` 切换回调函数。
  */
 
 _prototype.defaults = {
@@ -424,12 +430,12 @@ _prototype.defaults = {
 }
 
 /**
- * ## slide
+ * ## Swiper.prototype.slide
  *
  * 滚动到指定索引值位置
  *
  * @param  {index} index 滚动索引值
- * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
  * @return {instance}    当前实例
  */
 _prototype.slide = function(index, duration) {
@@ -451,11 +457,11 @@ _prototype.slide = function(index, duration) {
 }
 
 /**
- * ## next
+ * ## Swiper.prototype.next
  *
  * 切换到下一个
  *
- * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
  * @return {instance}    当前实例
  */
 _prototype.next = function(duration) {
@@ -463,10 +469,11 @@ _prototype.next = function(duration) {
 }
 
 /**
- * ## prev
+ * ## Swiper.prototype.prev
  *
  * 切换到上一个
- * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+ *
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
  * @return {instance}    当前实例
  */
 _prototype.prev = function(duration) {

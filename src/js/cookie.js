@@ -1,15 +1,23 @@
 /**
- * # Kub.cookie
+ * # cookie
  *
- * copy from `zepto.cookie.js`，将 `expires` 单位改为毫秒。
- */
-/**
- * ## cookie 方法
+ * 操作cookie方法，`expires` 如果为数字，单位为毫秒
  *
- * @param {String} key key值，
- * @param {String} value   设置值，如果未传递，则表示取值
- * @param {Object} options 配置项
- * @return {String} 返回取到的值，如果未赋值，则返回空。
+ * 使用方法：
+ * ```js
+ * //取值
+ * var name = Kub.cookie('name')
+ *
+ * //设置值
+ * Kub.cookie('name','kub')
+ *
+ * //配置cookie相关属性
+ * Kub.cookie('name','kub',{
+ *     domain:'.weidian.com'
+ *
+ * })
+ * ```
+ *
  */
 function cookie(key, value, options) {
     var days, time, result, decode

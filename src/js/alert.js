@@ -1,24 +1,26 @@
 /**
- * # Kub.Alert
- * alert弹窗，用于提示说明。
+ * # Alert
  *
- * @extend [Dialog](dialog.js.html)
+ * alert弹窗。
  */
+
+/**
+ * @require [core](./core.js.html)
+ * @extend [Dialog](./dialog.js.html)
+ */
+var core = require('./core'),
+    Dialog = require('./dialog')
 
 /**
  * ## Alert Constructor
  *
- * 初始化`Alert`类，`Alert`并不提供实例方法，实例方法均继承于`Dialog`。
+ * 继承于`Dialog`，可使用`Dialog`类中的方法。
  *
  * 使用方法：
  * ```js
  * var alert = new Kub.Alert()
  * ```
  */
-
-var core = require('./core'),
-    Dialog = require('./dialog')
-
 function Alert(options) {
     var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -37,19 +39,25 @@ var _prototype = Alert.prototype = Object.create(Dialog.prototype)
 _prototype.constructor = Alert
 
 /**
- * ## defaults
+ * ## Alert.defaults
  *
- * `Alert`默认配置项。
+ * `Alert` 默认配置项。
  *
  * 配置项说明：
  *
- * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+ * * `confirmText` : `String` 确认按钮名称。
  *
- * * `showHeader`: 是否显示头部。
+ * * `confirm` : `Function` 单击确认按钮时触发的事件。
  *
- * * `className`: 弹窗类名，不建议修改，会影响样式。
+ *    > 如果未传递，单击时会默认关闭弹窗。
+ *    >
+ *    > 如果传递，需调用 `dialog.close()`关闭弹窗。
  *
- * * `modal`: 是否显示遮罩层。
+ * * `showHeader` : `Boolean` 是否显示头部。
+ *
+ * * `className` : `String` 弹窗类名，修改时需加上`kub-alert`默认类名。
+ *
+ * * `modal` : `Boolean` 是否显示遮罩层。
  */
 
 _prototype.defaults = {

@@ -1,24 +1,27 @@
 /**
- * # Kub.LazyLoad
+ * # LazyLoad
  *
  * 延迟加载组件。
  *
  */
 
 /**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite')
+
+/**
  * ## LazyLoad Constructor
  *
- * LazyLoad 类
+ * `LazyLoad` 构造函数。
  *
  * 使用：
  * ```js
  * var lazyload = new Kub.LazyLoad($('img'))
  * ```
  */
-
-var $ = require('./lite'),
-    core = require('./core')
-
 function LazyLoad(element, options) {
     this.$element = $(element)
 
@@ -94,19 +97,19 @@ var init = function(lazyload) {
 }
 
 /**
- * ## defaults
+ * ## LazyLoad.prototype.defaults
  *
  * 默认配置项。
  *
  * 配置项说明：
  *
- *   `container` : 图片存放容器，容器会监听事件
+ *   `container` : `Selector` 图片存放的容器，容器会监听事件。
  *
- *   `threshold` : 提前加载距离
+ *   `threshold` : `Number` 提前加载距离。
  *
- *   `delay` : 事件监听时的延迟时间
+ *   `delay` : `Number` 事件监听时的延迟时间。
  *
- *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
+ *   `attributeName` : `String` 属性名称。默认会从`element`上取出 `data-original` 属性。
  *
  */
 _prototype.defaults = {
@@ -128,9 +131,9 @@ _prototype.updateElement = function(element) {
 }
 
 /**
- * ## loadAll
+ * ## LazyLoad.prototype.loadAll
  *
- * 强制加载所有图片，无论节点是否在可视区域内
+ * 强制加载所有图片，无论节点是否在可视区域内。
  *
  * @return {instance} 当前实例
  */
@@ -151,9 +154,9 @@ _prototype.loadAll = function() {
 }
 
 /**
- * ## isVisible
+ * ## LazyLoad.prototype.isVisible
  *
- * 是否可见
+ * 是否在视窗可见。
  * @param {$}  $this         元素
  * @param {Object}  options  参数
  * @return {Boolean}         true ：可见 false ：不可见
@@ -175,9 +178,9 @@ _prototype.isVisible = function($this) {
 }
 
 /**
- * ## load
+ * ## LazyLoad.prototype.load
  *
- * 加载指定元素
+ * 加载指定元素。
  *
  * @param {$} $element      加载的节点
  * @param {String} original 图片地址
@@ -202,9 +205,9 @@ _prototype.load = function($element) {
 }
 
 /**
- * ## belowthefold
+ * ## LazyLoad.prototype.belowthefold
  *
- * 是否在视窗下面
+ * 是否在视窗下面。
  *
  * @param {Element} element 检查的元素
  * @param {Object} settings 被检查时的参数
@@ -225,9 +228,9 @@ _prototype.belowthefold = function(element, settings) {
 }
 
 /**
- * ## abovethetop
+ * ## LazyLoad.prototype.abovethetop
  *
- * 是否在视窗上面
+ * 是否在视窗上面。
  *
  * @param {Element} element 检查的元素
  * @param {Object} settings 被检查时的参数
@@ -247,9 +250,9 @@ _prototype.abovethetop = function(element, settings) {
 }
 
 /**
- * ## rightoffold
+ * ## LazyLoad.prototype.rightoffold
  *
- * 是否在视窗右侧
+ * 是否在视窗右侧。
  *
  * @param {Element} element 检查的元素
  * @param {Object} settings 被检查时的参数
@@ -268,9 +271,9 @@ _prototype.rightoffold = function(element, settings) {
 }
 
 /**
- * ## leftofbegin
+ * ## LazyLoad.prototype.leftofbegin
  *
- * 是否在视窗左侧
+ * 是否在视窗左侧。
  *
  * @param {Element} element 检查的元素
  * @param {Object} settings 被检查时的参数

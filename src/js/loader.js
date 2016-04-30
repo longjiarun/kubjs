@@ -1,25 +1,36 @@
 /**
- * # Kub.Loader
+ * # Loader
  *
- * 加载等待框
- * @extend [Dialog](dialog.js.html)
+ * 加载等待框。
+ *
  */
 
 /**
- * ## Loader Constructor
- *
- * 初始化`Loader`类，`Loader`并不提供实例方法，实例方法均继承于`Dialog`。
- *
- * 使用方法：
- * ```js
- * var loader = new Kub.Loader()
- * //隐藏loader
- * loader.hide()
- * ```
+ * @require [core](./core.js.html)
+ * @extend [Dialog](./dialog.js.html)
  */
 var core = require('./core'),
     Dialog = require('./dialog')
 
+/**
+ * ## Loader Constructor
+ *
+ * 继承于`Dialog`，可使用`Dialog`类中的方法。
+ *
+ * 使用方法：
+ *
+ * ```js
+ * var loader = new Kub.Loader()
+ *
+ * //隐藏loader
+ * loader.hide()
+ *
+ * var loader = new Kub.Loader({
+ *     message: '定制提示内容'
+ * })
+ *
+ * ```
+ */
 function Loader(options) {
     var opts = this.options = core.extend({}, _prototype.defaults, options || {}, {
         showHeader: false,
@@ -34,17 +45,17 @@ var _prototype = Loader.prototype = Object.create(Dialog.prototype)
 _prototype.constructor = Loader
 
 /**
- * ## defaults
+ * ## Loader.prototype.defaults
  *
- * `Loader`默认配置项。
+ * `Loader` 默认配置项。
  *
  * 配置项说明：
  *
- * * `className`: 弹窗类名，不建议修改，会影响样式。
+ * * `className`: `String` 弹窗类名，修改时需加上`kub-loader`默认类名。
  *
- * * `message`: 加载文字提示
+ * * `message` : `String` 提示内容。
  *
- * * `modal`: 是否显示遮罩层。
+ * * `modal` : `Boolean` 是否显示遮罩层。
  */
 _prototype.defaults = {
     className: 'kub-loader',

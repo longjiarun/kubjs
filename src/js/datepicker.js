@@ -1,14 +1,29 @@
 /**
- * # Kub.DatePicker
+ * # DatePicker
  *
- * 时间选择器。格式化参照 [`date`](date.js.html)
+ * 时间选择器。格式化参照 [`DateHelper`](./date.js.html)
  *
  */
 
 /**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ * @require [detect](./detect.js.html)
+ * @require [Dialog](./dialog.js.html)
+ * @require [DateHelper](./date.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite'),
+    os = require('./detect'),
+    Dialog = require('./dialog'),
+    template = require('./tpl/datepicker')
+
+require('./date')
+
+/**
  * ## DatePicker Constructor
  *
- * DatePicker类
+ * `DatePicker` 构造函数。
  *
  * 使用：
  * ```js
@@ -35,13 +50,6 @@
  *  })
  * ```
  */
-var core = require('./core'),
-    $ = require('./lite'),
-    Dialog = require('./dialog'),
-    template = require('./tpl/datepicker')
-
-require('./date')
-
 function DatePicker(element, options) {
     this.$element = $(element)
     this.options = core.extend({}, _prototype.defaults, options || {})
@@ -51,13 +59,12 @@ function DatePicker(element, options) {
 
 var HEIGHT_UNIT = 50,
     DURATION = 200,
-    //COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
     COLUMN_SELECTOR = '.kub-datepicker-column',
     COLUMN_ITEM_SELECTOR = 'li',
     COLUMN_CONTAINER_SELECTOR = 'ul'
 
 var $document = $(document),
-    isTouch = core.os.mobile
+    isTouch = os.mobile
 
 var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
     MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
@@ -326,31 +333,39 @@ var init = function(datepicker) {
 
 
 /**
- * ## defaults
+ * ## DatePicker.prototype.defaults
  *
  * 默认配置项
  *
  * 配置项说明：
  *
- * * `locale`: 本地化。本地化采用CSS实现。
+ * * `locale`: `String` 本地化。本地化采用CSS实现。
  *
- * * `title`: 时间选择器弹窗名称。
+ * * `title`: `String` 时间选择器弹窗名称。
  *
- * * `confirmText`: 确认按钮文本
+ * * `confirmText`: `String` 确认按钮名称。
  *
- * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗，并进行赋值。如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要手动填充输入框。
+ * * `confirm`: `Function` 单击确认按钮时触发的事件。
  *
- * * `cancelText`: 取消按钮文本
+ * > 如果未传递，单击时会默认关闭弹窗，并对输入框赋值。
+ * >
+ * > 如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要对输入框赋值。
  *
- * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`datepicker.close()`手动关闭弹窗。
+ * * `cancelText`: `String` 取消按钮名称。
  *
- * * `format`: 日期格式
+ * * `cancel`: `Function` 单击取消按钮时触发的事件。
  *
- * * `className`: 弹窗类名，不建议修改，会影响样式。
+ * > 如果未传递，单击时会默认关闭弹窗。
+ * >
+ * > 如果传递，需调用`datepicker.close()`关闭弹窗。
  *
- * * `date`: 默认显示时间
+ * * `format`: `String` 日期格式。
  *
- * * `yearRange`: 年份显示区间
+ * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-dialog`默认类名。
+ *
+ * * `date`: `Date` 默认显示时间。
+ *
+ * * `yearRange`: `Array` 年份显示区间。
  */
 _prototype.defaults = {
     locale: 'zh',
@@ -362,13 +377,13 @@ _prototype.defaults = {
     format: 'yyyy-MM-dd',
     className: 'kub-datepicker-dialog',
     date: new Date(),
-    yearRange: [1970, 2100]
+    yearRange: [1970, 2050]
 }
 
 /**
- * ## setDate
+ * ## DatePicker.prototype.setDate
  *
- * 设置时间选择器时间
+ * 设置时间选择器时间。
  *
  * @param {Date} date 时间
  * @return {instance} 当前实例
@@ -394,9 +409,9 @@ _prototype.setDate = function(date) {
 }
 
 /**
- * ## getDate
+ * ## DatePicker.prototype.getDate
  *
- * 获取时间选择器选择的时间
+ * 获取时间选择器选择的时间。
  *
  * @return {Date} 获取到的时间
  */
@@ -414,9 +429,10 @@ _prototype.getDate = function() {
 }
 
 /**
- * ## close
+ * ## DatePicker.prototype.close
  *
- * 关闭时间选择器
+ * 关闭时间选择器。
+ *
  * @return {instance} 当前实例
  */
 _prototype.close = function() {
@@ -425,9 +441,10 @@ _prototype.close = function() {
 }
 
 /**
- * ## show
+ * ## DatePicker.prototype.show
  *
- * 显示时间选择器
+ * 显示时间选择器。
+ *
  * @return {instance} 当前实例
  */
 _prototype.show = function() {
@@ -436,9 +453,10 @@ _prototype.show = function() {
 }
 
 /**
- * ## hide
+ * ## DatePicker.prototype.hide
  *
- * 隐藏时间选择器
+ * 隐藏时间选择器。
+ *
  * @return {instance} 当前实例
  */
 _prototype.hide = function() {

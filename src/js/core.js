@@ -1,25 +1,24 @@
 /**
- * # Kub.core
+ * # core
  *
- * kubjs 核心模块，该模块只提供最基础的方法。
+ * 核心模块，该模块提供基础方法。
+ *
  */
 
 /**
  * ## Core Constructor
  *
- * Core 类，对外提供的是实例化的对象。
+ * `Core` 模块，对外提供的是实例化的对象。
  *
  * 使用方法：
+ *
  * ```js
+ *
  * //获取url参数
  * var params = Kub.core.getQuerystring()
  *
- *
  * ```
  */
-
-var os = require('./detect')
-
 function Core() {
 
 }
@@ -32,6 +31,7 @@ var toString = Object.prototype.toString,
     _href = _window.location.href,
     _prototype = Core.prototype
 
+
 //获取 params string
 //url地址，未传值取 `window.location.href`。
 var getParamsString = function(url) {
@@ -41,21 +41,11 @@ var getParamsString = function(url) {
 }
 
 /**
- * ## os
+ * ## Core.prototype.extend
  *
- * 系统版本与类型对象
- *
- * 详见 [detect 模块](./detect.js.html)
- *
- */
-_prototype.os = os
-
-/**
- * ## extend
- *
- * @param {Boolean} [deep] `可选` 是否深度拷贝
- * @param {Object/Array} target 目标
- * @param {Object/Array} source 源对象，可为多个
+ * @param {Boolean} [deep] `可选` 是否深度拷贝。
+ * @param {Object/Array} target 目标。
+ * @param {Object/Array} source 源对象，可为多个。
  * @return {Object/Array} target
  */
 _prototype.extend = function(target, source) {
@@ -89,7 +79,16 @@ _prototype.extend = function(target, source) {
     return target
 }
 
-//类型判断
+/**
+ * ## Core.prototype.is[type]
+ *
+ * 类型检测函数。
+ *
+ * 具体类型`type`包含
+ *
+ * `['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean']`
+ *
+ */
 ;
 ['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean'].forEach(function(name) {
     _prototype['is' + name] = function(obj) {
@@ -98,9 +97,9 @@ _prototype.extend = function(target, source) {
 })
 
 /**
- * ## setQuerystring
+ * ## Core.prototype.setQuerystring
  *
- * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href` 的值。
+ * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
  *
  * 使用：
  * ```js
@@ -129,9 +128,12 @@ _prototype.extend = function(target, source) {
  *
  * @param {String} url    url
  *
- * @param {Object} params 参数对象
+ * @param {Object} params 参数对象。
  *
- * @param {Object} opts   配置参数。 raw : 配置是否 `encodeURIComponent` ，append：是否追加参数。true(default)：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
+ * @param {Object} opts   配置参数。
+ *
+ * - raw ：配置是否开启 `encodeURIComponent`，默认为`false`，开启。
+ * - append ：是否追加参数，默认为`true`。 true：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换。
  */
 _prototype.setQuerystring = function(url, params, opts) {
     //验证url是否传值，如果 url 未传值，则使用当前页面 url
@@ -184,7 +186,7 @@ _prototype.setQuerystring = function(url, params, opts) {
 }
 
 /**
- * ## getQuerystring
+ * ## Core.prototype.getQuerystring
  *
  * 获取url中的参数。
  *
@@ -196,16 +198,22 @@ _prototype.setQuerystring = function(url, params, opts) {
  * //设置当前地址参数
  *
  * //默认采用`window.location.href`
- * var params = Kub.core.getQuerystring(),name = params.name
+ * var params = Kub.core.getQuerystring()
+ *
+ * var name = params.name
  *
  * //传入url
- * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123'),userId = params.userId
+ * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123')
+ *
+ * var userId = params.userId
  *
  * ```
  *
- * @param {String} url url地址，未传值取 `window.location.href`。
+ * @param {String} url  url地址，未传值取 `window.location.href`。
  *
- * @param {Object} opts 配置参数，配置是否 `decodeURIComponent`
+ * @param {Object} opts 配置参数。
+ *
+ * - raw ：配置是否 `decodeURIComponent`，默认为`true`，开启。
  *
  * @return {Object} 返回参数对象
  */

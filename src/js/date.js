@@ -1,5 +1,5 @@
 /**
- * # Kub.dateHelper
+ * # DateHelper
  *
  * 日期格式化组件。
  *
@@ -45,15 +45,17 @@
 /**
  * ## DateHelper Constructor
  *
- * DateHelper 对外提供的是实例化以后的对象。
+ * `DateHelper` 模块，对外提供的是实例化的对象。
  *
  * 使用：
  * ```js
  * //String to Date
+ *
  * '2015-05-20'.parseDate('yyyy-MM-dd')
  *
  * //格式化日期
- * (new Date()).format('yyyy-MM-dd,hh:mm:ss')
+ * new Date().format('yyyy-MM-dd,hh:mm:ss')
+ *
  * ```
  */
 function DateHelper() {
@@ -136,7 +138,7 @@ _prototype.i18n = {
 _prototype.locale = 'zh'
 
 /**
- * ## addLocale
+ * ## DateHelper.prototype.addLocale
  *
  * 添加本地化
  *
@@ -150,11 +152,11 @@ _prototype.addLocale = function(name, locale) {
 }
 
 /**
- * ## setLocale
+ * ## DateHelper.prototype.setLocale
  *
  * 设置默认本地化
  *
- * @param {String} name 本地化名称
+ * @param {String} name   本地化名称
  * @return {instance}     当前实例
  */
 _prototype.setLocale = function(name) {
@@ -163,12 +165,12 @@ _prototype.setLocale = function(name) {
 }
 
 /**
- * ## format
+ * ## DateHelper.prototype.format
  *
- * 格式化日期
+ * 格式化日期。
  *
- * @param {Date} date     日期
- * @param {String} format 日期格式
+ * @param {Date} date      日期
+ * @param {String} format  日期格式
  * @return {String}        格式化以后的日期
  */
 _prototype.format = function(date, format) {
@@ -184,25 +186,26 @@ _prototype.format = function(date, format) {
 }
 
 /**
- * ## parse
+ * ## DateHelper.prototype.parse
  *
- * 转换日期
+ * 转换日期。
  *
  * 此方法存在一个BUG，例如：
  *
  * ```js
+ *
  * //1112会被计算在MM内。
  * dateHelper.parse('2015-1112','yyyy-MMdd')
- * ```
  *
- * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
  *
- * ```js
+ * //所以在使用parse方法时，每一个串使用字符分隔开。类似于：
+ *
  * dateHelper.parse('2015-11-12','yyyy-MM-dd')
+ *
  * ```
  *
- * @param {String} input  字符串
- * @param {String} format 格式化字符串
+ * @param {String} input   字符串
+ * @param {String} format  格式化字符串
  * @return {Date}          格式化的日期
  */
 _prototype.parse = function(input, format) {

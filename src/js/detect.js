@@ -1,9 +1,32 @@
 /**
  * # os
  *
- * 检测系统类型与版本，包含系统类型与版本信息
+ * 检测系统类型与版本，包含系统类型与版本信息。
  *
  * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
+ *
+ * `os` 返回以下相关属性：
+ *
+ * `android` ：是否是Android
+ *
+ * `ios` ：是否是IOS系统
+ *
+ * `ipad` ：是否是iPad
+ *
+ * `iphone` ：是否是iPhone
+ *
+ * `ipod` ：是否是iPod
+ *
+ * `mobile` ：是否是移动端
+ *
+ * `phone` ：是否是手机
+ *
+ * `tablet` ：是否是平板
+ *
+ * `version` ：系统版本
+ *
+ * `wp` ： 是否是window phone
+ *
  */
 
 var ua = navigator.userAgent,

@@ -1,13 +1,21 @@
 /**
- * # Kub.Dialog
+ * # Dialog
  *
- * 对话框
+ * 对话框.
  */
+
+/**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite'),
+    template = require('./tpl/dialog')
 
 /**
  * ## Dialog Constructor
  *
- * Dialog 类
+ * Dialog 构造函数。
  *
  * 使用：
  * ```js
@@ -30,11 +38,6 @@
  *   })
  * ```
  */
-
-var core = require('./core'),
-    $ = require('./lite'),
-    template = require('./tpl/dialog')
-
 function Dialog(options) {
     this.options = core.extend({}, _prototype.defaults, options || {})
     init(this)
@@ -47,20 +50,13 @@ var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
 
 var $body = $(document.body)
 
-var _window = window;
+var _window = window,
     _prototype = Dialog.prototype
 
 var render = function(dialog,data) {
     var html = template(data)
     dialog.$element = $(html).appendTo($body)
     return this
-}
-
-var fixed = function(){
-    //解决 iphone 下，fixed定位问题
-    core.os.ios && setTimeout(function() {
-        _window.scrollTo(_window.scrollX, _window.scrollY)
-    }, 5)
 }
 
 var bindEvents = function(dialog){
@@ -77,8 +73,6 @@ var bindEvents = function(dialog){
 
 var init = function(dialog) {
 
-    fixed()
-
     //渲染数据
     render(dialog, dialog.options)
 
@@ -92,27 +86,28 @@ var init = function(dialog) {
 }
 
 /**
- * ## defaults
+ * ## Dialog.prototype.defaults
  *
  * 默认配置项。
  *
  * 配置项说明：
  *
- * * `modal`: 是否显示遮罩层；
+ * * `modal` : `Boolean` 是否显示遮罩层。
  *
- * * `title`: 对话框名称；
+ * * `title` : `String` 对话框名称。
  *
- * * `showHeader`: 是否显示头部；
+ * * `showHeader` : `Boolean` 是否显示头部。
  *
- * * `message`: 弹窗内容，可设置成`html`；
+ * * `message` : `String` 弹窗内容。
  *
- * * `className`: 弹窗类名；
+ * * `className` : `String` 弹窗类名。
  *
- * * `animated`: 是否开启动画效果；
+ * * `animated` : `Boolean` 是否开启动画效果。
  *
- * * `buttons`: 弹窗按钮；
+ * * `buttons`: `Array` 弹窗按钮。
  *
  * ```js
+ * //例如：
  * [{
  *     text:'按钮名称',//按钮名称
  *     className:'button-name',//按钮class类名
@@ -133,9 +128,9 @@ _prototype.defaults = {
 }
 
 /**
- * ## show
+ * ## Dialog.prototype.show
  *
- * 显示弹窗
+ * 显示弹窗。
  * @return {instance} 返回当前实例
  */
 _prototype.show = function() {
@@ -147,9 +142,9 @@ _prototype.show = function() {
 }
 
 /**
- * ## hide
+ * ## Dialog.prototype.hide
  *
- * 隐藏弹窗
+ * 隐藏弹窗。
  * @return {instance} 返回当前实例
  */
 _prototype.hide = function() {
@@ -161,9 +156,9 @@ _prototype.hide = function() {
 }
 
 /**
- * ## close
+ * ## Dialog.prototype.close
  *
- * 关闭弹窗
+ * 关闭弹窗。
  * @return {instance} 返回当前实例
  */
 _prototype.close = function() {

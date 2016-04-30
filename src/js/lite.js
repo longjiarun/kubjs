@@ -1,3 +1,10 @@
+/**
+ * # Lite
+ *
+ * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用基本保持与`Zepto`一致。
+ *
+ *
+ */
 var $, Lite
 
 var ELEMENT_NODE = 1,
@@ -44,7 +51,7 @@ $ = Lite = function Lite(selector, context) {
     }
 
     if (isArray(selector)) {
-        //$([document,document.body]) not $(window)
+        //$([document,document.body])
         return wrap(slice.call(selector).filter(function(item) {
             return item != null
         }), selector)
@@ -120,8 +127,9 @@ var createDelegator = function(handler, selector) {
 
 !(function() {
 
-    //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
     this.qsa = function(selector, context) {
+        //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
+
         context = context || _document
         selector = selector.trim()
         return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector))
@@ -156,6 +164,11 @@ var createDelegator = function(handler, selector) {
 
         _l: true,
 
+        /**
+         * ## Lite.prototype.each
+         *
+         * 循环所有节点
+         */
         each: function(callback) {
             var l = this.length,
                 i, t
@@ -169,10 +182,20 @@ var createDelegator = function(handler, selector) {
             return this
         },
 
+        /**
+         * ## Lite.prototype.slice
+         *
+         * 切割元素
+         */
         slice: function() {
             return $(slice.apply(this, arguments))
         },
 
+        /**
+         * ## Lite.prototype.is
+         *
+         * 判断是否是指定的节点
+         */
         is: function(selector, element) {
             element = element ? element : this[0]
 
@@ -183,7 +206,13 @@ var createDelegator = function(handler, selector) {
             return false
         },
 
-        //原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+        /**
+         * ## Lite.prototype.closest
+         *
+         * 查找最近的节点。
+         * 原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+         *
+         */
         closest: function(selector) {
             var element = this[0],
                 prt = element,
@@ -192,7 +221,7 @@ var createDelegator = function(handler, selector) {
             if(ELEMENT_PROTOTYPE.closest){
                 var child = element.children[0]
 
-                dom = child ? child.closest(selector) : this.is(selector, element) ? element : null
+                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
 
             }else{
                 while (prt) {
@@ -207,8 +236,11 @@ var createDelegator = function(handler, selector) {
             return $(dom)
         },
 
-        //only support find(selector)
-        //zepto
+        /**
+         * ## Lite.prototype.find
+         *
+         * 查找节点，只支持查找选择器
+         */
         find: function(selector) {
             var dom = []
 
@@ -225,18 +257,33 @@ var createDelegator = function(handler, selector) {
             return $(dom)
         },
 
+        /**
+         * ## Lite.prototype.show
+         *
+         * 显示节点
+         */
         show: function() {
             return this.each(function() {
                 this.style.display === 'none' && (this.style.display = '')
             })
         },
 
+        /**
+         * ## Lite.prototype.hide
+         *
+         * 隐藏节点
+         */
         hide: function() {
             return this.each(function() {
                 this.style.display = 'none'
             })
         },
 
+        /**
+         * ## Lite.prototype.css
+         *
+         * 修改或获取样式
+         */
         css: function(property, value) {
             var isObject = typeof property === 'object'
 
@@ -262,13 +309,18 @@ var createDelegator = function(handler, selector) {
             }
 
             //set
-            return css ? this.each(function() {
+            css && this.each(function() {
                 this.style.cssText += ';' + css
-            }) : this
+            })
 
+            return this;
         },
 
-        // only support get
+        /**
+         * ## Lite.prototype.offset
+         *
+         * 获取节点的offset，只支持获取，不支持设置
+         */
         offset: function() {
             if (!this.length) return null
 
@@ -282,6 +334,11 @@ var createDelegator = function(handler, selector) {
             }
         },
 
+        /**
+         * ## Lite.prototype.addClass
+         *
+         * 添加class
+         */
         addClass: function(name) {
             if (!name) return this
 
@@ -299,6 +356,11 @@ var createDelegator = function(handler, selector) {
             })
         },
 
+        /**
+         * ## Lite.prototype.removeClass
+         *
+         * 移除class
+         */
         removeClass: function(name) {
             return this.each(function() {
                 if (!('className' in this)) return
@@ -316,11 +378,21 @@ var createDelegator = function(handler, selector) {
             })
         },
 
+        /**
+         * ## Lite.prototype.eq
+         *
+         * 获取某个节点
+         */
         eq: function(idx) {
             idx = idx < 0 ? idx + this.length : idx
             return $(this[idx])
         },
 
+        /**
+         * ## Lite.prototype.off
+         *
+         * 取消绑定事件，不支持移除代理事件
+         */
         off: function(type, handler) {
             var types = type && type.trim().split(spaceRE)
 
@@ -346,6 +418,12 @@ var createDelegator = function(handler, selector) {
             return this
         },
 
+        /**
+         * ## Lite.prototype.on
+         *
+         * 监听事件，支持事件代理
+         *
+         */
         on: function(type, selector, handler) {
             var f = true
 
@@ -382,6 +460,11 @@ var createDelegator = function(handler, selector) {
             return this
         },
 
+        /**
+         * ## Lite.prototype.trigger
+         *
+         * 触发事件
+         */
         trigger: function(type, detail) {
             return this.each(function() {
                 this.dispatchEvent($.Event(type, {
@@ -392,6 +475,11 @@ var createDelegator = function(handler, selector) {
             })
         },
 
+        /**
+         * ## Lite.prototype.attr
+         *
+         * 取出或者设置节点属性
+         */
         attr: function(name, value) {
             var result,
                 type = typeof name
@@ -420,6 +508,11 @@ var createDelegator = function(handler, selector) {
             }
         },
 
+        /**
+         * ## Lite.prototype.removeAttr
+         *
+         * 移除节点属性
+         */
         removeAttr: function(name) {
             return this.each(function() {
                 var self = this
@@ -429,6 +522,11 @@ var createDelegator = function(handler, selector) {
             })
         },
 
+        /**
+         * ## Lite.prototype.remove
+         *
+         * 删除节点
+         */
         remove: function() {
             return this.each(function() {
                 var parentElement = this.parentElement
@@ -436,6 +534,11 @@ var createDelegator = function(handler, selector) {
             })
         },
 
+        /**
+         * ## Lite.prototype.appendTo
+         *
+         * 在 html 插入到Dom节点内底部
+         */
         appendTo: function(target) {
             var dom = [],
                 self = this
@@ -450,30 +553,56 @@ var createDelegator = function(handler, selector) {
             return $(dom)
         },
 
+        /**
+         * ## Lite.prototype.after
+         *
+         * 在 Dom 节点之后插入html
+         */
         after: function(html) {
             return this.each(function() {
                 this.insertAdjacentHTML('afterend', html)
             })
         },
 
+        /**
+         * ## Lite.prototype.before
+         *
+         * 在 Dom 节点之前插入html
+         */
         before: function(html) {
             return this.each(function() {
                 this.insertAdjacentHTML('beforebegin', html)
             })
         },
 
+        /**
+         * ## Lite.prototype.append
+         *
+         * 在 Dom 节点内底部插入html
+         */
         append: function(html) {
             return this.each(function() {
                 this.insertAdjacentHTML('beforeend', html)
             })
         },
 
+        /**
+         * ## Lite.prototype.prepend
+         *
+         * 在 Dom 节点内头部插入html
+         */
         prepend: function(html) {
             return this.each(function() {
                 this.insertAdjacentHTML('afterbegin', html)
             })
         },
 
+        /**
+         * ## Lite.prototype.html
+         *
+         * 设置 Dom html
+         *
+         */
         html: function(html) {
             return html ?
                 this.each(function() {
@@ -482,6 +611,10 @@ var createDelegator = function(handler, selector) {
                 (this[0] ? this[0].innerHTML : null)
         },
 
+        /**
+         * ## Lite.prototype.text
+         * 设置 Dom 文本内容
+         */
         text: function(text) {
             return html ?
                 this.each(function() {

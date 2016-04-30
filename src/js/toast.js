@@ -1,14 +1,20 @@
 /**
- * # Kub.Toast
+ * # Toast
  *
  * 提示框
- * @extend [Dialog](dialog.js.html)
  */
+
+/**
+ * @require [core](./core.js.html)
+ * @extend [Dialog](./dialog.js.html)
+ */
+var core = require('./core'),
+    Dialog = require('./dialog')
 
 /**
  * ## Toast Constructor
  *
- * 初始化`Toast`类，`Toast`并不提供实例方法，实例方法均继承于`Dialog`。
+ * 继承于`Dialog`，可使用`Dialog`类中的方法。
  *
  * 使用方法：
  * ```js
@@ -17,10 +23,6 @@
  * })
  * ```
  */
-
-var core = require('./core'),
-    Dialog = require('./dialog')
-
 function Toast(options){
     var self = this,
         opts = this.options = core.extend({}, _prototype.defaults, options||{},{
@@ -41,19 +43,21 @@ var _prototype = Toast.prototype = Object.create(Dialog.prototype)
 _prototype.constructor = Toast
 
 /**
- * ## defaults
+ * ## Toast.prototype.defaults
  *
  * `Toast`默认配置项。
  *
  * 配置项说明：
  *
- * * `message`: 显示文字
+ * * `message` : `String` 提示内容。
  *
- * * `className`: 弹窗类名，不建议修改，会影响样式。
+ * * `className` : `String` 弹窗类名，修改时需加上`kub-toast`默认类名。
  *
- * * `top`: 距离顶部高度
+ * * `top` : `Number` 距离顶部高度。
  *
- * * `delay`: 延迟时间
+ * * `delay` : `Number` 延迟时间。
+ *
+ * * `modal` : `Boolean` 是否显示遮罩层。
  */
 _prototype.defaults = {
     message:'',

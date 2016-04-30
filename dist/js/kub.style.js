@@ -56,34 +56,85 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
+	/**
+	 * # Kub
+	 *
+	 * `Kub` 对象。kub 框架对外暴露的全局变量，所有组件均绑在`Kub`对象中。
+	 *
+	 */
 	var _window = window,
 	    Kub = _window.Kub = _window.Kub || {}
 
+	/**
+	 * ## Kub.$
+	 *
+	 * 类 `Zepto` 模块。
+	 */
 	Kub.$ = __webpack_require__(6)
 
+	/**
+	 * ## Kub.core
+	 */
 	Kub.core = __webpack_require__(7)
 
+	/**
+	 * ## Kub.os
+	 */
+	Kub.os = __webpack_require__(8)
+
+	/**
+	 * ## Kub.dateHelper
+	 */
 	Kub.dateHelper = __webpack_require__(9)
 
+	/**
+	 * ## Kub.cookie
+	 */
 	Kub.cookie = __webpack_require__(10)
 
+	/**
+	 * ## Kub.LazyLoad
+	 */
 	Kub.LazyLoad = __webpack_require__(11)
 
+	/**
+	 * ## Kub.Dialog
+	 */
 	Kub.Dialog = __webpack_require__(12)
 
+	/**
+	 * ## Kub.Alert
+	 */
 	Kub.Alert = __webpack_require__(14)
 
+	/**
+	 * ## Kub.Confirm
+	 */
 	Kub.Confirm = __webpack_require__(15)
 
+	/**
+	 * ## Kub.Prompt
+	 */
 	Kub.Prompt = __webpack_require__(16)
 
+	/**
+	 * ## Kub.Toast
+	 */
 	Kub.Toast = __webpack_require__(18)
 
+	/**
+	 * ## Kub.Loader
+	 */
 	Kub.Loader = __webpack_require__(19)
 
+	/**
+	 * ## Kub.Swiper
+	 */
 	Kub.Swiper = __webpack_require__(20)
 
+	/**
+	 * ## Kub.DatePicker
+	 */
 	Kub.DatePicker = __webpack_require__(21)
 
 	module.exports = Kub
@@ -93,6 +144,13 @@
 /* 6 */
 /***/ function(module, exports) {
 
+	/**
+	 * # Lite
+	 *
+	 * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用基本保持与`Zepto`一致。
+	 *
+	 *
+	 */
 	var $, Lite
 
 	var ELEMENT_NODE = 1,
@@ -139,7 +197,7 @@
 	    }
 
 	    if (isArray(selector)) {
-	        //$([document,document.body]) not $(window)
+	        //$([document,document.body])
 	        return wrap(slice.call(selector).filter(function(item) {
 	            return item != null
 	        }), selector)
@@ -215,8 +273,9 @@
 
 	!(function() {
 
-	    //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
 	    this.qsa = function(selector, context) {
+	        //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
+
 	        context = context || _document
 	        selector = selector.trim()
 	        return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector))
@@ -251,6 +310,11 @@
 
 	        _l: true,
 
+	        /**
+	         * ## Lite.prototype.each
+	         *
+	         * 循环所有节点
+	         */
 	        each: function(callback) {
 	            var l = this.length,
 	                i, t
@@ -264,10 +328,20 @@
 	            return this
 	        },
 
+	        /**
+	         * ## Lite.prototype.slice
+	         *
+	         * 切割元素
+	         */
 	        slice: function() {
 	            return $(slice.apply(this, arguments))
 	        },
 
+	        /**
+	         * ## Lite.prototype.is
+	         *
+	         * 判断是否是指定的节点
+	         */
 	        is: function(selector, element) {
 	            element = element ? element : this[0]
 
@@ -278,7 +352,13 @@
 	            return false
 	        },
 
-	        //原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+	        /**
+	         * ## Lite.prototype.closest
+	         *
+	         * 查找最近的节点。
+	         * 原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+	         *
+	         */
 	        closest: function(selector) {
 	            var element = this[0],
 	                prt = element,
@@ -287,7 +367,7 @@
 	            if(ELEMENT_PROTOTYPE.closest){
 	                var child = element.children[0]
 
-	                dom = child ? child.closest(selector) : this.is(selector, element) ? element : null
+	                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
 
 	            }else{
 	                while (prt) {
@@ -302,8 +382,11 @@
 	            return $(dom)
 	        },
 
-	        //only support find(selector)
-	        //zepto
+	        /**
+	         * ## Lite.prototype.find
+	         *
+	         * 查找节点，只支持查找选择器
+	         */
 	        find: function(selector) {
 	            var dom = []
 
@@ -320,18 +403,33 @@
 	            return $(dom)
 	        },
 
+	        /**
+	         * ## Lite.prototype.show
+	         *
+	         * 显示节点
+	         */
 	        show: function() {
 	            return this.each(function() {
 	                this.style.display === 'none' && (this.style.display = '')
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.hide
+	         *
+	         * 隐藏节点
+	         */
 	        hide: function() {
 	            return this.each(function() {
 	                this.style.display = 'none'
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.css
+	         *
+	         * 修改或获取样式
+	         */
 	        css: function(property, value) {
 	            var isObject = typeof property === 'object'
 
@@ -357,13 +455,18 @@
 	            }
 
 	            //set
-	            return css ? this.each(function() {
+	            css && this.each(function() {
 	                this.style.cssText += ';' + css
-	            }) : this
+	            })
 
+	            return this;
 	        },
 
-	        // only support get
+	        /**
+	         * ## Lite.prototype.offset
+	         *
+	         * 获取节点的offset，只支持获取，不支持设置
+	         */
 	        offset: function() {
 	            if (!this.length) return null
 
@@ -377,6 +480,11 @@
 	            }
 	        },
 
+	        /**
+	         * ## Lite.prototype.addClass
+	         *
+	         * 添加class
+	         */
 	        addClass: function(name) {
 	            if (!name) return this
 
@@ -394,6 +502,11 @@
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.removeClass
+	         *
+	         * 移除class
+	         */
 	        removeClass: function(name) {
 	            return this.each(function() {
 	                if (!('className' in this)) return
@@ -411,11 +524,21 @@
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.eq
+	         *
+	         * 获取某个节点
+	         */
 	        eq: function(idx) {
 	            idx = idx < 0 ? idx + this.length : idx
 	            return $(this[idx])
 	        },
 
+	        /**
+	         * ## Lite.prototype.off
+	         *
+	         * 取消绑定事件，不支持移除代理事件
+	         */
 	        off: function(type, handler) {
 	            var types = type && type.trim().split(spaceRE)
 
@@ -441,6 +564,12 @@
 	            return this
 	        },
 
+	        /**
+	         * ## Lite.prototype.on
+	         *
+	         * 监听事件，支持事件代理
+	         *
+	         */
 	        on: function(type, selector, handler) {
 	            var f = true
 
@@ -477,6 +606,11 @@
 	            return this
 	        },
 
+	        /**
+	         * ## Lite.prototype.trigger
+	         *
+	         * 触发事件
+	         */
 	        trigger: function(type, detail) {
 	            return this.each(function() {
 	                this.dispatchEvent($.Event(type, {
@@ -487,6 +621,11 @@
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.attr
+	         *
+	         * 取出或者设置节点属性
+	         */
 	        attr: function(name, value) {
 	            var result,
 	                type = typeof name
@@ -515,6 +654,11 @@
 	            }
 	        },
 
+	        /**
+	         * ## Lite.prototype.removeAttr
+	         *
+	         * 移除节点属性
+	         */
 	        removeAttr: function(name) {
 	            return this.each(function() {
 	                var self = this
@@ -524,6 +668,11 @@
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.remove
+	         *
+	         * 删除节点
+	         */
 	        remove: function() {
 	            return this.each(function() {
 	                var parentElement = this.parentElement
@@ -531,6 +680,11 @@
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.appendTo
+	         *
+	         * 在 html 插入到Dom节点内底部
+	         */
 	        appendTo: function(target) {
 	            var dom = [],
 	                self = this
@@ -545,30 +699,56 @@
 	            return $(dom)
 	        },
 
+	        /**
+	         * ## Lite.prototype.after
+	         *
+	         * 在 Dom 节点之后插入html
+	         */
 	        after: function(html) {
 	            return this.each(function() {
 	                this.insertAdjacentHTML('afterend', html)
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.before
+	         *
+	         * 在 Dom 节点之前插入html
+	         */
 	        before: function(html) {
 	            return this.each(function() {
 	                this.insertAdjacentHTML('beforebegin', html)
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.append
+	         *
+	         * 在 Dom 节点内底部插入html
+	         */
 	        append: function(html) {
 	            return this.each(function() {
 	                this.insertAdjacentHTML('beforeend', html)
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.prepend
+	         *
+	         * 在 Dom 节点内头部插入html
+	         */
 	        prepend: function(html) {
 	            return this.each(function() {
 	                this.insertAdjacentHTML('afterbegin', html)
 	            })
 	        },
 
+	        /**
+	         * ## Lite.prototype.html
+	         *
+	         * 设置 Dom html
+	         *
+	         */
 	        html: function(html) {
 	            return html ?
 	                this.each(function() {
@@ -577,6 +757,10 @@
 	                (this[0] ? this[0].innerHTML : null)
 	        },
 
+	        /**
+	         * ## Lite.prototype.text
+	         * 设置 Dom 文本内容
+	         */
 	        text: function(text) {
 	            return html ?
 	                this.each(function() {
@@ -592,30 +776,29 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/**
-	 * # Kub.core
+	 * # core
 	 *
-	 * kubjs 核心模块，该模块只提供最基础的方法。
+	 * 核心模块，该模块提供基础方法。
+	 *
 	 */
 
 	/**
 	 * ## Core Constructor
 	 *
-	 * Core 类，对外提供的是实例化的对象。
+	 * `Core` 模块，对外提供的是实例化的对象。
 	 *
 	 * 使用方法：
+	 *
 	 * ```js
+	 *
 	 * //获取url参数
 	 * var params = Kub.core.getQuerystring()
 	 *
-	 *
 	 * ```
 	 */
-
-	var os = __webpack_require__(8)
-
 	function Core() {
 
 	}
@@ -628,6 +811,7 @@
 	    _href = _window.location.href,
 	    _prototype = Core.prototype
 
+
 	//获取 params string
 	//url地址，未传值取 `window.location.href`。
 	var getParamsString = function(url) {
@@ -637,21 +821,11 @@
 	}
 
 	/**
-	 * ## os
+	 * ## Core.prototype.extend
 	 *
-	 * 系统版本与类型对象
-	 *
-	 * 详见 [detect 模块](./detect.js.html)
-	 *
-	 */
-	_prototype.os = os
-
-	/**
-	 * ## extend
-	 *
-	 * @param {Boolean} [deep] `可选` 是否深度拷贝
-	 * @param {Object/Array} target 目标
-	 * @param {Object/Array} source 源对象，可为多个
+	 * @param {Boolean} [deep] `可选` 是否深度拷贝。
+	 * @param {Object/Array} target 目标。
+	 * @param {Object/Array} source 源对象，可为多个。
 	 * @return {Object/Array} target
 	 */
 	_prototype.extend = function(target, source) {
@@ -685,7 +859,16 @@
 	    return target
 	}
 
-	//类型判断
+	/**
+	 * ## Core.prototype.is[type]
+	 *
+	 * 类型检测函数。
+	 *
+	 * 具体类型`type`包含
+	 *
+	 * `['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean']`
+	 *
+	 */
 	;
 	['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean'].forEach(function(name) {
 	    _prototype['is' + name] = function(obj) {
@@ -694,9 +877,9 @@
 	})
 
 	/**
-	 * ## setQuerystring
+	 * ## Core.prototype.setQuerystring
 	 *
-	 * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href` 的值。
+	 * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href`。
 	 *
 	 * 使用：
 	 * ```js
@@ -725,9 +908,12 @@
 	 *
 	 * @param {String} url    url
 	 *
-	 * @param {Object} params 参数对象
+	 * @param {Object} params 参数对象。
 	 *
-	 * @param {Object} opts   配置参数。 raw : 配置是否 `encodeURIComponent` ，append：是否追加参数。true(default)：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换
+	 * @param {Object} opts   配置参数。
+	 *
+	 * - raw ：配置是否开启 `encodeURIComponent`，默认为`false`，开启。
+	 * - append ：是否追加参数，默认为`true`。 true：如果 url 不存在当前参数名称，则追加一个参数。false：不追加，只进行替换。
 	 */
 	_prototype.setQuerystring = function(url, params, opts) {
 	    //验证url是否传值，如果 url 未传值，则使用当前页面 url
@@ -780,7 +966,7 @@
 	}
 
 	/**
-	 * ## getQuerystring
+	 * ## Core.prototype.getQuerystring
 	 *
 	 * 获取url中的参数。
 	 *
@@ -792,16 +978,22 @@
 	 * //设置当前地址参数
 	 *
 	 * //默认采用`window.location.href`
-	 * var params = Kub.core.getQuerystring(),name = params.name
+	 * var params = Kub.core.getQuerystring()
+	 *
+	 * var name = params.name
 	 *
 	 * //传入url
-	 * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123'),userId = params.userId
+	 * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123')
+	 *
+	 * var userId = params.userId
 	 *
 	 * ```
 	 *
-	 * @param {String} url url地址，未传值取 `window.location.href`。
+	 * @param {String} url  url地址，未传值取 `window.location.href`。
 	 *
-	 * @param {Object} opts 配置参数，配置是否 `decodeURIComponent`
+	 * @param {Object} opts 配置参数。
+	 *
+	 * - raw ：配置是否 `decodeURIComponent`，默认为`true`，开启。
 	 *
 	 * @return {Object} 返回参数对象
 	 */
@@ -839,9 +1031,32 @@
 	/**
 	 * # os
 	 *
-	 * 检测系统类型与版本，包含系统类型与版本信息
+	 * 检测系统类型与版本，包含系统类型与版本信息。
 	 *
 	 * 只检测Android 与 IOS, window phone（window phone 未进行完全测试）
+	 *
+	 * `os` 返回以下相关属性：
+	 *
+	 * `android` ：是否是Android
+	 *
+	 * `ios` ：是否是IOS系统
+	 *
+	 * `ipad` ：是否是iPad
+	 *
+	 * `iphone` ：是否是iPhone
+	 *
+	 * `ipod` ：是否是iPod
+	 *
+	 * `mobile` ：是否是移动端
+	 *
+	 * `phone` ：是否是手机
+	 *
+	 * `tablet` ：是否是平板
+	 *
+	 * `version` ：系统版本
+	 *
+	 * `wp` ： 是否是window phone
+	 *
 	 */
 
 	var ua = navigator.userAgent,
@@ -887,7 +1102,7 @@
 /***/ function(module, exports) {
 
 	/**
-	 * # Kub.dateHelper
+	 * # DateHelper
 	 *
 	 * 日期格式化组件。
 	 *
@@ -933,15 +1148,17 @@
 	/**
 	 * ## DateHelper Constructor
 	 *
-	 * DateHelper 对外提供的是实例化以后的对象。
+	 * `DateHelper` 模块，对外提供的是实例化的对象。
 	 *
 	 * 使用：
 	 * ```js
 	 * //String to Date
+	 *
 	 * '2015-05-20'.parseDate('yyyy-MM-dd')
 	 *
 	 * //格式化日期
-	 * (new Date()).format('yyyy-MM-dd,hh:mm:ss')
+	 * new Date().format('yyyy-MM-dd,hh:mm:ss')
+	 *
 	 * ```
 	 */
 	function DateHelper() {
@@ -1024,7 +1241,7 @@
 	_prototype.locale = 'zh'
 
 	/**
-	 * ## addLocale
+	 * ## DateHelper.prototype.addLocale
 	 *
 	 * 添加本地化
 	 *
@@ -1038,11 +1255,11 @@
 	}
 
 	/**
-	 * ## setLocale
+	 * ## DateHelper.prototype.setLocale
 	 *
 	 * 设置默认本地化
 	 *
-	 * @param {String} name 本地化名称
+	 * @param {String} name   本地化名称
 	 * @return {instance}     当前实例
 	 */
 	_prototype.setLocale = function(name) {
@@ -1051,12 +1268,12 @@
 	}
 
 	/**
-	 * ## format
+	 * ## DateHelper.prototype.format
 	 *
-	 * 格式化日期
+	 * 格式化日期。
 	 *
-	 * @param {Date} date     日期
-	 * @param {String} format 日期格式
+	 * @param {Date} date      日期
+	 * @param {String} format  日期格式
 	 * @return {String}        格式化以后的日期
 	 */
 	_prototype.format = function(date, format) {
@@ -1072,25 +1289,26 @@
 	}
 
 	/**
-	 * ## parse
+	 * ## DateHelper.prototype.parse
 	 *
-	 * 转换日期
+	 * 转换日期。
 	 *
 	 * 此方法存在一个BUG，例如：
 	 *
 	 * ```js
+	 *
 	 * //1112会被计算在MM内。
 	 * dateHelper.parse('2015-1112','yyyy-MMdd')
-	 * ```
 	 *
-	 * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
 	 *
-	 * ```js
+	 * //所以在使用parse方法时，每一个串使用字符分隔开。类似于：
+	 *
 	 * dateHelper.parse('2015-11-12','yyyy-MM-dd')
+	 *
 	 * ```
 	 *
-	 * @param {String} input  字符串
-	 * @param {String} format 格式化字符串
+	 * @param {String} input   字符串
+	 * @param {String} format  格式化字符串
 	 * @return {Date}          格式化的日期
 	 */
 	_prototype.parse = function(input, format) {
@@ -1139,17 +1357,25 @@
 /***/ function(module, exports) {
 
 	/**
-	 * # Kub.cookie
+	 * # cookie
 	 *
-	 * copy from `zepto.cookie.js`，将 `expires` 单位改为毫秒。
-	 */
-	/**
-	 * ## cookie 方法
+	 * 操作cookie方法，`expires` 如果为数字，单位为毫秒
 	 *
-	 * @param {String} key key值，
-	 * @param {String} value   设置值，如果未传递，则表示取值
-	 * @param {Object} options 配置项
-	 * @return {String} 返回取到的值，如果未赋值，则返回空。
+	 * 使用方法：
+	 * ```js
+	 * //取值
+	 * var name = Kub.cookie('name')
+	 *
+	 * //设置值
+	 * Kub.cookie('name','kub')
+	 *
+	 * //配置cookie相关属性
+	 * Kub.cookie('name','kub',{
+	 *     domain:'.weidian.com'
+	 *
+	 * })
+	 * ```
+	 *
 	 */
 	function cookie(key, value, options) {
 	    var days, time, result, decode
@@ -1201,26 +1427,29 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.LazyLoad
+	 * # LazyLoad
 	 *
 	 * 延迟加载组件。
 	 *
 	 */
 
 	/**
+	 * @require [core](./core.js.html)
+	 * @require [Lite](./lite.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    $ = __webpack_require__(6)
+
+	/**
 	 * ## LazyLoad Constructor
 	 *
-	 * LazyLoad 类
+	 * `LazyLoad` 构造函数。
 	 *
 	 * 使用：
 	 * ```js
 	 * var lazyload = new Kub.LazyLoad($('img'))
 	 * ```
 	 */
-
-	var $ = __webpack_require__(6),
-	    core = __webpack_require__(7)
-
 	function LazyLoad(element, options) {
 	    this.$element = $(element)
 
@@ -1296,19 +1525,19 @@
 	}
 
 	/**
-	 * ## defaults
+	 * ## LazyLoad.prototype.defaults
 	 *
 	 * 默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 *   `container` : 图片存放容器，容器会监听事件
+	 *   `container` : `Selector` 图片存放的容器，容器会监听事件。
 	 *
-	 *   `threshold` : 提前加载距离
+	 *   `threshold` : `Number` 提前加载距离。
 	 *
-	 *   `delay` : 事件监听时的延迟时间
+	 *   `delay` : `Number` 事件监听时的延迟时间。
 	 *
-	 *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
+	 *   `attributeName` : `String` 属性名称。默认会从`element`上取出 `data-original` 属性。
 	 *
 	 */
 	_prototype.defaults = {
@@ -1330,9 +1559,9 @@
 	}
 
 	/**
-	 * ## loadAll
+	 * ## LazyLoad.prototype.loadAll
 	 *
-	 * 强制加载所有图片，无论节点是否在可视区域内
+	 * 强制加载所有图片，无论节点是否在可视区域内。
 	 *
 	 * @return {instance} 当前实例
 	 */
@@ -1353,9 +1582,9 @@
 	}
 
 	/**
-	 * ## isVisible
+	 * ## LazyLoad.prototype.isVisible
 	 *
-	 * 是否可见
+	 * 是否在视窗可见。
 	 * @param {$}  $this         元素
 	 * @param {Object}  options  参数
 	 * @return {Boolean}         true ：可见 false ：不可见
@@ -1377,9 +1606,9 @@
 	}
 
 	/**
-	 * ## load
+	 * ## LazyLoad.prototype.load
 	 *
-	 * 加载指定元素
+	 * 加载指定元素。
 	 *
 	 * @param {$} $element      加载的节点
 	 * @param {String} original 图片地址
@@ -1404,9 +1633,9 @@
 	}
 
 	/**
-	 * ## belowthefold
+	 * ## LazyLoad.prototype.belowthefold
 	 *
-	 * 是否在视窗下面
+	 * 是否在视窗下面。
 	 *
 	 * @param {Element} element 检查的元素
 	 * @param {Object} settings 被检查时的参数
@@ -1427,9 +1656,9 @@
 	}
 
 	/**
-	 * ## abovethetop
+	 * ## LazyLoad.prototype.abovethetop
 	 *
-	 * 是否在视窗上面
+	 * 是否在视窗上面。
 	 *
 	 * @param {Element} element 检查的元素
 	 * @param {Object} settings 被检查时的参数
@@ -1449,9 +1678,9 @@
 	}
 
 	/**
-	 * ## rightoffold
+	 * ## LazyLoad.prototype.rightoffold
 	 *
-	 * 是否在视窗右侧
+	 * 是否在视窗右侧。
 	 *
 	 * @param {Element} element 检查的元素
 	 * @param {Object} settings 被检查时的参数
@@ -1470,9 +1699,9 @@
 	}
 
 	/**
-	 * ## leftofbegin
+	 * ## LazyLoad.prototype.leftofbegin
 	 *
-	 * 是否在视窗左侧
+	 * 是否在视窗左侧。
 	 *
 	 * @param {Element} element 检查的元素
 	 * @param {Object} settings 被检查时的参数
@@ -1500,15 +1729,23 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Dialog
+	 * # Dialog
 	 *
-	 * 对话框
+	 * 对话框.
 	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @require [Lite](./lite.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    $ = __webpack_require__(6),
+	    template = __webpack_require__(13)
 
 	/**
 	 * ## Dialog Constructor
 	 *
-	 * Dialog 类
+	 * Dialog 构造函数。
 	 *
 	 * 使用：
 	 * ```js
@@ -1531,11 +1768,6 @@
 	 *   })
 	 * ```
 	 */
-
-	var core = __webpack_require__(7),
-	    $ = __webpack_require__(6),
-	    template = __webpack_require__(13)
-
 	function Dialog(options) {
 	    this.options = core.extend({}, _prototype.defaults, options || {})
 	    init(this)
@@ -1548,20 +1780,13 @@
 
 	var $body = $(document.body)
 
-	var _window = window;
+	var _window = window,
 	    _prototype = Dialog.prototype
 
 	var render = function(dialog,data) {
 	    var html = template(data)
 	    dialog.$element = $(html).appendTo($body)
 	    return this
-	}
-
-	var fixed = function(){
-	    //解决 iphone 下，fixed定位问题
-	    core.os.ios && setTimeout(function() {
-	        _window.scrollTo(_window.scrollX, _window.scrollY)
-	    }, 5)
 	}
 
 	var bindEvents = function(dialog){
@@ -1578,8 +1803,6 @@
 
 	var init = function(dialog) {
 
-	    fixed()
-
 	    //渲染数据
 	    render(dialog, dialog.options)
 
@@ -1593,27 +1816,28 @@
 	}
 
 	/**
-	 * ## defaults
+	 * ## Dialog.prototype.defaults
 	 *
 	 * 默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `modal`: 是否显示遮罩层；
+	 * * `modal` : `Boolean` 是否显示遮罩层。
 	 *
-	 * * `title`: 对话框名称；
+	 * * `title` : `String` 对话框名称。
 	 *
-	 * * `showHeader`: 是否显示头部；
+	 * * `showHeader` : `Boolean` 是否显示头部。
 	 *
-	 * * `message`: 弹窗内容，可设置成`html`；
+	 * * `message` : `String` 弹窗内容。
 	 *
-	 * * `className`: 弹窗类名；
+	 * * `className` : `String` 弹窗类名。
 	 *
-	 * * `animated`: 是否开启动画效果；
+	 * * `animated` : `Boolean` 是否开启动画效果。
 	 *
-	 * * `buttons`: 弹窗按钮；
+	 * * `buttons`: `Array` 弹窗按钮。
 	 *
 	 * ```js
+	 * //例如：
 	 * [{
 	 *     text:'按钮名称',//按钮名称
 	 *     className:'button-name',//按钮class类名
@@ -1634,9 +1858,9 @@
 	}
 
 	/**
-	 * ## show
+	 * ## Dialog.prototype.show
 	 *
-	 * 显示弹窗
+	 * 显示弹窗。
 	 * @return {instance} 返回当前实例
 	 */
 	_prototype.show = function() {
@@ -1648,9 +1872,9 @@
 	}
 
 	/**
-	 * ## hide
+	 * ## Dialog.prototype.hide
 	 *
-	 * 隐藏弹窗
+	 * 隐藏弹窗。
 	 * @return {instance} 返回当前实例
 	 */
 	_prototype.hide = function() {
@@ -1662,9 +1886,9 @@
 	}
 
 	/**
-	 * ## close
+	 * ## Dialog.prototype.close
 	 *
-	 * 关闭弹窗
+	 * 关闭弹窗。
 	 * @return {instance} 返回当前实例
 	 */
 	_prototype.close = function() {
@@ -1726,26 +1950,28 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Alert
-	 * alert弹窗，用于提示说明。
+	 * # Alert
 	 *
-	 * @extend [Dialog](dialog.js.html)
+	 * alert弹窗。
 	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @extend [Dialog](./dialog.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    Dialog = __webpack_require__(12)
 
 	/**
 	 * ## Alert Constructor
 	 *
-	 * 初始化`Alert`类，`Alert`并不提供实例方法，实例方法均继承于`Dialog`。
+	 * 继承于`Dialog`，可使用`Dialog`类中的方法。
 	 *
 	 * 使用方法：
 	 * ```js
 	 * var alert = new Kub.Alert()
 	 * ```
 	 */
-
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
-
 	function Alert(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -1764,19 +1990,25 @@
 	_prototype.constructor = Alert
 
 	/**
-	 * ## defaults
+	 * ## Alert.defaults
 	 *
-	 * `Alert`默认配置项。
+	 * `Alert` 默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+	 * * `confirmText` : `String` 确认按钮名称。
 	 *
-	 * * `showHeader`: 是否显示头部。
+	 * * `confirm` : `Function` 单击确认按钮时触发的事件。
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 *    > 如果未传递，单击时会默认关闭弹窗。
+	 *    >
+	 *    > 如果传递，需调用 `dialog.close()`关闭弹窗。
 	 *
-	 * * `modal`: 是否显示遮罩层。
+	 * * `showHeader` : `Boolean` 是否显示头部。
+	 *
+	 * * `className` : `String` 弹窗类名，修改时需加上`kub-alert`默认类名。
+	 *
+	 * * `modal` : `Boolean` 是否显示遮罩层。
 	 */
 
 	_prototype.defaults = {
@@ -1795,30 +2027,33 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Confirm
-	 * confirm弹窗。
+	 * # Confirm
 	 *
-	 * @extend [Dialog](dialog.js.html)
+	 * confirm 弹窗。
 	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @extend [Dialog](./dialog.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    Dialog = __webpack_require__(12)
 
 	/**
 	 * ## Confirm Constructor
 	 *
-	 * 初始化`Confirm`类，`Confirm`并不提供实例方法，实例方法均继承于`Dialog`。
+	 * 继承于`Dialog`，可使用`Dialog`类中的方法。
 	 *
 	 * 使用方法：
 	 * ```js
 	 * var confirm = new Kub.Confirm({
 	 *     confirm:function(e,dialog){
-	 *         console.log("确认按钮")
+	 *         //do something
 	 *         dialog.close()
 	 *     }
 	 * })
 	 * ```
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
-
 	function Confirm(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -1840,21 +2075,29 @@
 	_prototype.constructor = Confirm
 
 	/**
-	 * ## defaults
+	 * ## Confirm.defaults
 	 *
 	 * `Confirm`默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `confirm`: 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
+	 * * `confirmText` : `String` 确认按钮名称。
 	 *
-	 * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+	 * * `confirm` : `Function` 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
 	 *
-	 * * `showHeader`: 是否显示头部。
+	 * * `cancelText` : `String` 取消按钮名称。
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 * * `cancel` : `Function` 单击取消按钮时触发的事件。
 	 *
-	 * * `modal`: 是否显示遮罩层。
+	 *    > 如果未传递，单击时会默认关闭弹窗。
+	 *    >
+	 *    > 如果传递，需调用 `dialog.close()`关闭弹窗。
+	 *
+	 * * `showHeader` : `Boolean` 是否显示头部。
+	 *
+	 * * `className` : `String` 弹窗类名，修改时需加上`kub-confirm`默认类名。
+	 *
+	 * * `modal` : `Boolean` 是否显示遮罩层。
 	 */
 	_prototype.defaults = {
 	    confirmText: '确定',
@@ -1874,34 +2117,36 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Prompt
+	 * # Prompt
 	 *
-	 * 输入框
-	 * @extend [Dialog](dialog.js.html)
+	 * prompt 输入框。
 	 */
 
 	/**
-	 * ## Prompt Constructor
-	 *
-	 * 初始化`Prompt`类，`Prompt`并不提供实例方法，实例方法均继承于`Dialog`。
-	 *
-	 * 使用方法：
-	 * ```js
-	 * var prompt = new Kub.Prompt({
-	 *     confirm:function(event,dialog){
-	 *         //输入框输入的值
-	 *         console.log(dialog.value)
-	 *     }
-	 * })
-	 * ```
+	 * @require [core](./core.js.html)
+	 * @extend [Dialog](./dialog.js.html)
 	 */
-
 	var core = __webpack_require__(7),
 	    Dialog = __webpack_require__(12),
 	    template = __webpack_require__(17)
 
 	var INPUT_SELECTOR = '.J_input'
 
+	/**
+	 * ## Prompt Constructor
+	 *
+	 * 继承于`Dialog`，可使用`Dialog`类中的方法。
+	 *
+	 * 使用方法：
+	 * ```js
+	 * var prompt = new Kub.Prompt({
+	 *     confirm:function(event,dialog,value){
+	 *         //输入框输入的值
+	 *         console.log(value)
+	 *     }
+	 * })
+	 * ```
+	 */
 	function Prompt(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -1928,27 +2173,37 @@
 	_prototype.constructor = Prompt
 
 	/**
-	 * ## defaults
+	 * ## Prompt.prototype.defaults
 	 *
 	 * `Prompt`默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `confirm`: 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
+	 * * `confirmText` : `String` 确认按钮名称。
 	 *
-	 * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+	 * * `confirm` : `Function` 单击确认按钮时触发的事件。用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
 	 *
-	 * * `showHeader`: 是否显示头部。
+	 * * `cancelText` : `String` 取消按钮名称。
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 * * `cancel` : `Function` 单击取消按钮时触发的事件。
 	 *
-	 * * `modal`: 是否显示遮罩层。
+	 *    > 如果未传递，单击时会默认关闭弹窗。
+	 *    >
+	 *    > 如果传递，需调用 `dialog.close()`关闭弹窗。
 	 *
-	 * * `inputType`: 输入框类型。
+	 * * `showHeader` : `Boolean` 是否显示头部。
 	 *
-	 * * `placeholder`: 输入框 placeholder 属性。
+	 * * `className` : `String` 弹窗类名，修改时需加上`kub-prompt`默认类名。
 	 *
-	 * * `defaultValue`: 输入框默认值。
+	 * * `modal` : `Boolean` 是否显示遮罩层。
+	 *
+	 * * `message` : `String` 提示内容。
+	 *
+	 * * `inputType` : `String` 输入框类型。
+	 *
+	 * * `placeholder` : `String` 输入框 `placeholder` 属性。
+	 *
+	 * * `defaultValue` : `String` 输入框默认值。
 	 */
 	_prototype.defaults = {
 	    confirmText: '确定',
@@ -1958,6 +2213,7 @@
 	    showHeader: false,
 	    className: 'kub-prompt',
 	    modal: true,
+	    message:'',
 	    inputType: 'text',
 	    placeholder: '',
 	    defaultValue: ''
@@ -1989,16 +2245,22 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Toast
+	 * # Toast
 	 *
 	 * 提示框
-	 * @extend [Dialog](dialog.js.html)
 	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @extend [Dialog](./dialog.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    Dialog = __webpack_require__(12)
 
 	/**
 	 * ## Toast Constructor
 	 *
-	 * 初始化`Toast`类，`Toast`并不提供实例方法，实例方法均继承于`Dialog`。
+	 * 继承于`Dialog`，可使用`Dialog`类中的方法。
 	 *
 	 * 使用方法：
 	 * ```js
@@ -2007,10 +2269,6 @@
 	 * })
 	 * ```
 	 */
-
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
-
 	function Toast(options){
 	    var self = this,
 	        opts = this.options = core.extend({}, _prototype.defaults, options||{},{
@@ -2031,19 +2289,21 @@
 	_prototype.constructor = Toast
 
 	/**
-	 * ## defaults
+	 * ## Toast.prototype.defaults
 	 *
 	 * `Toast`默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `message`: 显示文字
+	 * * `message` : `String` 提示内容。
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 * * `className` : `String` 弹窗类名，修改时需加上`kub-toast`默认类名。
 	 *
-	 * * `top`: 距离顶部高度
+	 * * `top` : `Number` 距离顶部高度。
 	 *
-	 * * `delay`: 延迟时间
+	 * * `delay` : `Number` 延迟时间。
+	 *
+	 * * `modal` : `Boolean` 是否显示遮罩层。
 	 */
 	_prototype.defaults = {
 	    message:'',
@@ -2070,27 +2330,38 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Loader
+	 * # Loader
 	 *
-	 * 加载等待框
-	 * @extend [Dialog](dialog.js.html)
+	 * 加载等待框。
+	 *
 	 */
 
 	/**
-	 * ## Loader Constructor
-	 *
-	 * 初始化`Loader`类，`Loader`并不提供实例方法，实例方法均继承于`Dialog`。
-	 *
-	 * 使用方法：
-	 * ```js
-	 * var loader = new Kub.Loader()
-	 * //隐藏loader
-	 * loader.hide()
-	 * ```
+	 * @require [core](./core.js.html)
+	 * @extend [Dialog](./dialog.js.html)
 	 */
 	var core = __webpack_require__(7),
 	    Dialog = __webpack_require__(12)
 
+	/**
+	 * ## Loader Constructor
+	 *
+	 * 继承于`Dialog`，可使用`Dialog`类中的方法。
+	 *
+	 * 使用方法：
+	 *
+	 * ```js
+	 * var loader = new Kub.Loader()
+	 *
+	 * //隐藏loader
+	 * loader.hide()
+	 *
+	 * var loader = new Kub.Loader({
+	 *     message: '定制提示内容'
+	 * })
+	 *
+	 * ```
+	 */
 	function Loader(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {}, {
 	        showHeader: false,
@@ -2105,17 +2376,17 @@
 	_prototype.constructor = Loader
 
 	/**
-	 * ## defaults
+	 * ## Loader.prototype.defaults
 	 *
-	 * `Loader`默认配置项。
+	 * `Loader` 默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 * * `className`: `String` 弹窗类名，修改时需加上`kub-loader`默认类名。
 	 *
-	 * * `message`: 加载文字提示
+	 * * `message` : `String` 提示内容。
 	 *
-	 * * `modal`: 是否显示遮罩层。
+	 * * `modal` : `Boolean` 是否显示遮罩层。
 	 */
 	_prototype.defaults = {
 	    className: 'kub-loader',
@@ -2131,10 +2402,19 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.Swiper
+	 * # Swiper
 	 *
-	 * 图片切换组件
+	 * 切换组件
 	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @require [os](./detect.js.html)
+	 * @require [Lite](./lite.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    os = __webpack_require__(8),
+	    $ = __webpack_require__(6)
 
 	/**
 	 * ## Swiper Constructor
@@ -2154,9 +2434,6 @@
 	 * })
 	 * ```
 	 */
-	var core = __webpack_require__(7),
-	    $ = __webpack_require__(6)
-
 	function Swiper(element, options) {
 
 	    this.options = core.extend({}, _prototype.defaults, options || {})
@@ -2174,7 +2451,7 @@
 	}
 
 	var $document = $(document),
-	    isTouch = core.os.mobile
+	    isTouch = os.mobile
 
 	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
@@ -2506,31 +2783,31 @@
 	}
 
 	/**
-	 * ## defaults
+	 * ## Swiper.prototype.defaults
 	 *
 	 * `Swiper`默认配置项。
 	 *
 	 * 配置项说明：
 	 *
-	 * * `direction`: 切换方向。horizontal：横向， vertical：纵向
+	 * * `direction`: `String` 切换方向。horizontal ：横向， vertical ：纵向。
 	 *
-	 * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
+	 * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
 	 *
-	 * * `duration`: 切换速度
+	 * * `duration`: `Number` 切换速度。
 	 *
-	 * * `infinite`: 是否循环滚动 true：循环 false：不循环
+	 * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
 	 *
-	 * * `initialSlide`: 初始化滚动位置
+	 * * `initialSlide`: `Number` 初始化滚动位置。
 	 *
-	 * * `slideSelector`: 滚动块元素选择器
+	 * * `slideSelector`: `Selector` 滚动元素。
 	 *
-	 * * `slideActiveClass`: 滚动块元素选中的类名
+	 * * `slideActiveClass`: `String` 滚动元素选中时的类名。
 	 *
-	 * * `paginationSelector`: 缩略图或者icon选择器
+	 * * `paginationSelector`: `Selector` 缩略图或icon。
 	 *
-	 * * `paginationActiveClass`: 选中的类名
+	 * * `paginationActiveClass`: `String` 缩略图或icon选中时的类名。
 	 *
-	 * * `slide`: 切换回调函数
+	 * * `slide`: `Function` 切换回调函数。
 	 */
 
 	_prototype.defaults = {
@@ -2556,12 +2833,12 @@
 	}
 
 	/**
-	 * ## slide
+	 * ## Swiper.prototype.slide
 	 *
 	 * 滚动到指定索引值位置
 	 *
 	 * @param  {index} index 滚动索引值
-	 * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+	 * @param  {duration} duration 滚动速度，默认配置的`duration`。
 	 * @return {instance}    当前实例
 	 */
 	_prototype.slide = function(index, duration) {
@@ -2583,11 +2860,11 @@
 	}
 
 	/**
-	 * ## next
+	 * ## Swiper.prototype.next
 	 *
 	 * 切换到下一个
 	 *
-	 * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+	 * @param  {duration} duration 滚动速度，默认配置的`duration`。
 	 * @return {instance}    当前实例
 	 */
 	_prototype.next = function(duration) {
@@ -2595,10 +2872,11 @@
 	}
 
 	/**
-	 * ## prev
+	 * ## Swiper.prototype.prev
 	 *
 	 * 切换到上一个
-	 * @param  {duration} duration 滚动速度，默认使用参数配置的speed
+	 *
+	 * @param  {duration} duration 滚动速度，默认配置的`duration`。
 	 * @return {instance}    当前实例
 	 */
 	_prototype.prev = function(duration) {
@@ -2613,16 +2891,31 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * # Kub.DatePicker
+	 * # DatePicker
 	 *
-	 * 时间选择器。格式化参照 [`date`](date.js.html)
+	 * 时间选择器。格式化参照 [`DateHelper`](./date.js.html)
 	 *
 	 */
 
 	/**
+	 * @require [core](./core.js.html)
+	 * @require [Lite](./lite.js.html)
+	 * @require [detect](./detect.js.html)
+	 * @require [Dialog](./dialog.js.html)
+	 * @require [DateHelper](./date.js.html)
+	 */
+	var core = __webpack_require__(7),
+	    $ = __webpack_require__(6),
+	    os = __webpack_require__(8),
+	    Dialog = __webpack_require__(12),
+	    template = __webpack_require__(22)
+
+	__webpack_require__(9)
+
+	/**
 	 * ## DatePicker Constructor
 	 *
-	 * DatePicker类
+	 * `DatePicker` 构造函数。
 	 *
 	 * 使用：
 	 * ```js
@@ -2649,13 +2942,6 @@
 	 *  })
 	 * ```
 	 */
-	var core = __webpack_require__(7),
-	    $ = __webpack_require__(6),
-	    Dialog = __webpack_require__(12),
-	    template = __webpack_require__(22)
-
-	__webpack_require__(9)
-
 	function DatePicker(element, options) {
 	    this.$element = $(element)
 	    this.options = core.extend({}, _prototype.defaults, options || {})
@@ -2665,13 +2951,12 @@
 
 	var HEIGHT_UNIT = 50,
 	    DURATION = 200,
-	    //COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
 	    COLUMN_SELECTOR = '.kub-datepicker-column',
 	    COLUMN_ITEM_SELECTOR = 'li',
 	    COLUMN_CONTAINER_SELECTOR = 'ul'
 
 	var $document = $(document),
-	    isTouch = core.os.mobile
+	    isTouch = os.mobile
 
 	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
@@ -2940,31 +3225,39 @@
 
 
 	/**
-	 * ## defaults
+	 * ## DatePicker.prototype.defaults
 	 *
 	 * 默认配置项
 	 *
 	 * 配置项说明：
 	 *
-	 * * `locale`: 本地化。本地化采用CSS实现。
+	 * * `locale`: `String` 本地化。本地化采用CSS实现。
 	 *
-	 * * `title`: 时间选择器弹窗名称。
+	 * * `title`: `String` 时间选择器弹窗名称。
 	 *
-	 * * `confirmText`: 确认按钮文本
+	 * * `confirmText`: `String` 确认按钮名称。
 	 *
-	 * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗，并进行赋值。如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要手动填充输入框。
+	 * * `confirm`: `Function` 单击确认按钮时触发的事件。
 	 *
-	 * * `cancelText`: 取消按钮文本
+	 * > 如果未传递，单击时会默认关闭弹窗，并对输入框赋值。
+	 * >
+	 * > 如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要对输入框赋值。
 	 *
-	 * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`datepicker.close()`手动关闭弹窗。
+	 * * `cancelText`: `String` 取消按钮名称。
 	 *
-	 * * `format`: 日期格式
+	 * * `cancel`: `Function` 单击取消按钮时触发的事件。
 	 *
-	 * * `className`: 弹窗类名，不建议修改，会影响样式。
+	 * > 如果未传递，单击时会默认关闭弹窗。
+	 * >
+	 * > 如果传递，需调用`datepicker.close()`关闭弹窗。
 	 *
-	 * * `date`: 默认显示时间
+	 * * `format`: `String` 日期格式。
 	 *
-	 * * `yearRange`: 年份显示区间
+	 * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-dialog`默认类名。
+	 *
+	 * * `date`: `Date` 默认显示时间。
+	 *
+	 * * `yearRange`: `Array` 年份显示区间。
 	 */
 	_prototype.defaults = {
 	    locale: 'zh',
@@ -2976,13 +3269,13 @@
 	    format: 'yyyy-MM-dd',
 	    className: 'kub-datepicker-dialog',
 	    date: new Date(),
-	    yearRange: [1970, 2100]
+	    yearRange: [1970, 2050]
 	}
 
 	/**
-	 * ## setDate
+	 * ## DatePicker.prototype.setDate
 	 *
-	 * 设置时间选择器时间
+	 * 设置时间选择器时间。
 	 *
 	 * @param {Date} date 时间
 	 * @return {instance} 当前实例
@@ -3008,9 +3301,9 @@
 	}
 
 	/**
-	 * ## getDate
+	 * ## DatePicker.prototype.getDate
 	 *
-	 * 获取时间选择器选择的时间
+	 * 获取时间选择器选择的时间。
 	 *
 	 * @return {Date} 获取到的时间
 	 */
@@ -3028,9 +3321,10 @@
 	}
 
 	/**
-	 * ## close
+	 * ## DatePicker.prototype.close
 	 *
-	 * 关闭时间选择器
+	 * 关闭时间选择器。
+	 *
 	 * @return {instance} 当前实例
 	 */
 	_prototype.close = function() {
@@ -3039,9 +3333,10 @@
 	}
 
 	/**
-	 * ## show
+	 * ## DatePicker.prototype.show
 	 *
-	 * 显示时间选择器
+	 * 显示时间选择器。
+	 *
 	 * @return {instance} 当前实例
 	 */
 	_prototype.show = function() {
@@ -3050,9 +3345,10 @@
 	}
 
 	/**
-	 * ## hide
+	 * ## DatePicker.prototype.hide
 	 *
-	 * 隐藏时间选择器
+	 * 隐藏时间选择器。
+	 *
 	 * @return {instance} 当前实例
 	 */
 	_prototype.hide = function() {
@@ -3137,6 +3433,12 @@
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * # Kub
+	 *
+	 * 与`Kub`对象一致。对外增加样式文件。
+	 *
+	 */
 	__webpack_require__(24)
 	__webpack_require__(5)
 

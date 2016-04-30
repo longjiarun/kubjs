@@ -1,32 +1,34 @@
 /**
- * # Kub.Prompt
+ * # Prompt
  *
- * 输入框
- * @extend [Dialog](dialog.js.html)
+ * prompt 输入框。
  */
 
 /**
- * ## Prompt Constructor
- *
- * 初始化`Prompt`类，`Prompt`并不提供实例方法，实例方法均继承于`Dialog`。
- *
- * 使用方法：
- * ```js
- * var prompt = new Kub.Prompt({
- *     confirm:function(event,dialog){
- *         //输入框输入的值
- *         console.log(dialog.value)
- *     }
- * })
- * ```
+ * @require [core](./core.js.html)
+ * @extend [Dialog](./dialog.js.html)
  */
-
 var core = require('./core'),
     Dialog = require('./dialog'),
     template = require('./tpl/prompt')
 
 var INPUT_SELECTOR = '.J_input'
 
+/**
+ * ## Prompt Constructor
+ *
+ * 继承于`Dialog`，可使用`Dialog`类中的方法。
+ *
+ * 使用方法：
+ * ```js
+ * var prompt = new Kub.Prompt({
+ *     confirm:function(event,dialog,value){
+ *         //输入框输入的值
+ *         console.log(value)
+ *     }
+ * })
+ * ```
+ */
 function Prompt(options) {
     var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -53,27 +55,37 @@ var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 _prototype.constructor = Prompt
 
 /**
- * ## defaults
+ * ## Prompt.prototype.defaults
  *
  * `Prompt`默认配置项。
  *
  * 配置项说明：
  *
- * * `confirm`: 单击确认按钮时触发的事件。一般用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
+ * * `confirmText` : `String` 确认按钮名称。
  *
- * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
+ * * `confirm` : `Function` 单击确认按钮时触发的事件。用于用户单击确认按钮执行事件。需调用`dialog.close()`手动关闭弹窗。
  *
- * * `showHeader`: 是否显示头部。
+ * * `cancelText` : `String` 取消按钮名称。
  *
- * * `className`: 弹窗类名，不建议修改，会影响样式。
+ * * `cancel` : `Function` 单击取消按钮时触发的事件。
  *
- * * `modal`: 是否显示遮罩层。
+ *    > 如果未传递，单击时会默认关闭弹窗。
+ *    >
+ *    > 如果传递，需调用 `dialog.close()`关闭弹窗。
  *
- * * `inputType`: 输入框类型。
+ * * `showHeader` : `Boolean` 是否显示头部。
  *
- * * `placeholder`: 输入框 placeholder 属性。
+ * * `className` : `String` 弹窗类名，修改时需加上`kub-prompt`默认类名。
  *
- * * `defaultValue`: 输入框默认值。
+ * * `modal` : `Boolean` 是否显示遮罩层。
+ *
+ * * `message` : `String` 提示内容。
+ *
+ * * `inputType` : `String` 输入框类型。
+ *
+ * * `placeholder` : `String` 输入框 `placeholder` 属性。
+ *
+ * * `defaultValue` : `String` 输入框默认值。
  */
 _prototype.defaults = {
     confirmText: '确定',
@@ -83,6 +95,7 @@ _prototype.defaults = {
     showHeader: false,
     className: 'kub-prompt',
     modal: true,
+    message:'',
     inputType: 'text',
     placeholder: '',
     defaultValue: ''
