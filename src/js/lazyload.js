@@ -39,32 +39,6 @@ var //横竖屏切换时 ，orientationchange 与 resize事件都会触发，所
     //综上：依旧采用scroll解决，对于某些机型进行忽略
     EVENT_NAME = 'scroll'
 
-var init = function(lazyload) {
-    var options = lazyload.options,
-        timer
-
-    var handler = function() {
-        if (lazyload.completed) {
-            return
-        }
-
-        timer && clearTimeout(timer)
-
-        timer = setTimeout(function() {
-
-            loadElementsInViewport(lazyload)
-
-        }, options.delay)
-    }
-
-    //页面载入先执行下面
-    loadElementsInViewport(lazyload)
-
-    //页面紧接着触发scroll，走下面监听
-    lazyload.$container.on(EVENT_NAME, handler)
-
-    $(_window).on(RESIZE_EVENT, handler)
-}
 
 //获取所有还未被加载的节点
 var getUnloadedElements = function(lazyload) {
@@ -90,6 +64,33 @@ var loadElementsInViewport = function(lazyload) {
 
         lazyload.isVisible($this) && lazyload.load($this)
     })
+}
+
+var init = function(lazyload) {
+    var options = lazyload.options,
+        timer
+
+    var handler = function() {
+        if (lazyload.completed) {
+            return
+        }
+
+        timer && clearTimeout(timer)
+
+        timer = setTimeout(function() {
+
+            loadElementsInViewport(lazyload)
+
+        }, options.delay)
+    }
+
+    //页面载入先执行下面
+    loadElementsInViewport(lazyload)
+
+    //页面紧接着触发scroll，走下面监听
+    lazyload.$container.on(EVENT_NAME, handler)
+
+    $(_window).on(RESIZE_EVENT, handler)
 }
 
 /**
@@ -215,9 +216,9 @@ _prototype.belowthefold = function(element, settings) {
     if (container === _window) {
         fold = _window.innerHeight  + _window.scrollY
     } else {
-        var offset = $(container).offset()
+        var $container = $(container), offset = $container.offset()
 
-        fold = offset.top + offset.height
+        fold = offset.top + $container[0].offsetHeight
     }
 
     return fold <= $(element).offset().top - settings.threshold
@@ -241,8 +242,8 @@ _prototype.abovethetop = function(element, settings) {
         fold = $(container).offset().top
     }
 
-    var offset = $(element).offset()
-    return fold >= offset.top + settings.threshold + offset.height
+    var $element = $(element), offset = $element.offset()
+    return fold >= offset.top + settings.threshold + $element[0].offsetHeight
 }
 
 /**
@@ -260,8 +261,8 @@ _prototype.rightoffold = function(element, settings) {
     if (container === _window) {
         fold = _window.innerWidth + _window.scrollX
     } else {
-        var offset = $(container).offset()
-        fold = offset.left + offset.width
+        var $container = $(container), offset = $container.offset()
+        fold = offset.left + $container[0].offsetWidth
     }
     return fold <= $(element).offset().left - settings.threshold
 }
@@ -284,9 +285,9 @@ _prototype.leftofbegin = function(element, settings) {
         fold = $(container).offset().left
     }
 
-    var offset = $(element).offset()
+    var $element = $(element), offset = $element.offset()
 
-    return fold >= offset.left + settings.threshold + offset.width
+    return fold >= offset.left + settings.threshold + $element[0].offsetWidth
 }
 
 module.exports = LazyLoad

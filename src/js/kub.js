@@ -1,34 +1,31 @@
-try {
-    var _window = window,
-        Kub = _window.Kub = _window.Kub || {}
 
-    Kub.$ = require('./lite')
+var _window = window,
+    Kub = _window.Kub = _window.Kub || {}
 
-    Kub.core = require('./core')
+Kub.$ = require('./lite')
 
-    Kub.dateHelper = require('./date')
+Kub.core = require('./core')
 
-    Kub.cookie = require('./cookie')
+Kub.dateHelper = require('./date')
 
-    Kub.LazyLoad = require('./lazyload')
+Kub.cookie = require('./cookie')
 
-    Kub.Dialog = require('./dialog')
+Kub.LazyLoad = require('./lazyload')
 
-    Kub.Alert = require('./alert')
+Kub.Dialog = require('./dialog')
 
-    Kub.Confirm = require('./confirm')
+Kub.Alert = require('./alert')
 
-    Kub.Prompt = require('./prompt')
+Kub.Confirm = require('./confirm')
 
-    Kub.Toast = require('./toast')
+Kub.Prompt = require('./prompt')
 
-    Kub.Loader = require('./loader')
+Kub.Toast = require('./toast')
 
-    Kub.Swiper = require('./swiper')
+Kub.Loader = require('./loader')
 
-    Kub.DatePicker = require('./datepicker')
+Kub.Swiper = require('./swiper')
 
-    module.exports = Kub
-} catch (e) {
-    alert(e.message)
-}
+Kub.DatePicker = require('./datepicker')
+
+module.exports = Kub

@@ -84,9 +84,9 @@ var getDistance = function(event, startCoords) {
 
 //获取位置与索引
 var getCoordinates = function(swiper, distanceX, distanceY) {
-    var offset = swiper._ui.slides.offset(),
-        w = offset.width,
-        h = offset.height,
+    var element = swiper._ui.slides[0],
+        w = element.offsetWidth,
+        h = element.offsetHeight,
         l = swiper._ui.slidesLength,
         index = swiper._ui.active,
         active = index,
@@ -203,54 +203,53 @@ var resetSlideIndex = function(swiper) {
     }
 }
 
-//绑定事件
-var bindEvents = function(swiper) {
-    var flag = false,
-        startCoords
+//设置偏移量
+var setTranslate = function($element, x, y) {
+    core.isNumber(x) && (x += 'px')
+    core.isNumber(y) && (y += 'px')
 
-    var start = function(event) {
-            flag = true
-            event = event.originalEvent || event
+    var t = 'translate3d(' + x + ',' + y + ',0)'
 
-            resetSlideIndex(swiper)
+    $element.css({
+        '-webkit-transform': t,
+        'transform': t
+    })
+}
 
-            startCoords = getCoords(event)
+//设置偏移速度
+var setDuration = function($element, duration) {
+    core.isNumber(duration) && (duration += 'ms')
 
-            setDuration(swiper.$element, null)
-        },
-        move = function(event) {
-            if (!flag) return
-            event = event.originalEvent || event
+    $element.css({
+        '-webkit-transition-duration': duration,
+        'transition-duration': duration
+    })
+}
 
-            var distance = getDistance(event, startCoords),
-                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
+var getActualIndex = function(index, length) {
+    return index < 0 ? 0 : index >= length ? length - 1 : index
+}
 
-            coordinates.isDefaultPrevented && (setTranslate(swiper.$element, coordinates.x, coordinates.y), event.preventDefault())
-        },
-        end = function(event) {
-            if (!flag) return
-            flag = false
+//设置容器偏移量
+var setContainerTranslate = function(swiper, x, y, duration) {
+    var $element = swiper.$element
 
-            event = event.originalEvent || event
+    duration = duration || 0
 
-            var distance = getDistance(event, startCoords),
-                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
+    setDuration($element, duration)
+    setTranslate($element, x, y)
+}
 
-            swiper.slide(index)
-        }
+//添加选中类
+var setActiveClass = function(swiper, index) {
+    var options = swiper.options,
+        slideActiveClass = options.slideActiveClass,
+        paginationActiveClass = options.paginationActiveClass
 
-    //监听横竖屏
-    bindOrientationChangeEvent(swiper)
+    //添加选中的class
+    swiper._ui.slides.removeClass(slideActiveClass).eq(index).addClass(slideActiveClass)
 
-    //触发回调函数
-    bindTransitionEndEvent(swiper)
-
-    swiper.$element.on(START_EVENT, start)
-    $document.on(MOVE_EVENT, move)
-    $document.on(END_EVENT, end)
-
-    swiper.$element[0].onselectstart = returnFalse
-    swiper.$element[0].ondragstart = returnFalse
+    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
 }
 
 //监听slide完成事件
@@ -287,71 +286,72 @@ var bindOrientationChangeEvent = function(swiper) {
     $(_window).on(RESIZE_EVENT, handler)
 }
 
+//绑定事件
+var bindEvents = function(swiper) {
+    var flag = false,
+        startCoords
+
+    var start = function(event) {
+            flag = true
+            event = event.originalEvent || event
+
+            resetSlideIndex(swiper)
+
+            startCoords = getCoords(event)
+
+            setDuration(swiper.$element, null)
+        },
+        move = function(event) {
+            if (!flag) return
+            event = event.originalEvent || event
+
+            var distance = getDistance(event, startCoords),
+                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
+
+            coordinates.isDefaultPrevented && (event.preventDefault(),setTranslate(swiper.$element, coordinates.x, coordinates.y))
+        },
+        end = function(event) {
+            if (!flag) return
+            flag = false
+
+            event = event.originalEvent || event
+
+            var distance = getDistance(event, startCoords),
+                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
+
+            swiper.slide(index)
+        }
+
+    //监听横竖屏
+    bindOrientationChangeEvent(swiper)
+
+    //触发回调函数
+    bindTransitionEndEvent(swiper)
+
+    swiper.$element.on(START_EVENT, start)
+    $document.on(MOVE_EVENT, move)
+    $document.on(END_EVENT, end)
+
+    swiper.$element[0].onselectstart = returnFalse
+    swiper.$element[0].ondragstart = returnFalse
+}
+
 //偏移到指定的位置
 var slideTo = function(swiper, index, duration) {
-    var offset = swiper._ui.slides.offset()
+    var element = swiper._ui.slides[0]
 
     //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
     if (swiper.options.direction === HORIZONTAL) {
         //横向
-        var w = offset.width
+        var w = element.offsetWidth
 
         setContainerTranslate(swiper, -index * w, 0, duration)
     } else {
         //垂直
-        var h = offset.height
+        var h = element.offsetHeight
 
         setContainerTranslate(swiper, 0, -index * h, duration)
     }
-}
-
-//添加选中类
-var setActiveClass = function(swiper, index) {
-    var options = swiper.options,
-        slideActiveClass = options.slideActiveClass,
-        paginationActiveClass = options.paginationActiveClass
-
-    //添加选中的class
-    swiper._ui.slides.removeClass(slideActiveClass).eq(index).addClass(slideActiveClass)
-
-    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
-}
-
-//设置容器偏移量
-var setContainerTranslate = function(swiper, x, y, duration) {
-    var $element = swiper.$element
-
-    duration = duration || 0
-
-    setDuration($element, duration)
-    setTranslate($element, x, y)
-}
-
-//设置偏移量
-var setTranslate = function($element, x, y) {
-    core.isNumber(x) && (x += 'px')
-    core.isNumber(y) && (y += 'px')
-
-    var t = 'translate3d(' + x + ',' + y + ',0)'
-
-    $element.css({
-        '-webkit-transform': t,
-        'transform': t
-    })
-}
-
-//设置偏移速度
-var setDuration = function($element, duration) {
-    core.isNumber(duration) && (duration += 'ms')
-
-    $element.css({
-        '-webkit-transition-duration': duration,
-        'transition-duration': duration
-    })
-}
-
-var getActualIndex = function(index, length) {
-    return index < 0 ? 0 : index >= length ? length - 1 : index
 }
 
 //初始化

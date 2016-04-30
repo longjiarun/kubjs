@@ -51,7 +51,7 @@ function DatePicker(element, options) {
 
 var HEIGHT_UNIT = 50,
     DURATION = 200,
-    COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
+    //COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
     COLUMN_SELECTOR = '.kub-datepicker-column',
     COLUMN_ITEM_SELECTOR = 'li',
     COLUMN_CONTAINER_SELECTOR = 'ul'
@@ -137,44 +137,30 @@ var setTranslate = function($this, x, y) {
     })
 }
 
-var init = function(datepicker) {
-    var options = datepicker.options,
-        $element,
-        ui
 
-    //创建对话框
-    render(datepicker)
+//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
+var setValue = function(datepicker, name, value) {
+    var $this = datepicker._ui[name],
+        index,
+        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
 
-    $element = datepicker.$element[0].dialog.$element
+    if ($item.length) {
+        index = parseInt($item.attr('data-index'))
 
-    //缓存dom
-    ui = datepicker._ui = {
-        year: $element.find('.year'),
-        month: $element.find('.month'),
-        day: $element.find('.day'),
-        hour: $element.find('.hour'),
-        minute: $element.find('.minute'),
-        second: $element.find('.second')
+        $this[0].index = index
+
+        setTranslate($this, 0, -index * HEIGHT_UNIT)
     }
-    ui.columns = $element.find(COLUMN_SELECTOR)
+}
 
-    //设置块高度
-    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
+var getValue = function(datepicker, name) {
+    var $this = datepicker._ui[name],
+        $items = $this.find(COLUMN_ITEM_SELECTOR),
+        index = $this[0].index + 1,
+        value = parseInt($items.eq(index).attr('data-value'))
 
-    //隐藏对话框
-    datepicker.hide()
-
-    //移除
-    removeColumns(options.format, ui)
-
-    //设置本地化
-    $element.addClass('kub-datepicker-' + options.locale)
-
-    //设置默认时间
-    datepicker.setDate(options.date)
-
-    //绑定事件
-    bindEvents(datepicker)
+    return value ? value : 0
 }
 
 //移除不需要的列
@@ -217,6 +203,26 @@ var render = function(datepicker) {
     })
 }
 
+//重置每月最大天数
+var setActualDays = function(datepicker, year, month) {
+    var days = getDays(year, month),
+        day = getValue(datepicker, 'day')
+
+    days < day && setValue(datepicker, 'day', days)
+}
+
+//绑定输入框聚焦事件
+var bindInputFocusEvent = function(datepicker) {
+    datepicker.$element.on(EVENT_NAME, function() {
+        //使输入框失去焦点
+        datepicker.$element[0].blur()
+
+        datepicker.show()
+
+        return false
+    })
+}
+
 //绑定事件
 var bindEvents = function(datepicker) {
     var flag = false,
@@ -240,6 +246,8 @@ var bindEvents = function(datepicker) {
             var distance = getDistance(event, $activeElement[0].startCoords)
 
             setTranslate($activeElement, 0, distance.distanceY - HEIGHT_UNIT * $activeElement[0].index)
+
+            event.preventDefault()
         },
         end = function(event) {
             if (!flag) return
@@ -247,20 +255,25 @@ var bindEvents = function(datepicker) {
             event = event.originalEvent || event
 
             var distance = getDistance(event, $activeElement[0].startCoords),
-                max = $activeElement.find('.' + COLUMN_ITEM_SHOW_CLASS).length,
+                max = $activeElement.find(COLUMN_ITEM_SELECTOR).length,
                 index = getIndexByDistance(distance.distanceY - HEIGHT_UNIT * $activeElement[0].index, max)
 
             $activeElement[0].index = Math.abs(index)
 
-            resetDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
+            //验证是否存在31,30,29天
+            setActualDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
 
             setDuration($activeElement, DURATION)
 
             setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
         }
 
-    datepicker._ui.columns.on(START_EVENT, function() {
-        start.apply(this, arguments)
+    datepicker._ui.columns.each(function(){
+
+        $(this).on(START_EVENT, function() {
+            start.apply(this, arguments)
+        })
+
         this.onselectstart = returnFalse
         this.ondragstart = returnFalse
     })
@@ -271,54 +284,46 @@ var bindEvents = function(datepicker) {
     bindInputFocusEvent(datepicker)
 }
 
-//绑定输入框聚焦事件
-var bindInputFocusEvent = function(datepicker) {
-    datepicker.$element.on(EVENT_NAME, function() {
-        //使输入框失去焦点
-        datepicker.$element[0].blur()
+var init = function(datepicker) {
+    var options = datepicker.options,
+        $element,
+        ui
 
-        datepicker.show()
+    //创建对话框
+    render(datepicker)
 
-        return false
-    })
-}
+    $element = datepicker.$element[0].dialog.$element
 
-//重置每月最大天数
-var resetDays = function(datepicker, year, month) {
-    var days = getDays(year, month),
-        day = getValue(datepicker, 'day'),
-        $items = datepicker._ui.day.find(COLUMN_ITEM_SELECTOR)
-
-    //移除不在本月的日期
-    $items.addClass(COLUMN_ITEM_SHOW_CLASS).slice(days + 1, $items.length - 1).removeClass(COLUMN_ITEM_SHOW_CLASS)
-
-    days < day && setValue(datepicker, 'day', days)
-}
-
-//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
-var setValue = function(datepicker, name, value) {
-    var $this = datepicker._ui[name],
-        index,
-        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
-
-    if ($item.length) {
-        index = parseInt($item.attr('data-index'))
-
-        $this[0].index = index
-
-        setTranslate($this, 0, -index * HEIGHT_UNIT)
+    //缓存dom
+    ui = datepicker._ui = {
+        year: $element.find('.year'),
+        month: $element.find('.month'),
+        day: $element.find('.day'),
+        hour: $element.find('.hour'),
+        minute: $element.find('.minute'),
+        second: $element.find('.second')
     }
+    ui.columns = $element.find(COLUMN_SELECTOR)
+
+    //设置块高度
+    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+
+    //隐藏对话框
+    datepicker.hide()
+
+    //移除
+    removeColumns(options.format, ui)
+
+    //设置本地化
+    $element.addClass('kub-datepicker-' + options.locale)
+
+    //设置默认时间
+    datepicker.setDate(options.date)
+
+    //绑定事件
+    bindEvents(datepicker)
 }
 
-//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
-var getValue = function(datepicker, name) {
-    var $this = datepicker._ui[name],
-        $items = $this.find(COLUMN_ITEM_SELECTOR),
-        index = $this[0].index + 1,
-        value = parseInt($items.eq(index).attr('data-value'))
-
-    return value ? value : 0
-}
 
 /**
  * ## defaults
@@ -384,9 +389,6 @@ _prototype.setDate = function(date) {
     setValue(self, 'minute', date.getMinutes())
 
     setValue(self, 'second', date.getSeconds())
-
-    //验证是否存在31,30,29天
-    resetDays(self, year, month)
 
     return self
 }

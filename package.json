@@ -7,6 +7,7 @@
   "scripts": {
     "server": "node server",
     "docs": "gulp docs",
+    "watch": "gulp watch",
     "build": "gulp",
     "eslint": "gulp eslint",
     "pre": "gulp publish",

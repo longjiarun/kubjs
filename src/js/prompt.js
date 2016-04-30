@@ -25,6 +25,8 @@ var core = require('./core'),
     Dialog = require('./dialog'),
     template = require('./tpl/prompt')
 
+var INPUT_SELECTOR = '.J_input'
+
 function Prompt(options) {
     var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -45,8 +47,6 @@ function Prompt(options) {
 
     Dialog.call(this, opts)
 }
-
-var INPUT_SELECTOR = '.J_input'
 
 var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 

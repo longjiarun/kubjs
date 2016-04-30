@@ -1,6 +1,35 @@
-var $ = Lite = function Lite(selector, context) {
+var $, Lite
+
+var ELEMENT_NODE = 1,
+    ELEMENT_PROTOTYPE = Element.prototype
+
+var slice = Array.prototype.slice,
+    readyRE = /complete|loaded|interactive/,
+    idSelectorRE = /^#([\w-]+)$/,
+    classSelectorRE = /^\.([\w-]+)$/,
+    tagSelectorRE = /^[\w-]+$/,
+    spaceRE = /\s+/g
+
+var _document = document,
+    _window = window
+
+function wrap(dom, selector) {
+    dom = dom || []
+
+    Object.setPrototypeOf ? Object.setPrototypeOf(dom, $.fn) : (dom.__proto__ = $.fn)
+
+    dom.selector = selector || ''
+    return dom
+}
+
+var isArray = Array.isArray ||
+    function(object) {
+        return object instanceof Array
+    }
+
+$ = Lite = function Lite(selector, context) {
     context = context || _document
-    var type = typeof selector;
+    var type = typeof selector
 
     if (!selector) {
         return wrap()
@@ -16,7 +45,7 @@ var $ = Lite = function Lite(selector, context) {
 
     if (isArray(selector)) {
         //$([document,document.body]) not $(window)
-        return wrap(slice.call(selector).filter(function(item){
+        return wrap(slice.call(selector).filter(function(item) {
             return item != null
         }), selector)
     }
@@ -37,7 +66,7 @@ var $ = Lite = function Lite(selector, context) {
         if (idSelectorRE.test(selector)) {
             var found = _document.getElementById(RegExp.$1)
 
-            return wrap(found ? [found] : [],selector)
+            return wrap(found ? [found] : [], selector)
         }
 
         return wrap($.qsa(selector, context), selector)
@@ -46,31 +75,48 @@ var $ = Lite = function Lite(selector, context) {
     return wrap()
 }
 
-var ELEMENT_NODE = 1
 
-var slice = Array.prototype.slice,
-    readyRE = /complete|loaded|interactive/,
-    idSelectorRE = /^#([\w-]+)$/,
-    classSelectorRE = /^\.([\w-]+)$/,
-    tagSelectorRE = /^[\w-]+$/,
-    spaceRE = /\s+/g
-
-var _document = document,
-    _window = window
-
-function wrap(dom, selector) {
-    dom = dom || []
-
-    Object.setPrototypeOf ? Object.setPrototypeOf(dom, $.fn): (dom.__proto__ = $.fn)
-
-    dom.selector = selector || ''
-    return dom
+//polyfill
+//android 4.3
+if (!_window.CustomEvent) {
+    var CustomEvent = function(event, params) {
+        var evt
+        params = params || {
+            bubbles: false,
+            cancelable: false,
+            detail: undefined
+        }
+        evt = document.createEvent("CustomEvent")
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+        return evt
+    }
+    CustomEvent.prototype = _window.Event.prototype
+    _window.CustomEvent = CustomEvent
 }
 
-var isArray = Array.isArray ||
-    function(object) {
-        return object instanceof Array
+var matches = (function() {
+    var names = [
+        //"mozMatchesSelector",
+        "webkitMatchesSelector",
+        //"msMatchesSelector",
+        "matches"
+    ]
+
+    var i = names.length
+    while (i--) {
+        var name = names[i]
+        if (!ELEMENT_PROTOTYPE[name]) continue
+        return name
     }
+}())
+
+var createDelegator = function(handler, selector) {
+    return function(e) {
+        if ($(e.target).closest(selector).length) {
+            handler.apply(e.target, arguments)
+        }
+    }
+}
 
 !(function() {
 
@@ -101,6 +147,11 @@ var isArray = Array.isArray ||
         return this
     }
 
+    this.Event = function(type, props) {
+
+        return new _window.CustomEvent(type, props)
+    }
+
     this.fn = this.prototype = {
 
         _l: true,
@@ -122,13 +173,47 @@ var isArray = Array.isArray ||
             return $(slice.apply(this, arguments))
         },
 
+        is: function(selector, element) {
+            element = element ? element : this[0]
+
+            if (element && element.nodeType === ELEMENT_NODE) {
+                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+            }
+
+            return false
+        },
+
+        //原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+        closest: function(selector) {
+            var element = this[0],
+                prt = element,
+                dom
+
+            if(ELEMENT_PROTOTYPE.closest){
+                var child = element.children[0]
+
+                dom = child ? child.closest(selector) : this.is(selector, element) ? element : null
+
+            }else{
+                while (prt) {
+                    if (this.is(selector, prt)) {
+                        dom = prt
+                        break
+                    }
+                    prt = prt.parentElement
+                }
+            }
+
+            return $(dom)
+        },
+
         //only support find(selector)
-        //zepto has a bug
+        //zepto
         find: function(selector) {
             var dom = []
 
             this.each(function() {
-                if (!this.querySelectorAll) return
+                if (this.nodeType !== ELEMENT_NODE) return
 
                 var elements = $.qsa(selector, this),
                     elementsLen = elements.length
@@ -187,12 +272,13 @@ var isArray = Array.isArray ||
         offset: function() {
             if (!this.length) return null
 
-            var obj = this[0].getBoundingClientRect()
+            var ele = this[0],
+                obj = ele.getBoundingClientRect()
             return {
                 left: obj.left + _window.pageXOffset,
                 top: obj.top + _window.pageYOffset,
-                width: Math.round(obj.width),
-                height: Math.round(obj.height)
+                width: ele.offsetWidth,
+                height: ele.offsetHeight
             }
         },
 
@@ -222,7 +308,7 @@ var isArray = Array.isArray ||
                 var className = this.className
 
                 name.trim().split(spaceRE).forEach(function(klass) {
-                    //zepto has a bug
+                    //zepto
                     className = className.replace(new RegExp('(^|\\s)' + klass + '(\\s|$)', 'g'), ' ')
                 })
 
@@ -231,25 +317,74 @@ var isArray = Array.isArray ||
         },
 
         eq: function(idx) {
-            idx = idx < 0 ? idx + this.length : idx;
-            return $(this[idx]);
+            idx = idx < 0 ? idx + this.length : idx
+            return $(this[idx])
         },
 
-        off: function(name, callback) {
-            return this.each(function() {
-                this.removeEventListener(name, callback, false)
+        off: function(type, handler) {
+            var types = type && type.trim().split(spaceRE)
+
+            types && this.each(function() {
+                var element = this
+
+                types.forEach(function(name) {
+
+                    if (handler) {
+
+                        element.removeEventListener(name, handler.delegator || handler, false)
+                    } else {
+                        var handlers = element.listeners && element.listeners[name]
+
+                        handlers && handlers.forEach(function(_handler) {
+
+                            element.removeEventListener(name, _handler.delegator || _handler, false)
+                        })
+                    }
+                })
             })
+
+            return this
         },
 
-        on: function(name, callback) {
-            return this.each(function() {
-                this.addEventListener(name, callback, false)
-            })
+        on: function(type, selector, handler) {
+            var f = true
+
+            if (typeof selector !== "string") {
+                f = false
+                handler = selector
+            }
+
+            if (handler) {
+                var types = type && type.trim().split(spaceRE)
+
+                types && this.each(function() {
+                    var element = this, listeners
+
+                    if (f) {
+                        handler.delegator = createDelegator(handler, selector)
+                    }
+
+                    listeners = element.listeners || {}
+
+                    types.forEach(function(event) {
+
+                        if (!listeners[event]) {
+                            listeners[event] = []
+                        }
+                        listeners[event].push(handler)
+
+                        element.addEventListener(event, handler.delegator || handler, false)
+                    })
+                    element.listeners = listeners
+                })
+            }
+
+            return this
         },
 
         trigger: function(type, detail) {
             return this.each(function() {
-                this.dispatchEvent(new CustomEvent(type, {
+                this.dispatchEvent($.Event(type, {
                     detail: detail,
                     bubbles: true,
                     cancelable: true
@@ -258,23 +393,31 @@ var isArray = Array.isArray ||
         },
 
         attr: function(name, value) {
-            var result
+            var result,
+                type = typeof name
 
-            return (typeof name === 'string' && value == null) ?
-                (!this.length || this[0].nodeType !== ELEMENT_NODE ? null :
-                    (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
-                ) :
-                this.each(function() {
+            if(type === 'string' && value == null) {
+
+                if(!this.length || this[0].nodeType !== ELEMENT_NODE){
+                    return null
+
+                }else{
+                    return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
+                }
+
+            }else{
+                return this.each(function() {
                     if (this.nodeType !== ELEMENT_NODE) return
 
-                    if (typeof name === 'object'){
+                    if (type === 'object') {
                         for (key in name) {
                             this.setAttribute(key, name[key])
                         }
-                    }else {
+                    } else {
                         this.setAttribute(name, value)
                     }
                 })
+            }
         },
 
         removeAttr: function(name) {
@@ -295,11 +438,11 @@ var isArray = Array.isArray ||
 
         appendTo: function(target) {
             var dom = [],
-                that = this
+                self = this
 
             target.each(function() {
                 var node = this
-                that.each(function() {
+                self.each(function() {
                     dom.push(node.appendChild(this))
                 })
             })

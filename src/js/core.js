@@ -98,22 +98,6 @@ _prototype.extend = function(target, source) {
 })
 
 /**
- * ## htmlToText
- *
- * 将html转换为text
- *
- * 0. 去掉标签；
- * 0. 去掉换行符与制表符；
- * 0. 去掉空格符；
- *
- * @param {String} value html
- * @return {String} 处理以后的文本
- */
-_prototype.htmlToText = function(value) {
-    return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '').replace(/&nbsp|&#160|\s*/gi, '')
-}
-
-/**
  * ## setQuerystring
  *
  * 设置 url 参数，如果 url 未传值，则默认取 `window.location.href` 的值。

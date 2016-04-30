@@ -56,49 +56,75 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	try {
-	    var _window = window,
-	        Kub = _window.Kub = _window.Kub || {}
+	
+	var _window = window,
+	    Kub = _window.Kub = _window.Kub || {}
 
-	    Kub.$ = __webpack_require__(6)
+	Kub.$ = __webpack_require__(6)
 
-	    Kub.core = __webpack_require__(7)
+	Kub.core = __webpack_require__(7)
 
-	    Kub.dateHelper = __webpack_require__(9)
+	Kub.dateHelper = __webpack_require__(9)
 
-	    Kub.cookie = __webpack_require__(10)
+	Kub.cookie = __webpack_require__(10)
 
-	    Kub.LazyLoad = __webpack_require__(11)
+	Kub.LazyLoad = __webpack_require__(11)
 
-	    Kub.Dialog = __webpack_require__(12)
+	Kub.Dialog = __webpack_require__(12)
 
-	    Kub.Alert = __webpack_require__(14)
+	Kub.Alert = __webpack_require__(14)
 
-	    Kub.Confirm = __webpack_require__(15)
+	Kub.Confirm = __webpack_require__(15)
 
-	    Kub.Prompt = __webpack_require__(16)
+	Kub.Prompt = __webpack_require__(16)
 
-	    Kub.Toast = __webpack_require__(18)
+	Kub.Toast = __webpack_require__(18)
 
-	    Kub.Loader = __webpack_require__(19)
+	Kub.Loader = __webpack_require__(19)
 
-	    Kub.Swiper = __webpack_require__(20)
+	Kub.Swiper = __webpack_require__(20)
 
-	    Kub.DatePicker = __webpack_require__(21)
+	Kub.DatePicker = __webpack_require__(21)
 
-	    module.exports = Kub
-	} catch (e) {
-	    alert(e.message)
-	}
+	module.exports = Kub
 
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	var $ = Lite = function Lite(selector, context) {
+	var $, Lite
+
+	var ELEMENT_NODE = 1,
+	    ELEMENT_PROTOTYPE = Element.prototype
+
+	var slice = Array.prototype.slice,
+	    readyRE = /complete|loaded|interactive/,
+	    idSelectorRE = /^#([\w-]+)$/,
+	    classSelectorRE = /^\.([\w-]+)$/,
+	    tagSelectorRE = /^[\w-]+$/,
+	    spaceRE = /\s+/g
+
+	var _document = document,
+	    _window = window
+
+	function wrap(dom, selector) {
+	    dom = dom || []
+
+	    Object.setPrototypeOf ? Object.setPrototypeOf(dom, $.fn) : (dom.__proto__ = $.fn)
+
+	    dom.selector = selector || ''
+	    return dom
+	}
+
+	var isArray = Array.isArray ||
+	    function(object) {
+	        return object instanceof Array
+	    }
+
+	$ = Lite = function Lite(selector, context) {
 	    context = context || _document
-	    var type = typeof selector;
+	    var type = typeof selector
 
 	    if (!selector) {
 	        return wrap()
@@ -114,7 +140,7 @@
 
 	    if (isArray(selector)) {
 	        //$([document,document.body]) not $(window)
-	        return wrap(slice.call(selector).filter(function(item){
+	        return wrap(slice.call(selector).filter(function(item) {
 	            return item != null
 	        }), selector)
 	    }
@@ -135,7 +161,7 @@
 	        if (idSelectorRE.test(selector)) {
 	            var found = _document.getElementById(RegExp.$1)
 
-	            return wrap(found ? [found] : [],selector)
+	            return wrap(found ? [found] : [], selector)
 	        }
 
 	        return wrap($.qsa(selector, context), selector)
@@ -144,31 +170,48 @@
 	    return wrap()
 	}
 
-	var ELEMENT_NODE = 1
 
-	var slice = Array.prototype.slice,
-	    readyRE = /complete|loaded|interactive/,
-	    idSelectorRE = /^#([\w-]+)$/,
-	    classSelectorRE = /^\.([\w-]+)$/,
-	    tagSelectorRE = /^[\w-]+$/,
-	    spaceRE = /\s+/g
-
-	var _document = document,
-	    _window = window
-
-	function wrap(dom, selector) {
-	    dom = dom || []
-
-	    Object.setPrototypeOf ? Object.setPrototypeOf(dom, $.fn): (dom.__proto__ = $.fn)
-
-	    dom.selector = selector || ''
-	    return dom
+	//polyfill
+	//android 4.3
+	if (!_window.CustomEvent) {
+	    var CustomEvent = function(event, params) {
+	        var evt
+	        params = params || {
+	            bubbles: false,
+	            cancelable: false,
+	            detail: undefined
+	        }
+	        evt = document.createEvent("CustomEvent")
+	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+	        return evt
+	    }
+	    CustomEvent.prototype = _window.Event.prototype
+	    _window.CustomEvent = CustomEvent
 	}
 
-	var isArray = Array.isArray ||
-	    function(object) {
-	        return object instanceof Array
+	var matches = (function() {
+	    var names = [
+	        //"mozMatchesSelector",
+	        "webkitMatchesSelector",
+	        //"msMatchesSelector",
+	        "matches"
+	    ]
+
+	    var i = names.length
+	    while (i--) {
+	        var name = names[i]
+	        if (!ELEMENT_PROTOTYPE[name]) continue
+	        return name
 	    }
+	}())
+
+	var createDelegator = function(handler, selector) {
+	    return function(e) {
+	        if ($(e.target).closest(selector).length) {
+	            handler.apply(e.target, arguments)
+	        }
+	    }
+	}
 
 	!(function() {
 
@@ -199,6 +242,11 @@
 	        return this
 	    }
 
+	    this.Event = function(type, props) {
+
+	        return new _window.CustomEvent(type, props)
+	    }
+
 	    this.fn = this.prototype = {
 
 	        _l: true,
@@ -220,13 +268,47 @@
 	            return $(slice.apply(this, arguments))
 	        },
 
+	        is: function(selector, element) {
+	            element = element ? element : this[0]
+
+	            if (element && element.nodeType === ELEMENT_NODE) {
+	                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+	            }
+
+	            return false
+	        },
+
+	        //原生closest不包含本身，jQuery与Zepto包含本身，保持与Zepto一致
+	        closest: function(selector) {
+	            var element = this[0],
+	                prt = element,
+	                dom
+
+	            if(ELEMENT_PROTOTYPE.closest){
+	                var child = element.children[0]
+
+	                dom = child ? child.closest(selector) : this.is(selector, element) ? element : null
+
+	            }else{
+	                while (prt) {
+	                    if (this.is(selector, prt)) {
+	                        dom = prt
+	                        break
+	                    }
+	                    prt = prt.parentElement
+	                }
+	            }
+
+	            return $(dom)
+	        },
+
 	        //only support find(selector)
-	        //zepto has a bug
+	        //zepto
 	        find: function(selector) {
 	            var dom = []
 
 	            this.each(function() {
-	                if (!this.querySelectorAll) return
+	                if (this.nodeType !== ELEMENT_NODE) return
 
 	                var elements = $.qsa(selector, this),
 	                    elementsLen = elements.length
@@ -285,12 +367,13 @@
 	        offset: function() {
 	            if (!this.length) return null
 
-	            var obj = this[0].getBoundingClientRect()
+	            var ele = this[0],
+	                obj = ele.getBoundingClientRect()
 	            return {
 	                left: obj.left + _window.pageXOffset,
 	                top: obj.top + _window.pageYOffset,
-	                width: Math.round(obj.width),
-	                height: Math.round(obj.height)
+	                width: ele.offsetWidth,
+	                height: ele.offsetHeight
 	            }
 	        },
 
@@ -320,7 +403,7 @@
 	                var className = this.className
 
 	                name.trim().split(spaceRE).forEach(function(klass) {
-	                    //zepto has a bug
+	                    //zepto
 	                    className = className.replace(new RegExp('(^|\\s)' + klass + '(\\s|$)', 'g'), ' ')
 	                })
 
@@ -329,25 +412,74 @@
 	        },
 
 	        eq: function(idx) {
-	            idx = idx < 0 ? idx + this.length : idx;
-	            return $(this[idx]);
+	            idx = idx < 0 ? idx + this.length : idx
+	            return $(this[idx])
 	        },
 
-	        off: function(name, callback) {
-	            return this.each(function() {
-	                this.removeEventListener(name, callback, false)
+	        off: function(type, handler) {
+	            var types = type && type.trim().split(spaceRE)
+
+	            types && this.each(function() {
+	                var element = this
+
+	                types.forEach(function(name) {
+
+	                    if (handler) {
+
+	                        element.removeEventListener(name, handler.delegator || handler, false)
+	                    } else {
+	                        var handlers = element.listeners && element.listeners[name]
+
+	                        handlers && handlers.forEach(function(_handler) {
+
+	                            element.removeEventListener(name, _handler.delegator || _handler, false)
+	                        })
+	                    }
+	                })
 	            })
+
+	            return this
 	        },
 
-	        on: function(name, callback) {
-	            return this.each(function() {
-	                this.addEventListener(name, callback, false)
-	            })
+	        on: function(type, selector, handler) {
+	            var f = true
+
+	            if (typeof selector !== "string") {
+	                f = false
+	                handler = selector
+	            }
+
+	            if (handler) {
+	                var types = type && type.trim().split(spaceRE)
+
+	                types && this.each(function() {
+	                    var element = this, listeners
+
+	                    if (f) {
+	                        handler.delegator = createDelegator(handler, selector)
+	                    }
+
+	                    listeners = element.listeners || {}
+
+	                    types.forEach(function(event) {
+
+	                        if (!listeners[event]) {
+	                            listeners[event] = []
+	                        }
+	                        listeners[event].push(handler)
+
+	                        element.addEventListener(event, handler.delegator || handler, false)
+	                    })
+	                    element.listeners = listeners
+	                })
+	            }
+
+	            return this
 	        },
 
 	        trigger: function(type, detail) {
 	            return this.each(function() {
-	                this.dispatchEvent(new CustomEvent(type, {
+	                this.dispatchEvent($.Event(type, {
 	                    detail: detail,
 	                    bubbles: true,
 	                    cancelable: true
@@ -356,23 +488,31 @@
 	        },
 
 	        attr: function(name, value) {
-	            var result
+	            var result,
+	                type = typeof name
 
-	            return (typeof name === 'string' && value == null) ?
-	                (!this.length || this[0].nodeType !== ELEMENT_NODE ? null :
-	                    (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
-	                ) :
-	                this.each(function() {
+	            if(type === 'string' && value == null) {
+
+	                if(!this.length || this[0].nodeType !== ELEMENT_NODE){
+	                    return null
+
+	                }else{
+	                    return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
+	                }
+
+	            }else{
+	                return this.each(function() {
 	                    if (this.nodeType !== ELEMENT_NODE) return
 
-	                    if (typeof name === 'object'){
+	                    if (type === 'object') {
 	                        for (key in name) {
 	                            this.setAttribute(key, name[key])
 	                        }
-	                    }else {
+	                    } else {
 	                        this.setAttribute(name, value)
 	                    }
 	                })
+	            }
 	        },
 
 	        removeAttr: function(name) {
@@ -393,11 +533,11 @@
 
 	        appendTo: function(target) {
 	            var dom = [],
-	                that = this
+	                self = this
 
 	            target.each(function() {
 	                var node = this
-	                that.each(function() {
+	                self.each(function() {
 	                    dom.push(node.appendChild(this))
 	                })
 	            })
@@ -552,22 +692,6 @@
 	        return toString.call(obj) === '[object ' + name + ']'
 	    }
 	})
-
-	/**
-	 * ## htmlToText
-	 *
-	 * 将html转换为text
-	 *
-	 * 0. 去掉标签；
-	 * 0. 去掉换行符与制表符；
-	 * 0. 去掉空格符；
-	 *
-	 * @param {String} value html
-	 * @return {String} 处理以后的文本
-	 */
-	_prototype.htmlToText = function(value) {
-	    return value.replace(/<.[^<>]*?>/g, '').replace(/[\n\r\t]/g, '').replace(/&nbsp|&#160|\s*/gi, '')
-	}
 
 	/**
 	 * ## setQuerystring
@@ -1117,32 +1241,6 @@
 	    //综上：依旧采用scroll解决，对于某些机型进行忽略
 	    EVENT_NAME = 'scroll'
 
-	var init = function(lazyload) {
-	    var options = lazyload.options,
-	        timer
-
-	    var handler = function() {
-	        if (lazyload.completed) {
-	            return
-	        }
-
-	        timer && clearTimeout(timer)
-
-	        timer = setTimeout(function() {
-
-	            loadElementsInViewport(lazyload)
-
-	        }, options.delay)
-	    }
-
-	    //页面载入先执行下面
-	    loadElementsInViewport(lazyload)
-
-	    //页面紧接着触发scroll，走下面监听
-	    lazyload.$container.on(EVENT_NAME, handler)
-
-	    $(_window).on(RESIZE_EVENT, handler)
-	}
 
 	//获取所有还未被加载的节点
 	var getUnloadedElements = function(lazyload) {
@@ -1168,6 +1266,33 @@
 
 	        lazyload.isVisible($this) && lazyload.load($this)
 	    })
+	}
+
+	var init = function(lazyload) {
+	    var options = lazyload.options,
+	        timer
+
+	    var handler = function() {
+	        if (lazyload.completed) {
+	            return
+	        }
+
+	        timer && clearTimeout(timer)
+
+	        timer = setTimeout(function() {
+
+	            loadElementsInViewport(lazyload)
+
+	        }, options.delay)
+	    }
+
+	    //页面载入先执行下面
+	    loadElementsInViewport(lazyload)
+
+	    //页面紧接着触发scroll，走下面监听
+	    lazyload.$container.on(EVENT_NAME, handler)
+
+	    $(_window).on(RESIZE_EVENT, handler)
 	}
 
 	/**
@@ -1293,9 +1418,9 @@
 	    if (container === _window) {
 	        fold = _window.innerHeight  + _window.scrollY
 	    } else {
-	        var offset = $(container).offset()
+	        var $container = $(container), offset = $container.offset()
 
-	        fold = offset.top + offset.height
+	        fold = offset.top + $container[0].offsetHeight
 	    }
 
 	    return fold <= $(element).offset().top - settings.threshold
@@ -1319,8 +1444,8 @@
 	        fold = $(container).offset().top
 	    }
 
-	    var offset = $(element).offset()
-	    return fold >= offset.top + settings.threshold + offset.height
+	    var $element = $(element), offset = $element.offset()
+	    return fold >= offset.top + settings.threshold + $element[0].offsetHeight
 	}
 
 	/**
@@ -1338,8 +1463,8 @@
 	    if (container === _window) {
 	        fold = _window.innerWidth + _window.scrollX
 	    } else {
-	        var offset = $(container).offset()
-	        fold = offset.left + offset.width
+	        var $container = $(container), offset = $container.offset()
+	        fold = offset.left + $container[0].offsetWidth
 	    }
 	    return fold <= $(element).offset().left - settings.threshold
 	}
@@ -1362,9 +1487,9 @@
 	        fold = $(container).offset().left
 	    }
 
-	    var offset = $(element).offset()
+	    var $element = $(element), offset = $element.offset()
 
-	    return fold >= offset.left + settings.threshold + offset.width
+	    return fold >= offset.left + settings.threshold + $element[0].offsetWidth
 	}
 
 	module.exports = LazyLoad
@@ -1412,7 +1537,7 @@
 	    template = __webpack_require__(13)
 
 	function Dialog(options) {
-	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
+	    this.options = core.extend({}, _prototype.defaults, options || {})
 	    init(this)
 	}
 
@@ -1775,6 +1900,8 @@
 	    Dialog = __webpack_require__(12),
 	    template = __webpack_require__(17)
 
+	var INPUT_SELECTOR = '.J_input'
+
 	function Prompt(options) {
 	    var opts = this.options = core.extend({}, _prototype.defaults, options || {})
 
@@ -1795,8 +1922,6 @@
 
 	    Dialog.call(this, opts)
 	}
-
-	var INPUT_SELECTOR = '.J_input'
 
 	var _prototype = Prompt.prototype = Object.create(Dialog.prototype)
 
@@ -2091,9 +2216,9 @@
 
 	//获取位置与索引
 	var getCoordinates = function(swiper, distanceX, distanceY) {
-	    var offset = swiper._ui.slides.offset(),
-	        w = offset.width,
-	        h = offset.height,
+	    var element = swiper._ui.slides[0],
+	        w = element.offsetWidth,
+	        h = element.offsetHeight,
 	        l = swiper._ui.slidesLength,
 	        index = swiper._ui.active,
 	        active = index,
@@ -2210,54 +2335,53 @@
 	    }
 	}
 
-	//绑定事件
-	var bindEvents = function(swiper) {
-	    var flag = false,
-	        startCoords
+	//设置偏移量
+	var setTranslate = function($element, x, y) {
+	    core.isNumber(x) && (x += 'px')
+	    core.isNumber(y) && (y += 'px')
 
-	    var start = function(event) {
-	            flag = true
-	            event = event.originalEvent || event
+	    var t = 'translate3d(' + x + ',' + y + ',0)'
 
-	            resetSlideIndex(swiper)
+	    $element.css({
+	        '-webkit-transform': t,
+	        'transform': t
+	    })
+	}
 
-	            startCoords = getCoords(event)
+	//设置偏移速度
+	var setDuration = function($element, duration) {
+	    core.isNumber(duration) && (duration += 'ms')
 
-	            setDuration(swiper.$element, null)
-	        },
-	        move = function(event) {
-	            if (!flag) return
-	            event = event.originalEvent || event
+	    $element.css({
+	        '-webkit-transition-duration': duration,
+	        'transition-duration': duration
+	    })
+	}
 
-	            var distance = getDistance(event, startCoords),
-	                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
+	var getActualIndex = function(index, length) {
+	    return index < 0 ? 0 : index >= length ? length - 1 : index
+	}
 
-	            coordinates.isDefaultPrevented && (setTranslate(swiper.$element, coordinates.x, coordinates.y), event.preventDefault())
-	        },
-	        end = function(event) {
-	            if (!flag) return
-	            flag = false
+	//设置容器偏移量
+	var setContainerTranslate = function(swiper, x, y, duration) {
+	    var $element = swiper.$element
 
-	            event = event.originalEvent || event
+	    duration = duration || 0
 
-	            var distance = getDistance(event, startCoords),
-	                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
+	    setDuration($element, duration)
+	    setTranslate($element, x, y)
+	}
 
-	            swiper.slide(index)
-	        }
+	//添加选中类
+	var setActiveClass = function(swiper, index) {
+	    var options = swiper.options,
+	        slideActiveClass = options.slideActiveClass,
+	        paginationActiveClass = options.paginationActiveClass
 
-	    //监听横竖屏
-	    bindOrientationChangeEvent(swiper)
+	    //添加选中的class
+	    swiper._ui.slides.removeClass(slideActiveClass).eq(index).addClass(slideActiveClass)
 
-	    //触发回调函数
-	    bindTransitionEndEvent(swiper)
-
-	    swiper.$element.on(START_EVENT, start)
-	    $document.on(MOVE_EVENT, move)
-	    $document.on(END_EVENT, end)
-
-	    swiper.$element[0].onselectstart = returnFalse
-	    swiper.$element[0].ondragstart = returnFalse
+	    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
 	}
 
 	//监听slide完成事件
@@ -2294,71 +2418,72 @@
 	    $(_window).on(RESIZE_EVENT, handler)
 	}
 
+	//绑定事件
+	var bindEvents = function(swiper) {
+	    var flag = false,
+	        startCoords
+
+	    var start = function(event) {
+	            flag = true
+	            event = event.originalEvent || event
+
+	            resetSlideIndex(swiper)
+
+	            startCoords = getCoords(event)
+
+	            setDuration(swiper.$element, null)
+	        },
+	        move = function(event) {
+	            if (!flag) return
+	            event = event.originalEvent || event
+
+	            var distance = getDistance(event, startCoords),
+	                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
+
+	            coordinates.isDefaultPrevented && (event.preventDefault(),setTranslate(swiper.$element, coordinates.x, coordinates.y))
+	        },
+	        end = function(event) {
+	            if (!flag) return
+	            flag = false
+
+	            event = event.originalEvent || event
+
+	            var distance = getDistance(event, startCoords),
+	                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
+
+	            swiper.slide(index)
+	        }
+
+	    //监听横竖屏
+	    bindOrientationChangeEvent(swiper)
+
+	    //触发回调函数
+	    bindTransitionEndEvent(swiper)
+
+	    swiper.$element.on(START_EVENT, start)
+	    $document.on(MOVE_EVENT, move)
+	    $document.on(END_EVENT, end)
+
+	    swiper.$element[0].onselectstart = returnFalse
+	    swiper.$element[0].ondragstart = returnFalse
+	}
+
 	//偏移到指定的位置
 	var slideTo = function(swiper, index, duration) {
-	    var offset = swiper._ui.slides.offset()
+	    var element = swiper._ui.slides[0]
 
 	    //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
 	    if (swiper.options.direction === HORIZONTAL) {
 	        //横向
-	        var w = offset.width
+	        var w = element.offsetWidth
 
 	        setContainerTranslate(swiper, -index * w, 0, duration)
 	    } else {
 	        //垂直
-	        var h = offset.height
+	        var h = element.offsetHeight
 
 	        setContainerTranslate(swiper, 0, -index * h, duration)
 	    }
-	}
-
-	//添加选中类
-	var setActiveClass = function(swiper, index) {
-	    var options = swiper.options,
-	        slideActiveClass = options.slideActiveClass,
-	        paginationActiveClass = options.paginationActiveClass
-
-	    //添加选中的class
-	    swiper._ui.slides.removeClass(slideActiveClass).eq(index).addClass(slideActiveClass)
-
-	    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
-	}
-
-	//设置容器偏移量
-	var setContainerTranslate = function(swiper, x, y, duration) {
-	    var $element = swiper.$element
-
-	    duration = duration || 0
-
-	    setDuration($element, duration)
-	    setTranslate($element, x, y)
-	}
-
-	//设置偏移量
-	var setTranslate = function($element, x, y) {
-	    core.isNumber(x) && (x += 'px')
-	    core.isNumber(y) && (y += 'px')
-
-	    var t = 'translate3d(' + x + ',' + y + ',0)'
-
-	    $element.css({
-	        '-webkit-transform': t,
-	        'transform': t
-	    })
-	}
-
-	//设置偏移速度
-	var setDuration = function($element, duration) {
-	    core.isNumber(duration) && (duration += 'ms')
-
-	    $element.css({
-	        '-webkit-transition-duration': duration,
-	        'transition-duration': duration
-	    })
-	}
-
-	var getActualIndex = function(index, length) {
-	    return index < 0 ? 0 : index >= length ? length - 1 : index
 	}
 
 	//初始化
@@ -2540,7 +2665,7 @@
 
 	var HEIGHT_UNIT = 50,
 	    DURATION = 200,
-	    COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
+	    //COLUMN_ITEM_SHOW_CLASS = 'kub-datepicker-show',
 	    COLUMN_SELECTOR = '.kub-datepicker-column',
 	    COLUMN_ITEM_SELECTOR = 'li',
 	    COLUMN_CONTAINER_SELECTOR = 'ul'
@@ -2626,44 +2751,30 @@
 	    })
 	}
 
-	var init = function(datepicker) {
-	    var options = datepicker.options,
-	        $element,
-	        ui
 
-	    //创建对话框
-	    render(datepicker)
+	//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
+	var setValue = function(datepicker, name, value) {
+	    var $this = datepicker._ui[name],
+	        index,
+	        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
 
-	    $element = datepicker.$element[0].dialog.$element
+	    if ($item.length) {
+	        index = parseInt($item.attr('data-index'))
 
-	    //缓存dom
-	    ui = datepicker._ui = {
-	        year: $element.find('.year'),
-	        month: $element.find('.month'),
-	        day: $element.find('.day'),
-	        hour: $element.find('.hour'),
-	        minute: $element.find('.minute'),
-	        second: $element.find('.second')
+	        $this[0].index = index
+
+	        setTranslate($this, 0, -index * HEIGHT_UNIT)
 	    }
-	    ui.columns = $element.find(COLUMN_SELECTOR)
+	}
 
-	    //设置块高度
-	    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+	//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
+	var getValue = function(datepicker, name) {
+	    var $this = datepicker._ui[name],
+	        $items = $this.find(COLUMN_ITEM_SELECTOR),
+	        index = $this[0].index + 1,
+	        value = parseInt($items.eq(index).attr('data-value'))
 
-	    //隐藏对话框
-	    datepicker.hide()
-
-	    //移除
-	    removeColumns(options.format, ui)
-
-	    //设置本地化
-	    $element.addClass('kub-datepicker-' + options.locale)
-
-	    //设置默认时间
-	    datepicker.setDate(options.date)
-
-	    //绑定事件
-	    bindEvents(datepicker)
+	    return value ? value : 0
 	}
 
 	//移除不需要的列
@@ -2706,6 +2817,26 @@
 	    })
 	}
 
+	//重置每月最大天数
+	var setActualDays = function(datepicker, year, month) {
+	    var days = getDays(year, month),
+	        day = getValue(datepicker, 'day')
+
+	    days < day && setValue(datepicker, 'day', days)
+	}
+
+	//绑定输入框聚焦事件
+	var bindInputFocusEvent = function(datepicker) {
+	    datepicker.$element.on(EVENT_NAME, function() {
+	        //使输入框失去焦点
+	        datepicker.$element[0].blur()
+
+	        datepicker.show()
+
+	        return false
+	    })
+	}
+
 	//绑定事件
 	var bindEvents = function(datepicker) {
 	    var flag = false,
@@ -2729,6 +2860,8 @@
 	            var distance = getDistance(event, $activeElement[0].startCoords)
 
 	            setTranslate($activeElement, 0, distance.distanceY - HEIGHT_UNIT * $activeElement[0].index)
+
+	            event.preventDefault()
 	        },
 	        end = function(event) {
 	            if (!flag) return
@@ -2736,20 +2869,25 @@
 	            event = event.originalEvent || event
 
 	            var distance = getDistance(event, $activeElement[0].startCoords),
-	                max = $activeElement.find('.' + COLUMN_ITEM_SHOW_CLASS).length,
+	                max = $activeElement.find(COLUMN_ITEM_SELECTOR).length,
 	                index = getIndexByDistance(distance.distanceY - HEIGHT_UNIT * $activeElement[0].index, max)
 
 	            $activeElement[0].index = Math.abs(index)
 
-	            resetDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
+	            //验证是否存在31,30,29天
+	            setActualDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
 
 	            setDuration($activeElement, DURATION)
 
 	            setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
 	        }
 
-	    datepicker._ui.columns.on(START_EVENT, function() {
-	        start.apply(this, arguments)
+	    datepicker._ui.columns.each(function(){
+
+	        $(this).on(START_EVENT, function() {
+	            start.apply(this, arguments)
+	        })
+
 	        this.onselectstart = returnFalse
 	        this.ondragstart = returnFalse
 	    })
@@ -2760,54 +2898,46 @@
 	    bindInputFocusEvent(datepicker)
 	}
 
-	//绑定输入框聚焦事件
-	var bindInputFocusEvent = function(datepicker) {
-	    datepicker.$element.on(EVENT_NAME, function() {
-	        //使输入框失去焦点
-	        datepicker.$element[0].blur()
+	var init = function(datepicker) {
+	    var options = datepicker.options,
+	        $element,
+	        ui
 
-	        datepicker.show()
+	    //创建对话框
+	    render(datepicker)
 
-	        return false
-	    })
-	}
+	    $element = datepicker.$element[0].dialog.$element
 
-	//重置每月最大天数
-	var resetDays = function(datepicker, year, month) {
-	    var days = getDays(year, month),
-	        day = getValue(datepicker, 'day'),
-	        $items = datepicker._ui.day.find(COLUMN_ITEM_SELECTOR)
-
-	    //移除不在本月的日期
-	    $items.addClass(COLUMN_ITEM_SHOW_CLASS).slice(days + 1, $items.length - 1).removeClass(COLUMN_ITEM_SHOW_CLASS)
-
-	    days < day && setValue(datepicker, 'day', days)
-	}
-
-	//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
-	var setValue = function(datepicker, name, value) {
-	    var $this = datepicker._ui[name],
-	        index,
-	        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
-
-	    if ($item.length) {
-	        index = parseInt($item.attr('data-index'))
-
-	        $this[0].index = index
-
-	        setTranslate($this, 0, -index * HEIGHT_UNIT)
+	    //缓存dom
+	    ui = datepicker._ui = {
+	        year: $element.find('.year'),
+	        month: $element.find('.month'),
+	        day: $element.find('.day'),
+	        hour: $element.find('.hour'),
+	        minute: $element.find('.minute'),
+	        second: $element.find('.second')
 	    }
+	    ui.columns = $element.find(COLUMN_SELECTOR)
+
+	    //设置块高度
+	    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+
+	    //隐藏对话框
+	    datepicker.hide()
+
+	    //移除
+	    removeColumns(options.format, ui)
+
+	    //设置本地化
+	    $element.addClass('kub-datepicker-' + options.locale)
+
+	    //设置默认时间
+	    datepicker.setDate(options.date)
+
+	    //绑定事件
+	    bindEvents(datepicker)
 	}
 
-	//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
-	var getValue = function(datepicker, name) {
-	    var $this = datepicker._ui[name],
-	        $items = $this.find(COLUMN_ITEM_SELECTOR),
-	        index = $this[0].index + 1,
-	        value = parseInt($items.eq(index).attr('data-value'))
-
-	    return value ? value : 0
-	}
 
 	/**
 	 * ## defaults
@@ -2874,9 +3004,6 @@
 
 	    setValue(self, 'second', date.getSeconds())
 
-	    //验证是否存在31,30,29天
-	    resetDays(self, year, month)
-
 	    return self
 	}
 
@@ -2942,9 +3069,9 @@
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-	__p+='<div class="kub-datepicker"><div class="kub-datepicker-column year" data-type="year"><ul><li class="kub-datepicker-show"></li> ';
+	__p+='<div class="kub-datepicker"><div class="kub-datepicker-column year" data-type="year"><ul><li></li> ';
 	for(var i=data.yearRange[0],j=0;i<=data.yearRange[1];i++,j++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
 	'" data-index="'+
 	((__t=( j))==null?'':__t)+
@@ -2952,9 +3079,9 @@
 	((__t=( i ))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column month" data-type="month"><ul><li class="kub-datepicker-show"></li> ';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-column month" data-type="month"><ul><li></li> ';
 	for(var i=1 ;i<= 12; i++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i-1))==null?'':__t)+
 	'" data-index="'+
 	((__t=( i-1))==null?'':__t)+
@@ -2962,9 +3089,9 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column day" data-type="day"><ul><li class="kub-datepicker-show"></li> ';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-column day" data-type="day"><ul><li></li> ';
 	for(var i=1 ;i<=31;i++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
 	'" data-index="'+
 	((__t=( i-1))==null?'':__t)+
@@ -2972,9 +3099,9 @@
 	((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column hour" data-type="hour"><ul><li class="kub-datepicker-show"></li> ';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-column hour" data-type="hour"><ul><li></li> ';
 	for(var i=0 ;i<=23;i++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
 	'" data-index="'+
 	((__t=( i))==null?'':__t)+
@@ -2982,9 +3109,9 @@
 	((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column minute" data-type="minute"><ul><li class="kub-datepicker-show"></li> ';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-column minute" data-type="minute"><ul><li></li> ';
 	for(var i=0 ;i<=59;i++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
 	'" data-index="'+
 	((__t=( i))==null?'':__t)+
@@ -2992,9 +3119,9 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-column second" data-type="second"><ul><li class="kub-datepicker-show"></li> ';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-column second" data-type="second"><ul><li></li> ';
 	for(var i=0 ;i<=59;i++){
-	__p+=' <li class="kub-datepicker-show" data-value="'+
+	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
 	'" data-index="'+
 	((__t=( i))==null?'':__t)+
@@ -3002,7 +3129,7 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li class="kub-datepicker-show"></li></ul></div><div class="kub-datepicker-overlay"></div></div>';
+	__p+=' <li></li></ul></div><div class="kub-datepicker-overlay"></div></div>';
 	return __p;
 	};
 
@@ -3049,7 +3176,7 @@
 
 
 	// module
-	exports.push([module.id, ".kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:1.1em .5em;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:1.2em 1em;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:1em .5em;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:1em .5em;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;margin-top:5px;width:100%;border:1px solid #f4f4f4;padding:.5em;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:.8em}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:2em 1em;text-align:center}.kub-datepicker-dialog .kub-dialog-body{padding:.75em}.kub-datepicker{font-size:16px;color:#333;text-align:center;white-space:nowrap;position:relative}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;top:50px;left:0;height:50px;width:100%;z-index:0;border:1px solid rgba(0,0,0,.1);border-radius:6px;box-shadow:0 0 100px rgba(0,0,0,.3);box-sizing:border-box}.kub-datepicker .kub-datepicker-column{position:relative;height:150px;padding:0 .6em;display:inline-block;overflow:hidden;z-index:1}.kub-datepicker .kub-datepicker-column:after{position:absolute;font-size:.5em;top:50px;right:0}.kub-datepicker .kub-datepicker-column ul li{line-height:50px;height:50px;display:none}.kub-datepicker .kub-datepicker-column ul .kub-datepicker-show{display:block}.kub-datepicker .year:after{content:\"\\5E74\"}.kub-datepicker .month:after{content:\"\\6708\"}.kub-datepicker .day:after{content:\"\\65E5\"}.kub-datepicker .hour:after{content:\"\\65F6\"}.kub-datepicker .minute:after{content:\"\\5206\"}.kub-datepicker .second:after{content:\"\\79D2\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}", ""]);
+	exports.push([module.id, ".kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:1.1em .5em;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:1.2em 1em;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:1em .5em;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:1em .5em;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;margin-top:5px;width:100%;border:1px solid #f4f4f4;padding:.5em;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:.8em}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:2em 1em;text-align:center}.kub-datepicker-dialog .kub-dialog-body{padding:.75em}.kub-datepicker{font-size:16px;color:#333;text-align:center;white-space:nowrap;position:relative}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;top:50px;left:0;height:50px;width:100%;z-index:0;border:1px solid rgba(0,0,0,.1);border-radius:6px;box-shadow:0 0 100px rgba(0,0,0,.3);box-sizing:border-box}.kub-datepicker .kub-datepicker-column{position:relative;height:150px;padding:0 .6em;display:inline-block;overflow:hidden;z-index:1}.kub-datepicker .kub-datepicker-column:after{position:absolute;font-size:.5em;top:50px;right:0}.kub-datepicker .kub-datepicker-column ul li{line-height:50px;height:50px}.kub-datepicker .year:after{content:\"\\5E74\"}.kub-datepicker .month:after{content:\"\\6708\"}.kub-datepicker .day:after{content:\"\\65E5\"}.kub-datepicker .hour:after{content:\"\\65F6\"}.kub-datepicker .minute:after{content:\"\\5206\"}.kub-datepicker .second:after{content:\"\\79D2\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}", ""]);
 
 	// exports
 
