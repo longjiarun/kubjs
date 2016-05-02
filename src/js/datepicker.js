@@ -56,7 +56,7 @@ function DatePicker(element, options) {
     init(this)
 }
 
-var HEIGHT_UNIT = 50,
+var HEIGHT_UNIT = 54,
     DURATION = 200,
     COLUMN_SELECTOR = '.kub-datepicker-column',
     COLUMN_ITEM_SELECTOR = 'li',

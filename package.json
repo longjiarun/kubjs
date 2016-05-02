@@ -10,6 +10,7 @@
     "watch": "gulp watch",
     "build": "gulp",
     "eslint": "gulp eslint",
+    "daily": "gulp publish",
     "pre": "gulp publish",
     "prod": "gulp publish"
   },

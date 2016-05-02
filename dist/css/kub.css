@@ -9,8 +9,8 @@
  * datepicker.less
  */
 .kub-animated {
-  -webkit-animation-duration: 0.5s;
-  animation-duration: 0.5s;
+  -webkit-animation-duration: 500ms;
+  animation-duration: 500ms;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -71,13 +71,13 @@
 }
 .kub-dialog .kub-dialog-header {
   border-radius: 6px 6px 0 0;
-  padding: 1.1em 0.5em;
+  padding: 16px 8px;
   text-align: center;
   background: #f4f4f4;
 }
 .kub-dialog .kub-dialog-body {
   line-height: 1.5;
-  padding: 1.2em 1em;
+  padding: 20px 16px;
   color: #333;
 }
 .kub-dialog .kub-dialog-button {
@@ -85,7 +85,7 @@
   background: none;
   border: none;
   border-right: 2px solid #f4f4f4;
-  padding: 1em 0.5em;
+  padding: 16px 8px;
   font-size: 100%;
   text-align: center;
 }
@@ -117,16 +117,15 @@
   background: rgba(0, 0, 0, 0.7);
 }
 .kub-toast .kub-dialog-body {
-  padding: 1em 0.5em;
+  padding: 16px 8px;
   color: #fff;
   text-align: center;
 }
 .kub-prompt .kub-prompt-input {
   font-size: 100%;
-  margin-top: 5px;
   width: 100%;
   border: 1px solid #f4f4f4;
-  padding: 0.5em;
+  padding: 8px;
   background: #fff;
   box-sizing: border-box;
 }
@@ -139,15 +138,15 @@
 .kub-loader .kub-dialog {
   width: 36%;
   background: rgba(0, 0, 0, 0.7);
-  border-radius: 0.8em;
+  border-radius: 16px;
 }
 .kub-loader .kub-dialog .kub-dialog-body {
   color: #fff;
-  padding: 2em 1em;
+  padding: 32px 16px;
   text-align: center;
 }
 .kub-datepicker-dialog .kub-dialog-body {
-  padding: 0.75em;
+  padding: 12px;
 }
 .kub-datepicker {
   font-size: 16px;
@@ -164,33 +163,33 @@
 }
 .kub-datepicker .kub-datepicker-overlay {
   position: absolute;
-  top: 50px;
+  top: 54px;
   left: 0;
-  height: 50px;
+  height: 54px;
   width: 100%;
   z-index: 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 108px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
 }
 .kub-datepicker .kub-datepicker-column {
   position: relative;
-  height: 150px;
-  padding: 0 0.6em;
+  height: 162px;
+  padding: 0 10px;
   display: inline-block;
   overflow: hidden;
   z-index: 1;
 }
 .kub-datepicker .kub-datepicker-column:after {
   position: absolute;
-  font-size: 0.5em;
-  top: 50px;
+  font-size: 12px;
+  top: 54px;
   right: 0;
 }
 .kub-datepicker .kub-datepicker-column ul li {
-  line-height: 50px;
-  height: 50px;
+  line-height: 54px;
+  height: 54px;
 }
 .kub-datepicker .year:after {
   content: "年";

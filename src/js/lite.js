@@ -33,7 +33,7 @@ var isArray = Array.isArray ||
         return object instanceof Array
     }
 
-$ = Lite = function Lite(selector, context) {
+$ = Lite = function(selector, context) {
     context = context || _document
     var type = typeof selector
 

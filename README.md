@@ -55,6 +55,8 @@ bower install kub#version --save
 
 ## 使用
 
+### 使用编译后的文件`kub.js`及`kub.style.js`。
+
 1、如果组件名称首字母大小，则暴露的是类，需实例化；
 
 ```
@@ -75,6 +77,42 @@ Kub.cookie('name','kub');
 
 //组件为对象
 Kub.os.ios
+```
+
+### 使用源文件。
+
+1、bower
+
+```
+//引用kub.js
+var Kub = require('../../bower_components/kub/src/js/kub')
+
+new Kub.Dialog()
+
+//引用单个组件
+var Dialog = require('../../bower_components/kub/src/js/dialog')
+
+new Dialog()
+
+//使用less
+require('../../bower_components/kub/src/less/dialog.less')
+```
+
+2、npm
+
+```
+//引用kub.js
+var Kub = require('kub')
+
+new Kub.Dialog()
+
+//引用单个组件
+var Dialog = require('kub/src/js/dialog')
+
+new Dialog()
+
+//使用less
+require('kub/src/less/dialog.less')
 ```
 
 ## 文档

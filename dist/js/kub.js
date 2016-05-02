@@ -179,7 +179,7 @@
 	        return object instanceof Array
 	    }
 
-	$ = Lite = function Lite(selector, context) {
+	$ = Lite = function(selector, context) {
 	    context = context || _document
 	    var type = typeof selector
 
@@ -2947,7 +2947,7 @@
 	    init(this)
 	}
 
-	var HEIGHT_UNIT = 50,
+	var HEIGHT_UNIT = 54,
 	    DURATION = 200,
 	    COLUMN_SELECTOR = '.kub-datepicker-column',
 	    COLUMN_ITEM_SELECTOR = 'li',

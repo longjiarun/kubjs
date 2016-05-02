@@ -5,4 +5,5 @@
  *
  */
 require('../less/kub.less')
-require('./kub')
+
+module.exports = require('./kub')
