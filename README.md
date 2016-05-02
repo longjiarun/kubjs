@@ -22,7 +22,7 @@
 
 0. ios7及以上版本；
     
-0. Android4.2及以上版本；
+0. Android4.0及以上版本；
 
 ## 安装
 
@@ -30,6 +30,9 @@
 
 ```
 git clone https://github.com/longjiarun/kubjs.git
+
+//指定版本
+git clone https://github.com/longjiarun/kubjs.git#version
 ```
 
 ### npm
@@ -38,7 +41,7 @@ git clone https://github.com/longjiarun/kubjs.git
 npm install kub --save
 
 //指定版本
-npm install kub@2.0.0 --save
+npm install kub@version --save
 ```
 
 ### bower
@@ -47,12 +50,12 @@ npm install kub@2.0.0 --save
 bower install kub --save
 
 //指定版本
-bower install kub#2.0.0 --save
+bower install kub#version --save
 ```
 
 ## 使用
 
-1、如果首字母大小，则暴露的是类，需实例化；
+1、如果组件名称首字母大小，则暴露的是类，需实例化；
 
 ```
 //组件为类
@@ -61,7 +64,7 @@ var dialog = new Kub.Dialog({
 });
 ```
 
-2、如果首字母小写，则暴露的是对象或函数，无需实例化；
+2、如果组件名称首字母小写，则暴露的是对象或函数，无需实例化；
 
 ```
 //组件为实例化后的对象
