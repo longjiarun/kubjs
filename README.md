@@ -35,13 +35,19 @@ git clone https://github.com/longjiarun/kubjs.git
 ### npm
 
 ```
-npm install kub[@version] --save
+npm install kub --save
+
+//指定版本
+npm install kub@2.0.0 --save
 ```
 
 ### bower
 
 ```
-bower install kub[#version] --save
+bower install kub --save
+
+//指定版本
+bower install kub#2.0.0 --save
 ```
 
 ## 使用
