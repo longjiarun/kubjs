@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Cookie Test</title>
+</head>
+<body>
+
+<script type="text/javascript" src="../dist/js/kub.js"></script>
+<script type="text/javascript">
+
+//默认写到根路径下
+Kub.cookie("name","child1");
+
+//写到当前路径下
+Kub.cookie("name","child2",{
+    path:"./"
+});
+
+console.log(Kub.cookie("name"));
+//输出 child2
+
+//第一种情况
+
+//默认写到根路径下
+Kub.cookie("name","child1");
+
+//写到父域名下
+Kub.cookie("name","parent",{
+    domain:"weidian.com"
+});
+
+console.log(Kub.cookie("name"));
+//输出 child1
+
+//第二种情况
+
+//写到父域名下
+Kub.cookie("name","parent",{
+    domain:"weidian.com"
+});
+
+//默认写到根路径下
+Kub.cookie("name","child1");
+
+console.log(Kub.cookie("name"));
+//输出 parent
+
+
+//第三种情况
+//写到父域名下
+Kub.cookie("name","parent",{
+    domain:"weidian.com"
+});
+
+//默认写到根路径下
+Kub.cookie("name","child1");
+
+
+//默认写到当前路径下
+Kub.cookie("name","child2",{
+    path:"./"
+});
+
+console.log(Kub.cookie("name"));
+//输出 child2
+</script>
+</body>
+</html>

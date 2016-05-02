@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>DatePicker Test</title>
+</head>
+<body>
+时间选择器1
+<div><input type="text" id="J_datepicker"/></div>
+时间选择器2
+<div><input type="text" id="J_datepicker1"/></div>
+时间选择器3
+<div><input type="text" id="J_datepicker2"/></div>
+
+<script type="text/javascript" src="../dist/js/kub.style.js"></script>
+<script type="text/javascript">
+    var $ = Kub.$
+    //采用默认的format yyyy-MM-dd
+    var datepicker = new Kub.DatePicker($("#J_datepicker"));
+
+    //采用默认的format yyyy-MM-dd
+    //可配置title 与 本地化
+    var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
+        title:"Date Picker",
+        locale:"en"
+    });
+
+    //自定义format
+    var datepicker2 = new Kub.DatePicker($("#J_datepicker2"),{
+        title:"选择时间",
+        format:"yyyy-MM-dd,HH:mm:ss",
+        confirm:function(e,datepicker,formatDate){
+            //格式化后的date
+            console.log(formatDate)
+
+            //手动关闭选择器
+            datepicker.hide();
+        }
+    });
+
+</script>
+</body>
+</html>

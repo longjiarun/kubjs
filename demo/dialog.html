@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Dialog Test</title>
+    <link rel="stylesheet" type="text/css" href="../dist/css/kub.css">
+</head>
+<body>
+
+<style type="text/css">
+.kub-dialog img{
+    max-width: 100%;
+}
+</style>
+<script type="text/javascript" src="../dist/js/kub.js"></script>
+<script type="text/javascript">
+
+    function testConfirm(){
+        new Kub.Confirm({
+            message:"这是一个confirm",
+            confirm:function(e,dialog){
+                //监听确认事件，需要手动关闭对话框
+            }
+        });
+
+    }
+    testConfirm();
+
+    function testLoader(){
+        //loading 弹窗，用于在loading时，阻塞用户行为
+        var loader = new Kub.Loader();
+
+        //3秒以后自动消失
+        setTimeout(function(){
+            loader.hide();
+        },3000);
+    }
+    testLoader();
+
+    function testToast(){
+        //1.5s以后消失
+        var toast = new Kub.Toast({
+            message:"Loading",
+            delay:1500
+        });
+    }
+    testToast();
+
+    function testDialog(){
+        //弹窗
+        new Kub.Dialog({
+            message:"这是个弹窗",
+            title:"弹窗",
+            buttons:[{
+                text:"确定",
+                handler:function(){
+
+                }
+            },{
+                text:"取消",
+                handler:function(e,dialog){
+                    dialog.close();
+                }
+            }]
+        });
+    }
+    testDialog();
+
+    function testAlert(){
+        new Kub.Alert({
+            message:'<img src="http://static.koudai.com/hd/globalbuy20150515/images/img_03.jpg">',
+            confirm:function(e,dialog){
+                //可定制确定按钮
+                //如果定制confirm事件，则必须手动关闭对话框
+                //手动关闭对话框
+                dialog.close();
+            }
+        });
+    }
+    testAlert();
+
+    function testPrompt(){
+        var prompt = new Kub.Prompt({
+            message:"这是个prompt:",
+            placeholder:"输入提示文字",
+            inputType:"tel",//定制输入类型
+            defaultValue:"",
+            cancel:function(){
+                //可定制取消按钮事件
+            },
+            confirm:function(e,dialog,value){
+                console.log(value);
+
+                //如果定制confirm事件，则必须手动关闭对话框
+                //手动关闭对话框
+                new Kub.Alert({
+                    message:dialog.value,
+                    confirm:function(e,dialog){
+
+                        prompt.close();
+
+                        dialog.close();
+                    }
+                });
+            }
+        });
+    }
+    testPrompt();
+</script>
+</body>
+</html>
