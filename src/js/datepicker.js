@@ -41,9 +41,8 @@ require('./date')
  *  var datepicker2 = new Kub.DatePicker($('#J_datepicker2'),{
  *      title:'选择时间',
  *      format:'yyyy-MM-dd,HH:mm:ss',
- *      confirm:function(e,datepicker){
- *          //格式化后的date
- *          console.log(datepicker.formatDate)
+ *      confirm:function(e,datepicker,formatDate){
+ *          //格式化后的 formatDate
  *          //手动关闭选择器
  *          datepicker.hide()
  *      }

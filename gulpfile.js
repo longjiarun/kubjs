@@ -78,7 +78,7 @@ gulp.task('js',['tpl'], function() {
             module: {
                 loaders: [{
                     test: /\.less$/,
-                    loader: 'style?{"insertAt":"top"}!css!postcss!less'
+                    loader: 'small-style?{"insertAt":"top"}!postcss!less'
                 }]
             },
             postcss: function() {

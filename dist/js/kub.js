@@ -2141,8 +2141,7 @@
 	 * ```js
 	 * var prompt = new Kub.Prompt({
 	 *     confirm:function(event,dialog,value){
-	 *         //输入框输入的值
-	 *         console.log(value)
+	 *         //输入框输入的值 value
 	 *     }
 	 * })
 	 * ```
@@ -2423,13 +2422,13 @@
 	 *
 	 * 使用方法：
 	 * ```js
-	 *  new Kub.Swiper($swiperWrap.find('.swiper'),{
-	 *      slideSelector:$swiperWrap.find('.slide'),
+	 *  new Kub.Swiper('.swiper',{
+	 *      slideSelector:'.slide',
 	 *      slideActiveClass:'active',
-	 *      paginationSelector:$swiperWrap.find('.pagination li'),
+	 *      paginationSelector:'.pagination li',
 	 *      paginationActiveClass:'pagination-active',
 	 *      slide:function(index){
-	 *          //console.log('slide:'+index,this)
+	 *          //当前滚动索引
 	 *      }
 	 * })
 	 * ```
@@ -2933,9 +2932,8 @@
 	 *  var datepicker2 = new Kub.DatePicker($('#J_datepicker2'),{
 	 *      title:'选择时间',
 	 *      format:'yyyy-MM-dd,HH:mm:ss',
-	 *      confirm:function(e,datepicker){
-	 *          //格式化后的date
-	 *          console.log(datepicker.formatDate)
+	 *      confirm:function(e,datepicker,formatDate){
+	 *          //格式化后的 formatDate
 	 *          //手动关闭选择器
 	 *          datepicker.hide()
 	 *      }

@@ -23,8 +23,7 @@ var INPUT_SELECTOR = '.J_input'
  * ```js
  * var prompt = new Kub.Prompt({
  *     confirm:function(event,dialog,value){
- *         //输入框输入的值
- *         console.log(value)
+ *         //输入框输入的值 value
  *     }
  * })
  * ```

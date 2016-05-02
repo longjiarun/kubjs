@@ -20,13 +20,13 @@ var core = require('./core'),
  *
  * 使用方法：
  * ```js
- *  new Kub.Swiper($swiperWrap.find('.swiper'),{
- *      slideSelector:$swiperWrap.find('.slide'),
+ *  new Kub.Swiper('.swiper',{
+ *      slideSelector:'.slide',
  *      slideActiveClass:'active',
- *      paginationSelector:$swiperWrap.find('.pagination li'),
+ *      paginationSelector:'.pagination li',
  *      paginationActiveClass:'pagination-active',
  *      slide:function(index){
- *          //console.log('slide:'+index,this)
+ *          //当前滚动索引
  *      }
  * })
  * ```
