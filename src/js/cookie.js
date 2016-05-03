@@ -1,7 +1,7 @@
 /**
  * # cookie
  *
- * 操作cookie方法，`expires` 如果为数字，单位为毫秒
+ * 操作cookie方法，`expires` 如果为数字，单位为`毫秒`。
  *
  * 使用方法：
  * ```js

@@ -54,7 +54,7 @@
  * '2015-05-20'.parseDate('yyyy-MM-dd')
  *
  * //格式化日期
- * new Date().format('yyyy-MM-dd,hh:mm:ss')
+ * new Date().format('yyyy-MM-dd,HH:mm:ss')
  *
  * ```
  */

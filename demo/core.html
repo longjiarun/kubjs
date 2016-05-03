@@ -8,6 +8,7 @@
 <body>
 
 <script type="text/javascript" src="../dist/js/kub.js"></script>
+<script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
 <script type="text/javascript">
     var a = Kub.core.setQuerystring({
         p:3,
@@ -19,6 +20,8 @@
     })
 
     console.log(Kub.core.getQuerystring(a))
+
+    console.log(Kub.core.extend(true,{},{name:{age:1}},{name:{name:1}}));
 
 </script>
 </body>

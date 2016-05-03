@@ -4,64 +4,63 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>Swiper Test</title>
-
 </head>
 <body>
 <style type="text/css">
-.horizontal .swiper-wraper{
-    width: 100%;
-    height: 400px;
-    overflow: hidden;
-}
-.horizontal .swiper{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    height: 100%;
-    width:600%;
-}
-.horizontal .slide{
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-    height: 100%;
-}
+    .horizontal .swiper-wraper{
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+    }
+    .horizontal .swiper{
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        height: 100%;
+        width:600%;
+    }
+    .horizontal .slide{
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+        height: 100%;
+    }
 
-.slide{
-    color:#fff;
-    font-size:100px;
-}
-.pagination-active{
-    color:#f00;
-}
-.slide1{
-    background: #f00;
-}
-.slide2{
-    background: #0f0;
-}
-.slide3{
-    background: #00f;
-}
-.slide4{
-    background: #000;
-}
-.vertical{
-}
-.vertical .swiper-wraper{
-    height: 400px;
-    margin: 0;
-    overflow:hidden;
-}
-.vertical .swiper{
-    height: 100%;
-}
-.vertical .slide{
-    height: 100%;
-}
+    .slide{
+        color:#fff;
+        font-size:100px;
+    }
+    .pagination-active{
+        color:#f00;
+    }
+    .slide1{
+        background: #f00;
+    }
+    .slide2{
+        background: #0f0;
+    }
+    .slide3{
+        background: #00f;
+    }
+    .slide4{
+        background: #000;
+    }
+    .vertical{
+    }
+    .vertical .swiper-wraper{
+        height: 400px;
+        margin: 0;
+        overflow:hidden;
+    }
+    .vertical .swiper{
+        height: 100%;
+    }
+    .vertical .slide{
+        height: 100%;
+    }
 </style>
+//横向滚动
 <div class="J_horizontal horizontal">
-    //横向滚动
     <div class="swiper-wraper">
         <div class="swiper">
             <div class="slide slide1">
@@ -111,7 +110,6 @@
         <li>4</li>
     </ul>
 </div>
-
 <script type="text/javascript" src="../dist/js/kub.js"></script>
 <script type="text/javascript">
     var $ = Kub.$
@@ -129,6 +127,7 @@
             //console.log("slide:"+index,this)
         }
     });
+
     //纵向滚动
     var $swiperWrap1 = $(".J_vertical");
     new Kub.Swiper($swiperWrap1.find(".swiper"),{
@@ -138,7 +137,6 @@
         paginationSelector:$swiperWrap1.find(".pagination li"),
         paginationActiveClass:"pagination-active",
         //默认滚动位置
-        initialSlide:1,
         slide:function(index){
             //console.log("slide:"+index)
         }

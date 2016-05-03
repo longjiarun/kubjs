@@ -625,4 +625,4 @@ var createDelegator = function(handler, selector) {
     }
 }).call(Lite)
 
-module.exports = _window.jQuery || _window.Zepto || Lite
+module.exports = _window.Zepto || Lite

@@ -69,7 +69,7 @@ _prototype.extend = function(target, source) {
                     if (this.isObject(source[key]) && !this.isObject(target[key])) {
                         target[key] = {}
                     }
-                    this.extend(target[key], source[key], deep)
+                    this.extend(deep, target[key], source[key])
                 } else {
                     (source[key] !== undefined) && (target[key] = source[key])
                 }

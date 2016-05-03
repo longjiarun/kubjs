@@ -10,6 +10,7 @@
 <script type="text/javascript" src="../dist/js/kub.js"></script>
 <script type="text/javascript">
 
+//第一种情况
 //默认写到根路径下
 Kub.cookie("name","child1");
 
@@ -21,7 +22,7 @@ Kub.cookie("name","child2",{
 console.log(Kub.cookie("name"));
 //输出 child2
 
-//第一种情况
+//第二种情况
 
 //默认写到根路径下
 Kub.cookie("name","child1");
@@ -34,7 +35,7 @@ Kub.cookie("name","parent",{
 console.log(Kub.cookie("name"));
 //输出 child1
 
-//第二种情况
+//第三种情况
 
 //写到父域名下
 Kub.cookie("name","parent",{
@@ -48,7 +49,7 @@ console.log(Kub.cookie("name"));
 //输出 parent
 
 
-//第三种情况
+//第四种情况
 //写到父域名下
 Kub.cookie("name","parent",{
     domain:"weidian.com"

@@ -50,8 +50,7 @@ var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
 
 var $body = $(document.body)
 
-var _window = window,
-    _prototype = Dialog.prototype
+var _prototype = Dialog.prototype
 
 var render = function(dialog,data) {
     var html = template(data)

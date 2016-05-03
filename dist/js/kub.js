@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Library v2.0.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Library v2.0.1. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -771,7 +771,7 @@
 	    }
 	}).call(Lite)
 
-	module.exports = _window.jQuery || _window.Zepto || Lite
+	module.exports = _window.Zepto || Lite
 
 
 /***/ },
@@ -849,7 +849,7 @@
 	                    if (this.isObject(source[key]) && !this.isObject(target[key])) {
 	                        target[key] = {}
 	                    }
-	                    this.extend(target[key], source[key], deep)
+	                    this.extend(deep, target[key], source[key])
 	                } else {
 	                    (source[key] !== undefined) && (target[key] = source[key])
 	                }
@@ -1157,7 +1157,7 @@
 	 * '2015-05-20'.parseDate('yyyy-MM-dd')
 	 *
 	 * //格式化日期
-	 * new Date().format('yyyy-MM-dd,hh:mm:ss')
+	 * new Date().format('yyyy-MM-dd,HH:mm:ss')
 	 *
 	 * ```
 	 */
@@ -1359,7 +1359,7 @@
 	/**
 	 * # cookie
 	 *
-	 * 操作cookie方法，`expires` 如果为数字，单位为毫秒
+	 * 操作cookie方法，`expires` 如果为数字，单位为`毫秒`。
 	 *
 	 * 使用方法：
 	 * ```js
@@ -1780,8 +1780,7 @@
 
 	var $body = $(document.body)
 
-	var _window = window,
-	    _prototype = Dialog.prototype
+	var _prototype = Dialog.prototype
 
 	var render = function(dialog,data) {
 	    var html = template(data)
@@ -2422,7 +2421,7 @@
 	 *
 	 * 使用方法：
 	 * ```js
-	 *  new Kub.Swiper('.swiper',{
+	 * new Kub.Swiper('.swiper',{
 	 *      slideSelector:'.slide',
 	 *      slideActiveClass:'active',
 	 *      paginationSelector:'.pagination li',
@@ -2433,10 +2432,10 @@
 	 * })
 	 * ```
 	 */
+
 	function Swiper(element, options) {
 
-	    this.options = core.extend({}, _prototype.defaults, options || {})
-
+	    this.options = core.extend(true, {}, _prototype.defaults, options || {})
 	    this.$element = $(element)
 
 	    var ui = this._ui = {
@@ -3134,7 +3133,6 @@
 	            $activeElement = $(this)
 
 	            setDuration($activeElement, null)
-	            event.preventDefault()
 	        },
 	        move = function(event) {
 	            if (!flag) return

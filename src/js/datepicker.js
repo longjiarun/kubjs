@@ -243,7 +243,6 @@ var bindEvents = function(datepicker) {
             $activeElement = $(this)
 
             setDuration($activeElement, null)
-            event.preventDefault()
         },
         move = function(event) {
             if (!flag) return

@@ -20,7 +20,7 @@ var core = require('./core'),
  *
  * 使用方法：
  * ```js
- *  new Kub.Swiper('.swiper',{
+ * new Kub.Swiper('.swiper',{
  *      slideSelector:'.slide',
  *      slideActiveClass:'active',
  *      paginationSelector:'.pagination li',
@@ -31,10 +31,10 @@ var core = require('./core'),
  * })
  * ```
  */
+
 function Swiper(element, options) {
 
-    this.options = core.extend({}, _prototype.defaults, options || {})
-
+    this.options = core.extend(true, {}, _prototype.defaults, options || {})
     this.$element = $(element)
 
     var ui = this._ui = {

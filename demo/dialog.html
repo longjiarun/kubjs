@@ -25,11 +25,13 @@
         });
 
     }
-    testConfirm();
+    //testConfirm();
 
     function testLoader(){
         //loading 弹窗，用于在loading时，阻塞用户行为
-        var loader = new Kub.Loader();
+        var loader = new Kub.Loader({
+            showHeader:true
+        });
 
         //3秒以后自动消失
         setTimeout(function(){
@@ -45,7 +47,7 @@
             delay:1500
         });
     }
-    testToast();
+    //testToast();
 
     function testDialog(){
         //弹窗
@@ -65,7 +67,7 @@
             }]
         });
     }
-    testDialog();
+    //testDialog();
 
     function testAlert(){
         new Kub.Alert({
@@ -78,7 +80,7 @@
             }
         });
     }
-    testAlert();
+    //testAlert();
 
     function testPrompt(){
         var prompt = new Kub.Prompt({
@@ -95,7 +97,7 @@
                 //如果定制confirm事件，则必须手动关闭对话框
                 //手动关闭对话框
                 new Kub.Alert({
-                    message:dialog.value,
+                    message:value,
                     confirm:function(e,dialog){
 
                         prompt.close();
