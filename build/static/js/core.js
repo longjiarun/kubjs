@@ -300,7 +300,7 @@
             });
 
             return params;
-        };
+        }
 
         /**
          * ## getParams(废弃)
