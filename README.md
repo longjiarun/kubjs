@@ -24,15 +24,25 @@
     
 0. Android4.0及以上版本；
 
+## 版本
+
+0. 遵循[语义化版本规范](http://semver.org/lang/zh-CN/)；
+
+0. `master`分支为最新的稳定的版本；
+
+0. `tags`中的分支对应每一个发布版本；
+
+0. 其余分支为开发分支，为不稳定版本；
+
+0. `1.*` 版本将不再升级与维护，除非有重大bug；
+
 ## 安装
 
 ### git
 
 ```
-git clone https://github.com/longjiarun/kubjs.git
+git clone https://github.com/longjiarun/kubjs.git kub
 
-//指定版本
-git clone https://github.com/longjiarun/kubjs.git#version
 ```
 
 ### npm
