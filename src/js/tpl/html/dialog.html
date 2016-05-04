@@ -1,0 +1,25 @@
+<div class="kub-dialog-modal <%= data.className%> <%if( data.modal ){%> kub-modal <%}%>">
+    <div class="kub-dialog-wrapper">
+        <div class="kub-dialog-container">
+            <div class="kub-dialog J_dialog">
+                <%if(data.showHeader){%>
+                    <div class="kub-dialog-header">
+                        <%= data.title%>
+                    </div>
+                <%}%>
+                <div class="kub-dialog-body">
+                    <%= data.message%>
+                </div>
+                <%if(data.buttons && data.buttons.length){%>
+                    <div class="kub-dialog-footer">
+                        <% for (var i=0,j=data.buttons.length;i<j;i++){%>
+                            <button class="kub-dialog-button J_dialogButton <%= data.buttons[i].className || ''%>" data-index="<%= i%>">
+                                <%= data.buttons[i].text%>
+                            </button>
+                        <%}%>
+                    </div>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</div>

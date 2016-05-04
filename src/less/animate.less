@@ -1,0 +1,31 @@
+@import "variables";
+.kub-animated {
+    -webkit-animation-duration: @animated-duration;
+    animation-duration: @animated-duration;
+    -webkit-animation-fill-mode: @animated-fill-mode;
+    animation-fill-mode: @animated-fill-mode;
+}
+@-webkit-keyframes kubZoomIn {
+    0% {
+        opacity: @animated-zoomin-start-opacity;
+        -webkit-transform: scale3d(@animated-zoomin-scale, @animated-zoomin-scale, @animated-zoomin-scale);
+        transform: scale3d(@animated-zoomin-scale, @animated-zoomin-scale, @animated-zoomin-scale);
+    }
+    100% {
+        opacity: @animated-zoomin-end-opacity;
+    }
+}
+@keyframes kubZoomIn {
+    0% {
+        opacity: @animated-zoomin-start-opacity;
+        -webkit-transform: scale3d(@animated-zoomin-scale, @animated-zoomin-scale, @animated-zoomin-scale);
+        transform: scale3d(@animated-zoomin-scale, @animated-zoomin-scale, @animated-zoomin-scale);
+    }
+    100% {
+        opacity: @animated-zoomin-end-opacity;
+    }
+}
+.kub-zoomin {
+    -webkit-animation-name: kubZoomIn;
+    animation-name: kubZoomIn;
+}

@@ -1,422 +1,464 @@
 /**
- * # Kub.DatePicker
+ * # DatePicker
  *
- * 时间选择器。格式化参照 [`date`](date.js.html)
- *
- * 依赖于Hammer.js
+ * 时间选择器。格式化参照 [`DateHelper`](./date.js.html)
  *
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery||root.Zepto,root._,require('./lib/hammer'),require("./dialog"),require("./date"));
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
-        });
-    } else {
-        Kub.DatePicker = factory(root,root.jQuery||root.Zepto,root._,root.Hammer,Kub.Dialog,Kub.dateHelper);
+
+/**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ * @require [detect](./detect.js.html)
+ * @require [Dialog](./dialog.js.html)
+ * @require [DateHelper](./date.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite'),
+    os = require('./detect'),
+    Dialog = require('./dialog'),
+    template = require('./tpl/datepicker')
+
+require('./date')
+
+/**
+ * ## DatePicker Constructor
+ *
+ * `DatePicker` 构造函数。
+ *
+ * 使用：
+ * ```js
+ *  //采用默认的format yyyy-MM-dd
+ *  var datepicker = new Kub.DatePicker($('#J_datepicker'))
+ *
+ *  //采用默认的format yyyy-MM-dd
+ *  //可配置title 与 本地化
+ *  var datepicker1 = new Kub.DatePicker($('#J_datepicker1'),{
+ *      title:'Date Picker',
+ *      locale:'en'
+ *  })
+ *
+ *  //自定义format
+ *  var datepicker2 = new Kub.DatePicker($('#J_datepicker2'),{
+ *      title:'选择时间',
+ *      format:'yyyy-MM-dd,HH:mm:ss',
+ *      confirm:function(e,datepicker,formatDate){
+ *          //格式化后的 formatDate
+ *          //手动关闭选择器
+ *          datepicker.hide()
+ *      }
+ *  })
+ * ```
+ */
+function DatePicker(element, options) {
+    this.$element = $(element)
+    this.options = core.extend({}, _prototype.defaults, options || {})
+
+    init(this)
+}
+
+var HEIGHT_UNIT = 54,
+    DURATION = 200,
+    COLUMN_SELECTOR = '.kub-datepicker-column',
+    COLUMN_ITEM_SELECTOR = 'li',
+    COLUMN_CONTAINER_SELECTOR = 'ul'
+
+var $document = $(document),
+    isTouch = os.mobile
+
+var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+    EVENT_NAME = 'click'
+
+var _prototype = DatePicker.prototype
+
+//获取触摸点
+var getCoords = function(event) {
+    var touches = event.touches,
+        data = touches && touches.length ? touches : event.changedTouches
+
+    return {
+        x: isTouch ? data[0].pageX : event.pageX,
+        y: isTouch ? data[0].pageY : event.pageY
     }
-}(function(root,$,_,Hammer,Dialog){
-    "use strict";
+}
 
-    /**
-     * ## DatePicker Constructor
-     *
-     * DatePicker类
-     *
-     * 使用：
-     * ```js
-     *  //采用默认的format yyyy-MM-dd
-     *  var datepicker = new Kub.DatePicker($("#J_datepicker"));
-     *
-     *  //采用默认的format yyyy-MM-dd
-     *  //可配置title 与 本地化
-     *  var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
-     *      title:"Date Picker",
-     *      locale:"en"
-     *  });
-     *
-     *  //自定义format
-     *  var datepicker2 = new Kub.DatePicker($("#J_datepicker2"),{
-     *      title:"选择时间",
-     *      format:"yyyy-MM-dd,HH:mm:ss",
-     *      confirm:function(e,datepicker){
-     *          //格式化后的date
-     *          console.log(datepicker.formatDate)
-     *          //原始时间
-     *          console.log(datepicker.date)
-     *          //手动关闭选择器
-     *          datepicker.hide();
-     *      }
-     *  });
-     * ```
-     */
-    var CLASS_NAME = ".kub-datepicker";
+//获取偏移
+var getDistance = function(event, startCoords) {
+    var coords = getCoords(event),
+        x = coords.x - startCoords.x,
+        y = coords.y - startCoords.y
 
-    var DatePicker = function(element,options){
-        var self =this;
-        this.$element = $(element);
-        this.options = $.extend({},DatePicker.prototype.defaults,options || {});
+    return {
+        distanceX: x,
+        distanceY: y
+    }
+}
 
-        self._init().hide();
+var returnFalse = function() {
+    return false
+}
 
-        this.$element.on("click",function(e){
-            //使输入框失去焦点
-            self.$element[0].blur();
-            self.dialog.show();
+//获取当月最大天数
+var getDays = function(year, month) {
+    return new Date(year, month + 1, 0).getDate()
+}
 
-            //解决 iphone 下，fixed定位问题
-            setTimeout(function(){
-                var $window = $(window);
-                $window.scrollTop($window.scrollTop());
-            },5);
-            return false;
-        });
-    };
+//根据偏移量算出索引值
+var getIndexByDistance = function(y, max) {
+    //去掉空白的两行
+    max = max - 3
+    y = y > 0 ? 0 : y
+    var index = Math.round(Math.abs(y) / HEIGHT_UNIT)
+    return index > max ? max : index
+}
 
-    var HEIGHTUNIT = 40,
-        DURATION = 0.5,
-        SHOWCLASS = "kub-datepicker-show",
-        VALUECOLUMNCLASS = ".kub-datepicker-column",
-        VALUETAG = "li",
-        VALUECONTAINERTAG = "ul",
-        //时间选择器模板
-        TEMPLATE = '<div class="kub-datepicker"> <div class="kub-datepicker-column year" data-type="year"> <ul> <li class="kub-datepicker-show"></li> <%for(var i=data.yearRange[0];i<= data.yearRange[1];i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= i%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column month"  data-type="month"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 1;i<=12;i++){%> <li class="kub-datepicker-show" data-value="<%= i-1%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column day"  data-type="day"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 1;i<=31;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column hour"  data-type="hour"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=23;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column minute"  data-type="minute"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-datepicker-column second"  data-type="second"> <ul> <li class="kub-datepicker-show"></li> <%for(var i= 0;i<=59;i++){%> <li class="kub-datepicker-show" data-value="<%= i%>"><%= (i<10 ? ("0" + i) : i)%></li> <%}%> <li class="kub-datepicker-show"></li> </ul> </div> <div class="kub-overlay"></div> </div> ';
+//设置偏移速度
+var setDuration = function($this, duration) {
+    var $container = $this[0].$container,
+        transition = 'transform ' + duration + 'ms ease-out',
+        webkiTransition = '-webkit-transform ' + duration + 'ms ease-out'
 
-    ;(function(){
-        this.constructor = DatePicker;
+    $container.css({
+        '-webkit-transition': duration != null ? webkiTransition : duration,
+        'transition': duration != null ? transition : duration
+    })
+}
 
-        /**
-         * ## defaults
-         *
-         * 默认配置项
-         *
-         * 配置项说明：
-         *
-         * * `locale`: 本地化。本地化采用CSS实现。
-         *
-         * * `title`: 时间选择器弹窗名称。
-         *
-         * * `confirm`: 单击确认按钮时触发的事件。如果未传递，单击时会默认关闭弹窗，并进行赋值。如果传递，需调用`dialog.close()`手动关闭弹窗，并且需要手动填充输入框。
-         *
-         * * `cancel`: 单击取消按钮时触发的事件。如果未传递，单击时会默认关闭弹窗。如果传递，需调用`dialog.close()`手动关闭弹窗。
-         *
-         * * `format`: 日期格式
-         *
-         * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效。
-         *
-         * * `className`: 弹窗类名，不建议修改，会影响样式。
-         *
-         * * `date`: 默认显示时间
-         *
-         * * `yearRange`: 年份显示区间
-         */
-        this.defaults = {
-            locale:"zh",
-            title:"选择时间",
-            confirm:null,
-            cancel:null,
-            format:"yyyy-MM-dd",
-            closable:false,
-            className:"kub-datepicker-dialog",
-            date:new Date(),
-            yearRange:[1970,2100]
-        };
+//设置偏移速度
+var setTranslate = function($this, x, y) {
+    var $container = $this[0].$container,
+        t
 
-        this._render = function(){
-            if(this.completed) return;
-            var self = this,options = self.options,
-                html = _.template(TEMPLATE)({
-                    data:options
-                });
+    core.isNumber(x) && (x += 'px')
+    core.isNumber(y) && (y += 'px')
 
-            self.dialog = new Dialog({
-                title:options.title,
-                locale:options.locale,
-                message:html,
-                closable:options.closable,
-                className:options.className,
-                animated:false,
-                buttons:[{
-                    text:Dialog.prototype.i18n[options.locale].cancel,
-                    handler:function(e,dialog){
-                        options.cancel ? options.cancel.call(this,e,self) : dialog.hide();
-                    }
-                },{
-                    text:Dialog.prototype.i18n[options.locale].ok,
-                    handler:function(e,dialog){
-                        self.date = self.getDate();
-                        self.formatDate = self.date.format(options.format);
+    t = 'translate3d(' + x + ',' + y + ',0)'
 
-                        options.confirm ? options.confirm.call(this,e,self) : function(){
-                            self.$element.val(self.formatDate);
-                            dialog.hide();
-                        }();
-                    }
-                }]
-            });
-            self.completed = true;
-            return self;
-        };
+    !$container && ($container = $this[0].$container = $this.find(COLUMN_CONTAINER_SELECTOR))
 
-        this._init = function(){
-            var self = this,options = self.options;
+    $container.css({
+        '-webkit-transform': t,
+        'transform': t
+    })
+}
 
-            //创建对话框
-            self._render();
 
-            self.ui = {
-                year:self.dialog.$element.find(".year"),
-                month:self.dialog.$element.find(".month"),
-                day:self.dialog.$element.find(".day"),
-                hour:self.dialog.$element.find(".hour"),
-                minute:self.dialog.$element.find(".minute"),
-                second:self.dialog.$element.find(".second")
-            };
+//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
+var setValue = function(datepicker, name, value) {
+    var $this = datepicker._ui[name],
+        index,
+        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
 
-            options.format.indexOf("y") === -1 && (self.ui.year.empty().remove());
-            options.format.indexOf("M") === -1 && (self.ui.month.empty().remove());
-            options.format.indexOf("d") === -1 && (self.ui.day.empty().remove());
-            options.format.indexOf("H") === -1 && (self.ui.hour.empty().remove());
-            options.format.indexOf("m") === -1 && (self.ui.minute.empty().remove());
-            options.format.indexOf("s") === -1 && (self.ui.second.empty().remove());
+    if ($item.length) {
+        index = parseInt($item.attr('data-index'))
 
-            //设置本地化
-            self.dialog.$element.addClass("kub-datepicker-"+options.locale);
+        $this[0].index = index
 
-            //监听每个元素的滚动事件
-            self.ui.columns = self.dialog.$element.find(VALUECOLUMNCLASS).each(function(){
-                var $handler = $(this), hammer = new Hammer($handler[0]);
-                //监听拖动开始事件
-                hammer.get("pan").set({
-                    threshold: 0
-                });
-                hammer.on("panstart",function(event){
-                    self.ui.currentScrollHandler = $handler;
-                    event.preventDefault();
-                });
-            });
+        setTranslate($this, 0, -index * HEIGHT_UNIT)
+    }
+}
 
-            HEIGHTUNIT = self.ui.columns.find(VALUETAG).eq(0).height();
+//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
+var getValue = function(datepicker, name) {
+    var $this = datepicker._ui[name],
+        $items = $this.find(COLUMN_ITEM_SELECTOR),
+        index = $this[0].index + 1,
+        value = parseInt($items.eq(index).attr('data-value'))
 
-            //设置默认时间
-            self.setDate(options.date);
-            //验证是否存在31天
-            self._setDays(options.date.getFullYear(), options.date.getMonth());
+    return value ? value : 0
+}
 
-            //注册全局拖动事件，注册在每一列，会导致拖动不流畅
-            self._registerGlobalScroll();
+//移除不需要的列
+var removeColumns = function(format, ui) {
+    format.indexOf('y') === -1 && ui.year.remove()
+    format.indexOf('M') === -1 && ui.month.remove()
+    format.indexOf('d') === -1 && ui.day.remove()
+    format.indexOf('H') === -1 && ui.hour.remove()
+    format.indexOf('m') === -1 && ui.minute.remove()
+    format.indexOf('s') === -1 && ui.second.remove()
+}
 
-            return self;
-        };
+//渲染对话框
+var render = function(datepicker) {
+    var options = datepicker.options,
+        html = template(options)
 
-        this._cacheData = function($this,index){
-            $this[0].y = index * HEIGHTUNIT;
-            $this[0].index = Math.abs(index);
-            return this;
-        };
+    datepicker.$element[0].dialog = new Dialog({
+        title: options.title,
+        message: html,
+        className: options.className,
+        buttons: [{
+            text: options.cancelText,
+            handler: function(e, dialog) {
+                var cancel = options.cancel
+                cancel ? cancel.call(this, e, datepicker) : dialog.hide()
+            }
+        }, {
+            text: options.confirmText,
+            handler: function(e, dialog) {
+                var confirm = options.confirm,
+                    formatDate = datepicker.getDate().format(options.format)
 
-        this._registerGlobalScroll = function(){
-            var self = this,
-                options = self.options,
-                $datepicker = self.dialog.$element.find(CLASS_NAME);
+                confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
+                    datepicker.$element[0].value = formatDate
+                    dialog.hide()
+                }()
+            }
+        }]
+    })
+}
 
-            $datepicker.parent().on("touchmove",function(e){
-                e.stopPropagation();
-                e.preventDefault();
-                e.stopImmediatePropagation();
-            });
-            var hammer = new Hammer($datepicker[0]),$handler, index, y, shouldSetDays;
+//重置每月最大天数
+var setActualDays = function(datepicker, year, month) {
+    var days = getDays(year, month),
+        day = getValue(datepicker, 'day')
 
-            //监听拖动开始事件
-            hammer.get("pan").set({
-                threshold: 0
-            });
-            hammer.on("panstart",function(event){
-                if(self.ui.currentScrollHandler !== $handler){
-                    $handler = self.ui.currentScrollHandler;
-                    //决定是否设置天数，由于年份与月份决定每月的天数
-                    shouldSetDays = $handler.hasClass("month") || $handler.hasClass("year");
-                    index = 0;
-                    y = $handler[0].y;
-                }
-                event.preventDefault();
-            }).on("panmove",function(event){
-                $handler && self.setTranslate($handler, 0, y + event.deltaY  +"px",0);
-                event.preventDefault();
-            }).on("panend",function(event){
-                if($handler){
-                    index = -self._getIndex(y + event.deltaY, HEIGHTUNIT, $handler.find("."+SHOWCLASS).length);
+    days < day && setValue(datepicker, 'day', days)
+}
 
-                    self._cacheData($handler,index);
+//绑定输入框聚焦事件
+var bindInputFocusEvent = function(datepicker) {
+    datepicker.$element.on(EVENT_NAME, function() {
+        //使输入框失去焦点
+        datepicker.$element[0].blur()
 
-                    self.setTranslate($handler, 0, $handler[0].y +"px", DURATION);
+        datepicker.show()
 
-                    shouldSetDays && self._setDays(self.getValue("year"), self.getValue("month"));
-                }
-                //结束以后将当前滚动元素至空
-                self.ui.currentScrollHandler = $handler = null ;
-                event.preventDefault();
-            });
-            return self;
-        };
+        return false
+    })
+}
 
-        this._getIndex = function(y,height,max){
-            //去掉空白的两行
-            max = max-3;
-            y = y > 0 ? 0 : y;
-            var index = Math.round(Math.abs(y) / height);
-            return index > max ? max : index;
-        };
+//绑定事件
+var bindEvents = function(datepicker) {
+    var flag = false,
+        $activeElement
 
-        this.setTranslate = function($this,x,y,duration){
-            ($this[0].$container ? $this[0].$container : ( $this[0].$container = $this.find(VALUECONTAINERTAG))).css({
-                "-webkit-transform": "translate(0,"+y+")",
-                transform: "translate(0,"+y+")"
-            });
-            return this;
-        };
+    var start = function(event) {
+            flag = true
+            event = event.originalEvent || event
 
-        this._setDays = function(year,month){
-            var self = this,
-                days = self.getDays(year,month),
-                day = self.getValue("day"),
-                $valueTags = self.ui.day.find(VALUETAG);
+            this.startCoords = getCoords(event)
 
-            //移除不在本月的日期
-            $valueTags.addClass(SHOWCLASS).slice(days+1, $valueTags.length-1).removeClass(SHOWCLASS);
-            days < day && self.setValue("day",days);
-            return self;
-        };
+            $activeElement = $(this)
 
-        this.getDays = function(year,month){
-            return (new Date(year, month + 1, 0)).getDate();
-        };
+            setDuration($activeElement, null)
+        },
+        move = function(event) {
+            if (!flag) return
+            event = event.originalEvent || event
 
-        /**
-         * ## setDate
-         *
-         * 设置时间选择器时间
-         *
-         * @param {Date} date 时间
-         * @return {instance} 当前实例
-         */
-        this.setDate = function(date){
-            var self = this;
-            ["year","month","day","hour","minute","second"].forEach(function(type){
-                switch(type){
-                    case "year":
-                        self.setValue(type,date.getFullYear());
-                        break;
-                    case "month":
-                        self.setValue(type,date.getMonth());
-                        break;
-                    case "day":
-                        self.setValue(type,date.getDate());
-                        break;
-                    case "hour":
-                        self.setValue(type,date.getHours());
-                        break;
-                    case "minute":
-                        self.setValue(type,date.getMinutes());
-                        break;
-                    case "second":
-                        self.setValue(type,date.getSeconds());
-                        break;
-                }
-            });
-            return self;
-        };
+            var distance = getDistance(event, $activeElement[0].startCoords)
 
-        /**
-         * ## getDate
-         *
-         * 获取时间选择器选择的时间
-         *
-         * @param {Date} date 时间
-         * @return {Date} 获取到的时间
-         */
-        this.getDate = function(){
-            var self = this,
-                options = self.options,
-                values = {
-                    year:self.getValue("year"),
-                    month:self.getValue("month"),
-                    day:self.getValue("day"),
-                    hour:self.getValue("hour"),
-                    minute:self.getValue("minute"),
-                    second:self.getValue("second")
-                };
+            setTranslate($activeElement, 0, distance.distanceY - HEIGHT_UNIT * $activeElement[0].index)
 
-            return new Date(values.year,values.month,values.day,values.hour,values.minute,values.second);
-        };
+            event.preventDefault()
+        },
+        end = function(event) {
+            if (!flag) return
+            flag = false
+            event = event.originalEvent || event
 
-        /**
-         *
-         * 设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
-         *
-         * @param {String} name 对应列的名称（year,month,day,hour,minute,second）
-         * @param {String} value 值
-         * @return {instance} 当前实例
-         */
-        this.setValue = function(name,value){
-            var $this = this.ui[name], index;
+            var distance = getDistance(event, $activeElement[0].startCoords),
+                max = $activeElement.find(COLUMN_ITEM_SELECTOR).length,
+                index = getIndexByDistance(distance.distanceY - HEIGHT_UNIT * $activeElement[0].index, max)
 
-            index = -($this.find(VALUETAG+'[data-value="'+value+'"]').index()-1);
-            this._cacheData($this,index);
-            this.setTranslate($this, 0,$this[0].y +"px",0);
+            $activeElement[0].index = Math.abs(index)
 
-            return this;
-        };
+            //验证是否存在31,30,29天
+            setActualDays(datepicker, getValue(datepicker, 'year'), getValue(datepicker, 'month'))
 
-        /**
-         *
-         * 获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
-         *
-         * @param {String} name 对应列的名称（year,month,day,hour,minute,second）
-         * @return {Number} 某一列的值
-         */
-        this.getValue = function(name){
-            var $this = this.ui[name], $valueTags = $this.find(VALUETAG);
+            setDuration($activeElement, DURATION)
 
-            return $valueTags.length ? parseInt( $valueTags.eq( $this[0].index + 1 ).attr("data-value") ) : 0;
-        };
+            setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
+        }
 
-        /**
-         * ## close
-         *
-         * 关闭时间选择器
-         * @return {instance} 当前实例
-         */
-        this.close = function(){
-            this.dialog.close();
-            return this;
-        };
+    datepicker._ui.columns.each(function(){
 
-        /**
-         * ## show
-         *
-         * 显示时间选择器
-         * @return {instance} 当前实例
-         */
-        this.show = function(){
-            this.dialog.show();
-            return this;
-        };
+        $(this).on(START_EVENT, function() {
+            start.apply(this, arguments)
+        })
 
-        /**
-         * ## hide
-         *
-         * 隐藏时间选择器
-         * @return {instance} 当前实例
-         */
-        this.hide = function(){
-            this.dialog.hide();
-            return this;
-        };
+        this.onselectstart = returnFalse
+        this.ondragstart = returnFalse
+    })
 
-    }).call(DatePicker.prototype);
+    $document.on(MOVE_EVENT, move)
+    $document.on(END_EVENT, end)
 
-    return DatePicker;
-}));
+    bindInputFocusEvent(datepicker)
+}
+
+var init = function(datepicker) {
+    var options = datepicker.options,
+        $element,
+        ui
+
+    //创建对话框
+    render(datepicker)
+
+    $element = datepicker.$element[0].dialog.$element
+
+    //缓存dom
+    ui = datepicker._ui = {
+        year: $element.find('.year'),
+        month: $element.find('.month'),
+        day: $element.find('.day'),
+        hour: $element.find('.hour'),
+        minute: $element.find('.minute'),
+        second: $element.find('.second')
+    }
+    ui.columns = $element.find(COLUMN_SELECTOR)
+
+    //设置块高度
+    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+
+    //隐藏对话框
+    datepicker.hide()
+
+    //移除
+    removeColumns(options.format, ui)
+
+    //设置本地化
+    $element.addClass('kub-datepicker-' + options.locale)
+
+    //设置默认时间
+    datepicker.setDate(options.date)
+
+    //绑定事件
+    bindEvents(datepicker)
+}
+
+
+/**
+ * ## DatePicker.prototype.defaults
+ *
+ * 默认配置项
+ *
+ * 配置项说明：
+ *
+ * * `locale`: `String` 本地化。本地化采用CSS实现。
+ *
+ * * `title`: `String` 时间选择器弹窗名称。
+ *
+ * * `confirmText`: `String` 确认按钮名称。
+ *
+ * * `confirm`: `Function` 单击确认按钮时触发的事件。
+ *
+ * > 如果未传递，单击时会默认关闭弹窗，并对输入框赋值。
+ * >
+ * > 如果传递，需调用`datepicker.close()`手动关闭弹窗，并且需要对输入框赋值。
+ *
+ * * `cancelText`: `String` 取消按钮名称。
+ *
+ * * `cancel`: `Function` 单击取消按钮时触发的事件。
+ *
+ * > 如果未传递，单击时会默认关闭弹窗。
+ * >
+ * > 如果传递，需调用`datepicker.close()`关闭弹窗。
+ *
+ * * `format`: `String` 日期格式。
+ *
+ * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-dialog`默认类名。
+ *
+ * * `date`: `Date` 默认显示时间。
+ *
+ * * `yearRange`: `Array` 年份显示区间。
+ */
+_prototype.defaults = {
+    locale: 'zh',
+    title: '选择时间',
+    confirmText: '确定',
+    confirm: null,
+    cancelText: '取消',
+    cancel: null,
+    format: 'yyyy-MM-dd',
+    className: 'kub-datepicker-dialog',
+    date: new Date(),
+    yearRange: [1970, 2050]
+}
+
+/**
+ * ## DatePicker.prototype.setDate
+ *
+ * 设置时间选择器时间。
+ *
+ * @param {Date} date 时间
+ * @return {instance} 当前实例
+ */
+_prototype.setDate = function(date) {
+    var self = this,
+        year = date.getFullYear(),
+        month = date.getMonth()
+
+    setValue(self, 'year', year)
+
+    setValue(self, 'month', month)
+
+    setValue(self, 'day', date.getDate())
+
+    setValue(self, 'hour', date.getHours())
+
+    setValue(self, 'minute', date.getMinutes())
+
+    setValue(self, 'second', date.getSeconds())
+
+    return self
+}
+
+/**
+ * ## DatePicker.prototype.getDate
+ *
+ * 获取时间选择器选择的时间。
+ *
+ * @return {Date} 获取到的时间
+ */
+_prototype.getDate = function() {
+    var values = {
+        year: getValue(this, 'year'),
+        month: getValue(this, 'month'),
+        day: getValue(this, 'day'),
+        hour: getValue(this, 'hour'),
+        minute: getValue(this, 'minute'),
+        second: getValue(this, 'second')
+    }
+    return new Date(values.year, values.month, values.day, values.hour, values.minute, values.second)
+}
+
+/**
+ * ## DatePicker.prototype.close
+ *
+ * 关闭时间选择器。
+ *
+ * @return {instance} 当前实例
+ */
+_prototype.close = function() {
+    this.$element[0].dialog.close()
+    return this
+}
+
+/**
+ * ## DatePicker.prototype.show
+ *
+ * 显示时间选择器。
+ *
+ * @return {instance} 当前实例
+ */
+_prototype.show = function() {
+    this.$element[0].dialog.show()
+    return this
+}
+
+/**
+ * ## DatePicker.prototype.hide
+ *
+ * 隐藏时间选择器。
+ *
+ * @return {instance} 当前实例
+ */
+_prototype.hide = function() {
+    this.$element[0].dialog.hide()
+    return this
+}
+
+module.exports = DatePicker

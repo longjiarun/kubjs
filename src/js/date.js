@@ -1,10 +1,10 @@
 /**
- * # Kub.dateHelper
- * 
+ * # DateHelper
+ *
  * 日期格式化组件。
- * 
+ *
  * 格式化字符:
- * 
+ *
     yyyy : 四位年。例如：2015
 
     yy   : 二位年份，最后两位。例如 15
@@ -40,225 +40,210 @@
     aa   : 全称上午或者下午。例如A.M.，P.M.
 
     a    : 简称上午或者下午。例如AM.
-
 */
-!(function(factory) {
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root);
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.dateHelper = factory(root);
-        });
-    } else {
-        Kub.dateHelper = factory(root);
+
+/**
+ * ## DateHelper Constructor
+ *
+ * `DateHelper` 模块，对外提供的是实例化的对象。
+ *
+ * 使用：
+ * ```js
+ * //String to Date
+ *
+ * '2015-05-20'.parseDate('yyyy-MM-dd')
+ *
+ * //格式化日期
+ * new Date().format('yyyy-MM-dd,HH:mm:ss')
+ *
+ * ```
+ */
+function DateHelper() {
+
+}
+
+var _prototype = DateHelper.prototype
+
+var get2Year = function(date) {
+    return (date.getFullYear() + '').replace(/\d{2}$/, '00') - 0
+}
+
+var get2 = function(value) {
+    return value < 10 ? '0' + value : value
+}
+
+var getAmPm = function(date) {
+    return date.getHours() < 12 ? 0 : 1
+}
+
+//获取相对应的日期相关数据
+var getValueByPattern = function(datehelper, fmt, date) {
+
+    var patterns = {
+        yyyy: date.getFullYear(),
+        yy: date.getFullYear() - get2Year(date),
+        MMMM: datehelper.i18n[datehelper.locale].month.full[date.getMonth()],
+        MMM: datehelper.i18n[datehelper.locale].month.abbr[date.getMonth()],
+        MM: get2(date.getMonth() + 1),
+        M: date.getMonth() + 1,
+        dddd: datehelper.i18n[datehelper.locale].day.full[date.getDay()],
+        ddd: datehelper.i18n[datehelper.locale].day.abbr[date.getDay()],
+        dd: get2(date.getDate()),
+        d: date.getDate(),
+        HH: get2(date.getHours()),
+        H: date.getHours(),
+        mm: get2(date.getMinutes()),
+        m: date.getMinutes(),
+        ss: get2(date.getSeconds()),
+        s: date.getSeconds(),
+        aa: datehelper.i18n[datehelper.locale].amPm.full[getAmPm(date)],
+        a: datehelper.i18n[datehelper.locale].amPm.abbr[getAmPm(date)]
     }
-}(function(root) {
-    'use strict';
+    return patterns[fmt]
+}
 
-    /**
-     * ## DateHelper Constructor
-     *
-     * DateHelper 对外提供的是实例化以后的对象。
-     *
-     * 使用：
-     * ```js
-     * //String to Date
-     * "2015-05-20".parseDate("yyyy-MM-dd");
-     *     
-     * //格式化日期
-     * (new Date()).format("yyyy-MM-dd,hh:mm:ss");
-     * ```
-     */
-    var DateHelper = function() {
+//本地化，目前包含`en`与`zh`
+_prototype.i18n = {
+    en: {
+        month: {
+            abbr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        },
+        day: {
+            abbr: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        },
+        amPm: {
+            abbr: ['AM', 'PM'],
+            full: ['A.M.', 'P.M.']
+        }
+    },
+    zh: {
+        month: {
+            abbr: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            full: ['一月份', '二月份', '三月份', '四月份', '五月份', '六月份', '七月份', '八月份', '九月份', '十月份', '十一月份', '十二月份']
+        },
+        day: {
+            abbr: ['日', '一', '二', '三', '四', '五', '六'],
+            full: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+        },
+        amPm: {
+            abbr: ['上午', '下午'],
+            full: ['上午', '下午']
+        }
+    }
+}
 
-    };
+//默认中文
+_prototype.locale = 'zh'
 
-    (function() {
-        this.constructor = DateHelper;
+/**
+ * ## DateHelper.prototype.addLocale
+ *
+ * 添加本地化
+ *
+ * @param {String} name   本地化名称
+ * @param {Object} locale 本地化数据
+ * @return {instance}     当前实例
+ */
+_prototype.addLocale = function(name, locale) {
+    name && locale && (this.i18n[name] = locale)
+    return this
+}
 
-        //本地化，目前包含`en`与`zh`
-        this.i18n = {
-            en: {
-                month: {
-                    abbr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    full: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                },
-                day: {
-                    abbr: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                    full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                },
-                amPm: {
-                    abbr: ['AM', 'PM'],
-                    full: ['A.M.', 'P.M.']
-                }
-            },
-            zh: {
-                month: {
-                    abbr: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                    full: ['一月份', '二月份', '三月份', '四月份', '五月份', '六月份', '七月份', '八月份', '九月份', '十月份', '十一月份', '十二月份']
-                },
-                day: {
-                    abbr: ['日', '一', '二', '三', '四', '五', '六'],
-                    full: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-                },
-                amPm: {
-                    abbr: ['上午', '下午'],
-                    full: ['上午', '下午']
-                }
-            }
-        };
+/**
+ * ## DateHelper.prototype.setLocale
+ *
+ * 设置默认本地化
+ *
+ * @param {String} name   本地化名称
+ * @return {instance}     当前实例
+ */
+_prototype.setLocale = function(name) {
+    this.locale = name
+    return this
+}
 
-        //默认中文
-        this.locale = "zh";
+/**
+ * ## DateHelper.prototype.format
+ *
+ * 格式化日期。
+ *
+ * @param {Date} date      日期
+ * @param {String} format  日期格式
+ * @return {String}        格式化以后的日期
+ */
+_prototype.format = function(date, format) {
+    var self = this
+    if (!date) return
 
-        /**
-         * ## addLocale
-         * 
-         * 添加本地化
-         * 
-         * @param {String} name   本地化名称
-         * @param {Object} locale 本地化数据
-         * @return {instance}     当前实例
-         */
-        this.addLocale = function(name, locale) {
-            name && locale && (this.i18n[name] = locale);
-            return this;
-        };
+    format = format || 'yyyy-MM-dd'
 
-        /**
-         * ## setLocale
-         * 
-         * 设置默认本地化
-         * 
-         * @param {String} name 本地化名称
-         * @return {instance}     当前实例
-         */
-        this.setLocale = function(name) {
-            this.locale = name;
-            return this;
-        };
+    format = format.replace(/(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|mm|m|ss|s|aa|a)/g, function(part) {
+        return getValueByPattern(self, part, date)
+    })
+    return format
+}
 
-        this._get2Year = function(date) {
-            return (date.getFullYear() + "").replace(/\d{2}$/, "00") - 0;
-        };
+/**
+ * ## DateHelper.prototype.parse
+ *
+ * 转换日期。
+ *
+ * 此方法存在一个BUG，例如：
+ *
+ * ```js
+ *
+ * //1112会被计算在MM内。
+ * dateHelper.parse('2015-1112','yyyy-MMdd')
+ *
+ *
+ * //所以在使用parse方法时，每一个串使用字符分隔开。类似于：
+ *
+ * dateHelper.parse('2015-11-12','yyyy-MM-dd')
+ *
+ * ```
+ *
+ * @param {String} input   字符串
+ * @param {String} format  格式化字符串
+ * @return {Date}          格式化的日期
+ */
+_prototype.parse = function(input, format) {
+    if (!input || !format) return
+    var parts = input.match(/(\d+)/g),
+        i = 0,
+        fmt = {}
 
-        this._get2 = function(value) {
-            return value < 10 ? "0" + value : value;
-        };
+    // extract date-part indexes from the format
+    format.replace(/(yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s)/g, function(part) {
+        fmt[part] = i++
+    })
 
-        this._getAmPm = function(date) {
-            return date.getHours() < 12 ? 0 : 1;
-        };
+    var year = parts[fmt['yyyy']] || (parseInt(parts[fmt['yy']], 10) + get2Year(new Date())) || 0,
 
-        //获取相对应的日期相关数据
-        this._getValueByPattern = function(fmt, date) {
-            var self = this;
-            var patterns = {
-                yyyy : date.getFullYear(),
-                yy   : date.getFullYear() - self._get2Year(date),
-                MMMM : self.i18n[self.locale].month.full[date.getMonth()],
-                MMM  : self.i18n[self.locale].month.abbr[date.getMonth()],
-                MM   : self._get2(date.getMonth() + 1),
-                M    : date.getMonth() + 1,
-                dddd : self.i18n[self.locale].day.full[date.getDay()],
-                ddd  : self.i18n[self.locale].day.abbr[date.getDay()],
-                dd   : self._get2(date.getDate()),
-                d    : date.getDate(),
-                HH   : self._get2(date.getHours()),
-                H    : date.getHours(),
-                mm   : self._get2(date.getMinutes()),
-                m    : date.getMinutes(),
-                ss   : self._get2(date.getSeconds()),
-                s    : date.getSeconds(),
-                aa   : self.i18n[self.locale].amPm.full[self._getAmPm(date)],
-                a    : self.i18n[self.locale].amPm.abbr[self._getAmPm(date)]
-            };
-            return patterns[fmt];
-        };
+        month = (parts[fmt['MM']] - 1) || (parts[fmt['M']] - 1) || 0,
 
-        /**
-         * ## format
-         * 
-         * 格式化日期
-         * 
-         * @param {Date} date     日期
-         * @param {String} format 日期格式
-         * @return {String}        格式化以后的日期
-         */
-        this.format = function(date, format) {
-            var self = this;
-            if(!date) return;
+        day = parts[fmt['dd']] || parts[fmt['d']] || 0,
 
-            format = format || "yyyy-MM-dd";
-            
-            format = format.replace(/(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|mm|m|ss|s|aa|a)/g, function(part) {
-                return self._getValueByPattern(part, date);
-            });
-            return format;
-        };
+        hour = parts[fmt['HH']] || parts[fmt['H']] || 0,
 
-        /**
-         * ## parse
-         * 
-         * 转换日期
-         * 
-         * 此方法存在一个BUG，例如：
-         * 
-         * ```js
-         * //1112会被计算在MM内。
-         * dateHelper.parse("2015-1112","yyyy-MMdd");
-         * ```
-         * 
-         * 所以在使用parse方法时，每一个串使用字符分隔开。类似于：
-         * 
-         * ```js
-         * dateHelper.parse("2015-11-12","yyyy-MM-dd");
-         * ```
-         * 
-         * @param {String} input  字符串
-         * @param {String} format 格式化字符串
-         * @return {Date}          格式化的日期
-         */
-        this.parse = function(input, format) {
-            if(!input || !format) return;
-            var parts = input.match(/(\d+)/g),
-                i = 0,
-                fmt = {};
+        minute = parts[fmt['mm']] || parts[fmt['m']] || 0,
 
-            // extract date-part indexes from the format
-            format.replace(/(yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s)/g, function(part) {
-                fmt[part] = i++;
-            });
+        second = parts[fmt['ss']] || parts[fmt['s']] || 0
 
-            var year = parts[fmt['yyyy']] || ( parseInt( parts[fmt['yy']] , 10 ) + this._get2Year(new Date())) || 0,
+    return new Date(year, month, day, hour, minute, second)
+}
 
-                month = (parts[fmt['MM']] - 1) || (parts[fmt['M']] - 1) || 0,
+var dateHelper = new DateHelper()
 
-                day = parts[fmt['dd']] || parts[fmt['d']] || 0,
+// 将 parseDate 方法绑定在 `String` 原型上
+String.prototype.parseDate = function(format) {
+    return dateHelper.parse(this, format)
+}
 
-                hour = parts[fmt['HH']] || parts[fmt['H']] || 0,
+// 将 format 方法绑定在 `Date` 原型上
+Date.prototype.format = function(format) {
+    return dateHelper.format(this, format)
+}
 
-                minute = parts[fmt['mm']] || parts[fmt['m']] || 0,
-
-                second = parts[fmt['ss']] || parts[fmt['s']] || 0;
-
-            return new Date(year, month, day, hour, minute, second);
-        };
-    }).call(DateHelper.prototype);
-
-    var dateHelper = new DateHelper();
-
-
-    // 将 parseDate 方法绑定在 `String` 原型上
-    String.prototype.parseDate = function(format){
-        return dateHelper.parse(this,format);
-    };
-
-    // 将 format 方法绑定在 `Date` 原型上
-    Date.prototype.format = function(format){
-        return dateHelper.format(this,format);
-    };
-
-    return dateHelper;
-}));
+module.exports = dateHelper

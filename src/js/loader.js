@@ -1,77 +1,66 @@
 /**
- * # Kub.Loader
- * 
- * 加载等待框
- * @extend [Dialog](dialog.js.html)
+ * # Loader
+ *
+ * 加载等待框。
+ *
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root, root._, root.jQuery||root.Zepto, require("./dialog"));
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.Loader = factory(root, root._, root.jQuery||root.Zepto, Kub.Dialog);
-        });
-    } else {
-        Kub.Loader = factory(root, root._, root.jQuery||root.Zepto, Kub.Dialog);
-    }
-}(function(root, _, $, Dialog){
 
-    /**
-     * ## Loader Constructor
-     *
-     * 初始化`Loader`类，`Loader`并不提供实例方法，实例方法均继承于`Dialog`。
-     *
-     * 使用方法：
-     * ```js
-     * var loader = new Kub.Loader();
-     * //隐藏loader
-     * loader.hide();
-     * ```
-     */
-    var Loader = function(options){
-        var self = this;
-        this.options = $.extend({},Loader.prototype.defaults, options||{},{
-            showHeader:false,
-            closable:false,
-            buttons:null
-        });
-        
-        this.options.message = _.template(TEMPLATE)({data:this.options});
+/**
+ * @require [core](./core.js.html)
+ * @extend [Dialog](./dialog.js.html)
+ */
+var core = require('./core'),
+    Dialog = require('./dialog')
 
-        Dialog.call(this,this.options);
-    };
+/**
+ * ## Loader Constructor
+ *
+ * 继承于`Dialog`，可使用`Dialog`类中的方法。
+ *
+ * 使用方法：
+ *
+ * ```js
+ * var loader = new Kub.Loader()
+ *
+ * //隐藏loader
+ * loader.hide()
+ *
+ * var loader = new Kub.Loader({
+ *     message: '定制提示内容'
+ * })
+ *
+ * ```
+ */
+function Loader(options) {
+    var opts = this.options = core.extend({}, _prototype.defaults, options || {}, {
+        showHeader: false,
+        buttons: null
+    })
 
-    //加载等待框模板
-    var TEMPLATE = '<div class="kub-spinner"> <div class="rect1"></div> <div class="rect2"></div> <div class="rect3"></div> <div class="rect4"></div> <div class="rect5"></div> </div> <div class="kub-loader-message"><%= data.message%></div>'
+    Dialog.call(this, opts)
+}
 
-    //继承于 `Dialog`
-    Dialog.prototype.inherit(Loader,Dialog);
+var _prototype = Loader.prototype = Object.create(Dialog.prototype)
 
-    ;(function(){
-        this.constructor = Loader;
+_prototype.constructor = Loader
 
-        /**
-         * ## defaults
-         *
-         * `Loader`默认配置项。
-         *
-         * 配置项说明：
-         * 
-         * * `className`: 弹窗类名，不建议修改，会影响样式。
-         * 
-         * * `message`: 加载文字提示
-         * 
-         * * `modal`: 是否显示遮罩层。
-         */
-        this.defaults = {
-            scrollable:true,
-            className:"kub-loader",
-            modal:true,
-            message:"加载中..."
-        };
+/**
+ * ## Loader.prototype.defaults
+ *
+ * `Loader` 默认配置项。
+ *
+ * 配置项说明：
+ *
+ * * `className`: `String` 弹窗类名，修改时需加上`kub-loader`默认类名。
+ *
+ * * `message` : `String` 提示内容。
+ *
+ * * `modal` : `Boolean` 是否显示遮罩层。
+ */
+_prototype.defaults = {
+    className: 'kub-loader',
+    modal: true,
+    message: '加载中…'
+}
 
-     }).call(Loader.prototype);
-
-    return Loader;
-}));
+module.exports = Loader

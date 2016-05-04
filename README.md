@@ -1,152 +1,135 @@
-## 移动端类库 kubjs
+# 轻量级移动端组件库 Kub
 
-### 为什么取名kubjs?
+## 设计
 
-> 在开发中本来就很苦逼（kubi），每天很繁琐。希望有了此框架以后，你的人生将不在苦逼。所以取名为kub。
+0. Kub 由多个组件构成，组件之间依赖较低；
 
-### 设计思想
+0. 组件尽量做到轻量且扩展性良好；
 
-> kubjs由非常多的组件构成，组件之间依赖较低。每个组件基本都能独立拿出来使用。然而这些组件结合在一起时，能形成一个非常酷的类库。这也是以后框架的发展趋势。
+0. 组件对外提供稳定的API，在使用时可通过参数配置或者继承实现定制化的组件；
 
-> 底层采用开源类库zepto.js,unerscore.js。每个组件根据需要决定是否依赖底层类库。
+0. 组件采用`commonjs`规范，采用`webpack`编译，对外提供源文件与编译后的文件；
 
-> 组件采用类的方式进行编写，每个组件提供丰富稳定的接口。用户在使用时可以通过参数配置或者继承实现自己定制化的组件。
+0. `Kub`对外提供暴露全局的`Kub`变量，所有组件绑定在该变量中；
 
-### 结构图
-![](http://img.geilicdn.com/kub1437990758940.png)
+0. 样式采用`less`编写，对外提供源文件与编译后的文件；
 
-### 关于实现
+0. 样式可统一在`variables.less`文件中配置；
 
-```javascript
-1、kubjs不提供模块管理，由第三方提供(requirejs,seajs)
+0. 对外提供不包含样式的`kub.js`以及包含样式的`kub.style.js`;
 
-//模块写法，兼容node,amd/cmd,浏览器直接引入
-!(function(root,factory){
-    var Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root);
-    }else if(typeof define === "function"){
-        define(function(){
-            return Kub.core = factory(root);
-        });
-    } else{
-        Kub.core = factory(root);
-    }
-}(this,function(root){
-    //some code
-}));
+## 兼容性
 
-2、底层库采用zepto,underscore，部分依赖于hammer
+0. ios7及以上版本；
+    
+0. Android4.0及以上版本；
+
+## 版本
+
+0. 遵循[语义化版本规范](http://semver.org/lang/zh-CN/)；
+
+0. `master`分支为最新的稳定的发布版本；
+
+0. `tags`中的分支对应每一个发布版本；
+
+0. 其余分支为开发分支，为不稳定版本；
+
+0. `1.*` 版本将不再升级与维护，除非有重大bug；
+
+## 安装
+
+### git
 
 ```
-
-### 关于测试
-
-预计采用Jasmine
-
-### 关于发布
-
-- 前期跟随项目文件走
-
-- 后期稳定以后，发布到cdn
-
-### 关于文档
-
-API文档写在js中，采用 [Docker](https://github.com/jbt/docker) 生成文档。语法可参照文档。
-
-文档地址：http://test.hd.koudai.com/api/kub/
-
->   1、安装 Docker，参照 Docker 文档。
-
-```javascript
-    npm install -g docker
+git clone https://github.com/longjiarun/kubjs.git kub
 ```
 
->   2、运行下面命名，监听js并生成文档。
+### npm
 
-```javascript
-    //生成文档
-    docker -i src/js -o docs/html/kub -x lib
+```
+npm install kub --save
 
-    //监听并生成文档
-    docker -i src/js -o docs/html/kub -x lib -w
+//指定版本
+npm install kub@version --save
 ```
 
->   3、运行下面命名发布文档。
+### bower
 
-```javascript
-    gulp publishdoc;
+```
+bower install kub --save
+
+//指定版本
+bower install kub#version --save
 ```
 
-### 关于使用
+## 使用
 
-- 组件依赖关系表，大部分组件默认依赖 zepto 与 underscore；
+### 使用编译后的文件`kub.js`及`kub.style.js`。
 
-- swiper 与 datepicker 组件依赖于 hammer 。
+1、如果组件名称首字母大小，则暴露的是类，需实例化；
 
-- 模块依赖关系表未将基础库放入依赖中，所以在页面中要默认引入基础库；
-
-#### 依赖关系表
-
-```javascript
-
-// require 依赖关系配置
-
-require.config({
-    baseUrl:"./js/",
-    shim:{
-        "lib/kub/alert":{
-            deps:["lib/kub/dialog"]
-        },
-        "lib/kub/confirm":{
-            deps:["lib/kub/dialog"]
-        },
-        "lib/kub/toast":{
-            deps:["lib/kub/dialog"]
-        },
-        "lib/kub/loader":{
-            deps:["lib/kub/dialog"]
-        },
-        "lib/kub/prompt":{
-            deps:["lib/kub/dialog"]
-        },
-        "lib/kub/datepicker":{
-            deps:["lib/kub/dialog","lib/kub/date"]
-        },
-        "lib/kub/datepicker":{
-            deps:["lib/kub/dialog","lib/kub/date"]
-        },
-        "lib/kub/extend/scrolltable":{
-            deps:["lib/kub/core","lib/kub/lazyload"]
-        },
-        "lib/kub/extend/geolocation":{
-            deps:["lib/kub/cookie"]
-        }
-    }
-});
 ```
-#### 使用
-
-```javascript
-//类(工厂)
+//组件为类
 var dialog = new Kub.Dialog({
     //配置参数
 });
-dialog.close();
-
-//类(单例)
-var rem1 = new Kub.Rem({
-    //配置参数
-});
-
-var rem2 = new Kub.Rem({
-    //配置参数
-});
-
-rem1 === rem2 //true
-
-
-//单例
-Kub.cookie("name","kubjs");
-Kub.cookie("name");
 ```
+
+2、如果组件名称首字母小写，则暴露的是对象或函数，无需实例化；
+
+```
+//组件为实例化后的对象
+Kub.dateHelper.format(new Date(),'yyyy-MM-dd')
+
+//组件为函数
+Kub.cookie('name','kub');
+
+//组件为对象
+Kub.os.ios
+```
+
+### 使用源文件。
+
+1、bower
+
+```
+//引用kub.js
+var Kub = require('../../bower_components/kub/src/js/kub')
+
+new Kub.Dialog()
+
+//引用单个组件
+var Dialog = require('../../bower_components/kub/src/js/dialog')
+
+new Dialog()
+
+//使用less
+require('../../bower_components/kub/src/less/dialog.less')
+```
+
+2、npm
+
+```
+//引用kub.js
+var Kub = require('kub')
+
+new Kub.Dialog()
+
+//引用单个组件
+var Dialog = require('kub/src/js/dialog')
+
+new Dialog()
+
+//使用less
+require('kub/src/less/dialog.less')
+```
+
+## 问题
+
+0. 通过[Github issues](https://github.com/longjiarun/kubjs/issues)反馈；
+
+0. 通过[Email](mailto:longjiarun@qq.com)反馈；
+
+## 文档
+
+[查看文档]()

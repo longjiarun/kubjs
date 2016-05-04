@@ -1,0 +1,89 @@
+/**
+ * animate.less
+ */
+@unit: 1px;
+
+@animated-duration: 500ms;
+@animated-fill-mode: both;
+
+//zoom-in
+@animated-zoomin-scale: 1.1;
+@animated-zoomin-start-opacity: 0;
+@animated-zoomin-end-opacity: 1;
+
+
+
+/**
+ * dialog.less
+ */
+@dialog-font-size: 18 * @unit;
+@dialog-white: #fff;
+@dialog-opacity: 0.1;
+@dialog-black: rgba(0, 0, 0, @dialog-opacity * 7);
+@dialog-z-index: 10000;
+@dialog-padding: 16 * @unit;
+@dialog-width: 86%;
+@dialog-background: @dialog-white;
+@dialog-color: #333;
+@dialog-box-shadow: 0 2px 5px rgba(0, 0, 0, @dialog-opacity);
+
+//dialog border
+@dialog-border-radius: 6 * @unit;
+@dialog-border-color: #f4f4f4;
+
+//dialog modal
+@dialog-modal-background: rgba(0, 0, 0, @dialog-opacity * 6);
+
+//dialog header
+@dialog-header-background: @dialog-border-color;
+@dialog-header-padding: @dialog-padding @dialog-padding/2;
+
+//dialog body
+@dialog-body-padding: 24 * @unit @dialog-padding;
+@dialog-body-line-height: 1.5;
+@dialog-body-color:@dialog-color;
+
+//dialog button
+@dialog-button-padding: @dialog-padding @dialog-padding/2;
+@dialog-button-font-size:100%;
+@dialog-button-border: 2px solid @dialog-border-color;
+
+
+//toast
+@toast-border: 1px solid rgba(0, 0, 0, @dialog-opacity);
+@toast-background:@dialog-black;
+@toast-body-padding:@dialog-padding @dialog-padding/2;
+@toast-body-color:@dialog-white;
+
+
+//prompt
+@prompt-input-border: 1px solid @dialog-border-color;
+@prompt-input-padding: @dialog-padding/2;
+@prompt-input-background: @dialog-white;
+@prompt-input-font-size:100%;
+
+
+//loader
+@loader-width: 36%;
+@loader-border-radius: 16 * @unit;
+@loader-background:@dialog-black;
+@loader-body-color:@dialog-white;
+@loader-body-padding:@dialog-padding * 2 @dialog-padding;
+
+
+
+/**
+ * datepicker.less
+ */
+@datepicker-font-size: 16 * @unit;
+@datepicker-body-padding: 12 * @unit;
+@datepicker-color: #333;
+
+@datepicker-column-height: 54px;
+@datepicker-column-padding: 0 10 * @unit;
+@datepicker-column-font-size: 12 * @unit;
+
+//datepicker-overlay
+@datepicker-overlay-border-radius: @dialog-border-radius;
+@datepicker-overlay-border: 1px solid rgba(0, 0, 0, @dialog-opacity);
+@datepicker-overlay-box-shadow: 0 0 @datepicker-column-height * 2 rgba(0, 0, 0, @dialog-opacity * 3);

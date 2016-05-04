@@ -1,434 +1,483 @@
 /**
- * # Kub.Swiper
- * 
- * 图片切换组件 
+ * # Swiper
+ *
+ * 切换组件
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery || root.Zepto, require('./lib/hammer'));
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.Swiper = factory(root, root.jQuery || root.Zepto, root.Hammer);
-        });
-    } else {
-        Kub.Swiper = factory(root, root.jQuery || root.Zepto, root.Hammer);
-    }
-}(function(root,$,Hammer){
-    'use strict';
 
-    /**
-     * ## Swiper Constructor
-     *
-     * `Swiper`类。
-     *
-     * 使用方法：
-     * ```js
-     *  new Kub.Swiper($swiperWrap.find(".swiper"),{
-     *      auto:true,
-     *      slideSelector:$swiperWrap.find(".slide"),
-     *      slideActiveClass:"active",
-     *      paginationSelector:$swiperWrap.find(".pagination li"),
-     *      paginationActiveClass:"pagination-active",
-     *      nextButton:$swiperWrap.find(".next-button"),
-     *      prevButton:$swiperWrap.find(".prev-button"),
-     *      slide:function(index){
-     *          //console.log("slide:"+index,this)
-     *      }
-     * });
-     * ```
-     */
-    
-    var Swiper = function(element,options){
-        this.options = $.extend({},Swiper.prototype.defaults, options||{});
-        this.$element = $(element);
+/**
+ * @require [core](./core.js.html)
+ * @require [os](./detect.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    os = require('./detect'),
+    $ = require('./lite')
 
-        this.ui ={
-            slides:$(options.slideSelector),
-            paginations:$(options.paginationSelector),
-            nextButton:$(options.nextButton),
-            prevButton:$(options.prevButton)
-        };
-        this.length = this.ui.slides.length;
+/**
+ * ## Swiper Constructor
+ *
+ * `Swiper`类。
+ *
+ * 使用方法：
+ * ```js
+ * new Kub.Swiper('.swiper',{
+ *      slideSelector:'.slide',
+ *      slideActiveClass:'active',
+ *      paginationSelector:'.pagination li',
+ *      paginationActiveClass:'pagination-active',
+ *      slide:function(index){
+ *          //当前滚动索引
+ *      }
+ * })
+ * ```
+ */
 
-        init.call(this);
-        this.slideTo(this.options.initialSlide || 0,0);
-    };
+function Swiper(element, options) {
 
-    function init(){
-        var self = this,options = self.options,ui = self.ui;
+    this.options = core.extend(true, {}, _prototype.defaults, options || {})
+    this.$element = $(element)
 
-        var hammer = new Hammer(self.$element[0]),x,y,w,h,
-            horizontal = options.direction === "horizontal";
-
-        //监听拖动开始事件
-        hammer.get("pan").set({
-            threshold: 0
-        });
-        hammer.on("panstart",function(event){  
-
-            var pos = getPosition.call(self);
-            x = pos.x;
-            y = pos.y;
-            w = pos.w;
-            h = pos.h;
-            
-            self.timer && clearInterval(self.timer);
-
-            !horizontal && event.srcEvent.preventDefault();
-        }).on("panmove",function(event){
-            var resistance, deltaX = event.deltaX, deltaY = event.deltaY;
-            //是否跟随手指滑动
-            if(options.followFinger){
-                if(horizontal){
-                    //横向
-                    //计算出第一个或者最后一个节点
-                    resistance = 1 - event.distance/w/2;
-                    if(self.activeIndex == 0){
-                        resistance = deltaX > 0 ? resistance : 1;
-                    }else if( self.activeIndex == self.length-1 ){
-                        resistance = deltaX < 0 ? resistance : 1;
-                    }else{
-                        resistance=1;
-                    }
-
-                    self.setTranslate(x +  deltaX * resistance + "px", 0,0);
-                }else{
-                    //垂直
-                    resistance = 1 - event.distance/h/2;
-
-                    if(self.activeIndex == 0){
-                        resistance = deltaY > 0 ? resistance : 1;
-                    }else if( self.activeIndex == self.length-1 ){
-                        resistance = deltaY < 0 ? resistance : 1 ;
-                    }else{
-                        resistance=1;
-                    }
-
-                    self.setTranslate(0,y + deltaY * resistance + "px",0);
-                }
-            }
-
-            var _deltaX = Math.abs(deltaX)
-            if(horizontal &&  _deltaX >= options.threshold && _deltaX > Math.abs(deltaY)){
-                event.srcEvent.preventDefault();
-            }
-
-            if(!horizontal){
-                event.srcEvent.preventDefault();
-            }
-        }).on("panend",function(event){
-            
-            var distance,duration,velocity;
-
-            //计算出持续时间
-            velocity = horizontal ? event.velocityX : event.velocityY;
-            horizontal ? (distance = Math.abs(event.deltaX)) : (distance = Math.abs(event.deltaY));
-            duration = self.getDuration(distance,velocity);
-
-            //如果大于限定距离，则允许切换
-            if(distance > options.threshold && Math.abs(velocity) > 0.2){
-                if(horizontal){
-                    //横向
-                    event.deltaX < 0 ? self.slideNext(duration) : self.slidePrev(duration);
-                }else{
-                    event.deltaY < 0 ? self.slideNext(duration) : self.slidePrev(duration);
-                }
-            }else{
-                self.slideTo(self.activeIndex,options.speed);
-            }
-
-            auto.call(self);
-
-            event.srcEvent.preventDefault();
-        })
-
-        //监听左右切换按钮
-        options.nextButton && ui.nextButton.on("click",function(){
-            !self.isScrolling && self.slideNext(options.speed);
-        });
-        options.prevButton && ui.prevButton.on("click",function(){
-            !self.isScrolling && self.slidePrev(options.speed);
-        });
-
-        setDefaultStyle.call(self);
-
-        auto.call(self);
-
-        handleOrientationChange.call(self,function(){
-            self.slideTo(self.activeIndex,options.speed/2);
-        });
-    };
-
-    function setDefaultStyle(){
-        var self = this,options = self.options,ui = self.ui;
-
-        //set style
-        self.$element.css(options.style.swiper);
-        if(options.direction === "horizontal"){
-            //横向
-            self.$element.css({
-                width:self.length * 100 +"%",
-                display:"table"
-            });
-            ui.slides.css({
-                "float":"left",
-                width:100/self.length +"%"
-            });
-        }else{
-            //竖向
-            self.$element.css({
-                height:self.length * 100 +"%"
-            });
-            ui.slides.css({
-                height:100/self.length +"%"
-            });
-        }
+    var ui = this._ui = {
+        slides: $(options.slideSelector),
+        paginations: $(options.paginationSelector)
     }
 
-    function auto(){
-        var self = this, options = self.options;
-        if(!options.auto){
-            return;
-        }
-        self.timer = setInterval(function(){
-            self.slideNext(options.speed,true);
-        },options.delay + options.speed);
+    ui.slidesLength = ui.slides.length
+
+    init(this)
+}
+
+var $document = $(document),
+    isTouch = os.mobile
+
+var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+    RESIZE_EVENT = 'resize',
+    TRANSITIONEND_EVENT = 'transitionend',
+    WEBKIT_TRANSITIONEND_EVENT = 'webkitTransitionEnd',
+    HORIZONTAL = 'horizontal',
+    //粘性
+    VISCOSITY = 5,
+    //触摸点偏移量
+    TOUCH_THRESHOLD = 5
+
+var _window = window,
+    _prototype = Swiper.prototype
+
+//获取触摸点
+var getCoords = function(event) {
+    var touches = event.touches,
+        data = touches && touches.length ? touches : event.changedTouches
+
+    return {
+        x: isTouch ? data[0].pageX : event.pageX,
+        y: isTouch ? data[0].pageY : event.pageY
     }
+}
 
-    function getPosition(){
-        var self = this,options = self.options,ui = self.ui,
-            w, h, x, y;
+//获取偏移
+var getDistance = function(event, startCoords) {
+    var coords = getCoords(event),
+        x = coords.x - startCoords.x,
+        y = coords.y - startCoords.y
 
-        if(options.direction === "horizontal"){
-            w = ui.slides.eq(0).width();
-            x = -self.activeIndex * w;
-        }else{
-            h = ui.slides.eq(0).height();
-            y = -self.activeIndex * h;
+    return {
+        distanceX: x,
+        distanceY: y
+    }
+}
+
+//获取位置与索引
+var getCoordinates = function(swiper, distanceX, distanceY) {
+    var element = swiper._ui.slides[0],
+        w = element.offsetWidth,
+        h = element.offsetHeight,
+        l = swiper._ui.slidesLength,
+        index = swiper._ui.active,
+        active = index,
+        threshold = swiper.options.threshold,
+        reach,
+        _distanceY = Math.abs(distanceY),
+        _distanceX = Math.abs(distanceX)
+
+    if (swiper.options.direction === HORIZONTAL) {
+
+        //达到门槛
+        reach = threshold < _distanceX
+
+        //横向
+        if (distanceX > 0 && index == 0) {
+            //最左侧
+            distanceX = distanceX / VISCOSITY
+
+            index = 0
+
+        } else if (distanceX < 0 && index == l - 1) {
+            //最右侧
+            distanceX = distanceX / VISCOSITY
+
+            index = l - 1
+
+        } else if (reach) {
+            //达到最小偏移量
+
+            //取整
+            var s = Math.round(_distanceX / w)
+
+            s = s == 0 ? 1 : s
+
+            //向右或者向左
+            index = distanceX > 0 ? index - s : index + s
         }
+
         return {
-            x:x,
-            y:y,
-            w:w,
-            h:h
-        };
-    }
-
-    function handleOrientationChange(callback){
-        var self=this, options = self.options,timer;
-        function handler() {
-            timer && clearTimeout(timer);
-            timer = setTimeout(function(){
-                callback && callback();
-            },300);
-        }
-        window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", handler, false);
-        return self;
-    }
-
-    ;(function(){
-        this.constructor = Swiper;
-
-        /**
-         * ## defaults
-         *
-         * `Swiper`默认配置项。
-         *
-         * 配置项说明：
-         * 
-         * * `direction`: 切换方向。horizontal：横向， vertical：纵向
-         * 
-         * * `threshold`: 最小触发距离。手指移动距离必须超过`threshold`才能切换。
-         *
-         * * `auto`: 是否可自动切换。true:可以，false：不可以
-         * 
-         * * `delay`: 延迟时间。
-         *
-         * * `speed`: 切换速度。
-         *
-         * * `followFinger`: 是否跟随手指移动
-         * 
-         * * `initialSlide`: 初始化滚动位置
-         * 
-         * * `slideSelector`: 滚动块元素选择器
-         * 
-         * * `slideActiveClass`: 滚动块元素选中的类名
-         * 
-         * * `paginationSelector`: 缩略图或者icon选择器
-         *
-         * * `paginationActiveClass`: 选中的类名
-         *
-         * * `nextButton`: 下一个选择器
-         *
-         * * `prevButton`: 上一个选择器
-         *
-         * * `slide`: 切换回调函数
-         */
-        
-        this.defaults = {
-            //vertical
-            direction:"horizontal",
-            threshold:50,
-            auto:false,
-            delay:2500,
-            speed : 500,
-            followFinger:true,
-            initialSlide:0,
-            slideSelector:"",
-            slideActiveClass:"",
-            paginationSelector:"",
-            paginationActiveClass:"",
-            nextButton:"",
-            prevButton:"",
-            slide:null,
-            style:{
-                swiper:{
-                    "-webkit-transition-property": "-webkit-transform",
-                    "transition-property":"transform",
-                    "overflow":"hidden"
-                }
-            }
-        };
-
-        this.getActualIndex = function(index){
-            return index < 0 ? 0 : index >= this.length ? this.length-1 : index;
-        };
-
-        this._getActualIndex = function(index){
-            return (index % this.length + this.length) % this.length;
-        };
-
-        /**
-         * ## setTranslate
-         *
-         * 设置偏移量
-         * 
-         * @param {String} x     x偏移。注意值应该包含单位。例如 100px,或者10%。
-         * @param {String} y     y偏移。注意值应该包含单位。例如 100px,或者10%。
-         * @param {Number} speed 滚动速度
-         */
-        this.setTranslate = function(x,y,speed){
-            var self = this,options = self.options,cssProps = {};
-            speed = speed || 0;
-            cssProps = {
-                "-webkit-transform": "translate("+x+","+y+")",
-                "transform": "translate("+x+","+y+")",
-                "-webkit-transition-duration":speed +"ms",
-                "transition-duration":speed +"ms"
-            };
-            self.$element.css(cssProps);
-            return this;
-        };
-        
-        this.setTranslateByIndex = function(index,speed){
-            var self = this,options = self.options;
-
-            //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
-            if(options.direction === "horizontal"){
-                //横向
-                var w = self.ui.slides.eq(0).width();
-                self.setTranslate( -index * w + "px",0,speed);
-            }else{
-                //垂直
-                var h = self.ui.slides.eq(0).height();
-                self.setTranslate(0,-index * h  + "px",speed);
-            }
-            return self;
-        };
-
-        this.getDuration = function(distance,velocity){
-            var duration = Math.abs(distance / velocity);
-            return duration > this.options.speed ? this.options.speed : duration < 200 ? 200 :  duration;
-        };
-
-        //触发slide事件
-        function triggerSlideHandler(index,speed){
-            var self = this, options = self.options;
-
-            //由于 transitionend 事件在中间过程中不会触发，所以采用下面方法解决
-            if(speed <= 0){
-                self.activeIndex != index && options.slide && options.slide.call(self,index);
-                self.isScrolling = false;
-            }else{
-                (function(activeIndex){
-                    setTimeout(function(){
-                        activeIndex != index && options.slide && options.slide.call(self,index);
-                        self.isScrolling = false;
-                    },speed);
-                })(self.activeIndex);
-            }
+            x: distanceX + (-w * active),
+            y: 0,
+            index: index,
+            isDefaultPrevented: !(!reach && _distanceX < _distanceY && TOUCH_THRESHOLD < _distanceY)
         }
 
-        /**
-         * ## slideTo
-         *
-         * 滚动到指定索引值位置
-         * 
-         * @param  {index} index 滚动索引值
-         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
-         * @return {instance}    当前实例
-         */
-        this.slideTo = function(index,speed,flag){
-            var self = this,options = self.options;
+    } else {
 
-            //如果speed为空，则取默认值
-            speed = speed == void 0 ? options.speed : speed;
+        //达到门槛
+        reach = threshold < _distanceY
 
-            //记录滚动状态
-            self.isScrolling = true;
+        //垂直
+        if (distanceY > 0 && index == 0) {
+            //最上
+            distanceY = distanceY / VISCOSITY
+            index = 0
 
-            //取出实际的索引值
-            index = flag ? self._getActualIndex(index) : self.getActualIndex(index);
+        } else if (distanceY < 0 && index == l - 1) {
+            //最下
+            distanceY = distanceY / VISCOSITY
+            index = l - 1
 
-            //通过索引值设置偏移
-            self.setTranslateByIndex(index,speed);
+        } else if (reach) {
+            //达到最小偏移
+            var s = Math.round(_distanceY / h)
 
-            //触发回调函数
-            triggerSlideHandler.call(this,index,speed);
+            s = s == 0 ? 1 : s
 
-            //设置选中状态Class
-            self._setActiveClass(index);
+            index = distanceY > 0 ? index - s : index + s
+        }
 
-            //保存当前索引值
-            self.activeIndex = index;
-            return self;
-        };
+        return {
+            x: 0,
+            y: distanceY + (-h * active),
+            index: index,
+            isDefaultPrevented: true
+        }
+    }
+}
 
-        this._setActiveClass = function(index){
-            var self = this,options = self.options;
+var returnFalse = function() {
+    return false
+}
 
-            //添加选中的class
-            self.ui.slides.removeClass(options.slideActiveClass).eq(index).addClass(options.slideActiveClass);
-            self.ui.paginations.removeClass(options.paginationActiveClass).eq(index).addClass(options.paginationActiveClass);
+//添加重复子节点
+var appendCloneChildren = function(swiper) {
 
-            return self;
-        };
+    if (swiper.options.infinite) {
+        var $slides = swiper._ui.slides,
+            first = $slides[0],
+            last = $slides[swiper._ui.slidesLength - 1],
+            parentElement = first.parentElement
 
-        /**
-         * ## slideNext
-         *
-         * 切换到下一个
-         * 
-         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
-         * @return {instance}    当前实例
-         */
-        this.slideNext = function(speed,flag){
-            return this.slideTo(this.activeIndex+1,speed,flag);
-        };
+        parentElement.insertBefore(last.cloneNode(true), first)
+        parentElement.appendChild(first.cloneNode(true))
 
-        /**
-         * ## slidePrev
-         *
-         * 切换到上一个
+        swiper._ui.slidesLength += 2
+    }
+}
 
-         * @param  {speed} speed 滚动速度，默认使用参数配置的speed
-         * @return {instance}    当前实例
-         */
-        this.slidePrev = function(speed,flag){
-            return this.slideTo(this.activeIndex-1,speed,flag);
-        };
+//重置索引值
+var resetSlideIndex = function(swiper) {
+    var index = swiper._ui.active,
+        length = swiper._ui.slidesLength
 
-    }).call(Swiper.prototype);
-    return Swiper;
-}));
+    if (swiper.options.infinite) {
+
+        if (index === length - 1) {
+            swiper.slide(1, 0)
+        }
+
+        if (index === 0) {
+            swiper.slide(length - 2, 0)
+        }
+    }
+}
+
+//设置偏移量
+var setTranslate = function($element, x, y) {
+    core.isNumber(x) && (x += 'px')
+    core.isNumber(y) && (y += 'px')
+
+    var t = 'translate3d(' + x + ',' + y + ',0)'
+
+    $element.css({
+        '-webkit-transform': t,
+        'transform': t
+    })
+}
+
+//设置偏移速度
+var setDuration = function($element, duration) {
+    core.isNumber(duration) && (duration += 'ms')
+
+    $element.css({
+        '-webkit-transition-duration': duration,
+        'transition-duration': duration
+    })
+}
+
+var getActualIndex = function(index, length) {
+    return index < 0 ? 0 : index >= length ? length - 1 : index
+}
+
+//设置容器偏移量
+var setContainerTranslate = function(swiper, x, y, duration) {
+    var $element = swiper.$element
+
+    duration = duration || 0
+
+    setDuration($element, duration)
+    setTranslate($element, x, y)
+}
+
+//添加选中类
+var setActiveClass = function(swiper, index) {
+    var options = swiper.options,
+        slideActiveClass = options.slideActiveClass,
+        paginationActiveClass = options.paginationActiveClass
+
+    //添加选中的class
+    swiper._ui.slides.removeClass(slideActiveClass).eq(index).addClass(slideActiveClass)
+
+    swiper._ui.paginations.removeClass(paginationActiveClass).eq(index).addClass(paginationActiveClass)
+}
+
+//监听slide完成事件
+var bindTransitionEndEvent = function(swiper) {
+    var $element = swiper.$element
+
+    var handler = function() {
+        var callback = swiper.options.slide,
+            index = swiper._ui.active
+
+        resetSlideIndex(swiper)
+
+        //计算出真实索引值
+        swiper.options.infinite && (index = swiper._ui.active - 1)
+
+        callback && callback.call(swiper, index)
+    }
+
+    //duration == 0 无法触发
+    //translate 值未改变也无法触发
+    $element.on(TRANSITIONEND_EVENT, handler).on(WEBKIT_TRANSITIONEND_EVENT, handler)
+}
+
+//监听横竖屏切换
+var bindOrientationChangeEvent = function(swiper) {
+    var timer
+
+    function handler() {
+        timer && clearTimeout(timer)
+        timer = setTimeout(function() {
+            swiper.slide(swiper._ui.active)
+        }, 200)
+    }
+    $(_window).on(RESIZE_EVENT, handler)
+}
+
+//绑定事件
+var bindEvents = function(swiper) {
+    var flag = false,
+        startCoords
+
+    var start = function(event) {
+            flag = true
+            event = event.originalEvent || event
+
+            resetSlideIndex(swiper)
+
+            startCoords = getCoords(event)
+
+            setDuration(swiper.$element, null)
+        },
+        move = function(event) {
+            if (!flag) return
+            event = event.originalEvent || event
+
+            var distance = getDistance(event, startCoords),
+                coordinates = getCoordinates(swiper, distance.distanceX, distance.distanceY)
+
+            coordinates.isDefaultPrevented && (event.preventDefault(),setTranslate(swiper.$element, coordinates.x, coordinates.y))
+        },
+        end = function(event) {
+            if (!flag) return
+            flag = false
+
+            event = event.originalEvent || event
+
+            var distance = getDistance(event, startCoords),
+                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
+
+            swiper.slide(index)
+        }
+
+    //监听横竖屏
+    bindOrientationChangeEvent(swiper)
+
+    //触发回调函数
+    bindTransitionEndEvent(swiper)
+
+    swiper.$element.on(START_EVENT, start)
+    $document.on(MOVE_EVENT, move)
+    $document.on(END_EVENT, end)
+
+    swiper.$element[0].onselectstart = returnFalse
+    swiper.$element[0].ondragstart = returnFalse
+}
+
+//偏移到指定的位置
+var slideTo = function(swiper, index, duration) {
+    var element = swiper._ui.slides[0]
+
+    //由于移动端浏览器 transition 动画不支持百分比，所以采用像素值
+    if (swiper.options.direction === HORIZONTAL) {
+        //横向
+        var w = element.offsetWidth
+
+        setContainerTranslate(swiper, -index * w, 0, duration)
+    } else {
+        //垂直
+        var h = element.offsetHeight
+
+        setContainerTranslate(swiper, 0, -index * h, duration)
+    }
+}
+
+//初始化
+var init = function(swiper) {
+    var options = swiper.options
+
+    appendCloneChildren(swiper)
+
+    //设置默认样式
+    swiper.$element.css(options.style.swiper)
+
+    var initialSlide = options.initialSlide || 0
+    options.infinite && (initialSlide = initialSlide + 1)
+
+    //滚动到默认位置
+    swiper.slide(initialSlide, 0)
+
+    //绑定事件
+    bindEvents(swiper)
+}
+
+/**
+ * ## Swiper.prototype.defaults
+ *
+ * `Swiper`默认配置项。
+ *
+ * 配置项说明：
+ *
+ * * `direction`: `String` 切换方向。horizontal ：横向， vertical ：纵向。
+ *
+ * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
+ *
+ * * `duration`: `Number` 切换速度。
+ *
+ * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
+ *
+ * * `initialSlide`: `Number` 初始化滚动位置。
+ *
+ * * `slideSelector`: `Selector` 滚动元素。
+ *
+ * * `slideActiveClass`: `String` 滚动元素选中时的类名。
+ *
+ * * `paginationSelector`: `Selector` 缩略图或icon。
+ *
+ * * `paginationActiveClass`: `String` 缩略图或icon选中时的类名。
+ *
+ * * `slide`: `Function` 切换回调函数。
+ */
+
+_prototype.defaults = {
+    //vertical
+    direction: HORIZONTAL,
+    threshold: 50,
+    duration: 300,
+    infinite: false,
+    initialSlide: 0,
+    slideSelector: '',
+    slideActiveClass: '',
+    paginationSelector: '',
+    paginationActiveClass: '',
+    slide: null,
+    style: {
+        swiper: {
+            '-webkit-transition-property': '-webkit-transform',
+            'transition-property': 'transform',
+            '-webkit-transition-timing-function': 'ease-out',
+            'transition-timing-function': 'ease-out'
+        }
+    }
+}
+
+/**
+ * ## Swiper.prototype.slide
+ *
+ * 滚动到指定索引值位置
+ *
+ * @param  {index} index 滚动索引值
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
+ * @return {instance}    当前实例
+ */
+_prototype.slide = function(index, duration) {
+    var options = this.options
+
+    //如果speed为空，则取默认值
+    duration = duration == null ? options.duration : duration
+
+    //取出实际的索引值,保存当前索引值
+    this._ui.active = index = getActualIndex(index, this._ui.slidesLength)
+
+    //通过索引值设置偏移
+    slideTo(this, index, duration)
+
+    //设置选中状态Class
+    setActiveClass(this, options.infinite ? index - 1 : index)
+
+    return this
+}
+
+/**
+ * ## Swiper.prototype.next
+ *
+ * 切换到下一个
+ *
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
+ * @return {instance}    当前实例
+ */
+_prototype.next = function(duration) {
+    return this.slide(this._ui.active + 1, duration)
+}
+
+/**
+ * ## Swiper.prototype.prev
+ *
+ * 切换到上一个
+ *
+ * @param  {duration} duration 滚动速度，默认配置的`duration`。
+ * @return {instance}    当前实例
+ */
+_prototype.prev = function(duration) {
+    return this.slide(this._ui.active - 1, duration)
+}
+
+module.exports = Swiper

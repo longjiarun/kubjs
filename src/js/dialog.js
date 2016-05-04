@@ -1,257 +1,176 @@
 /**
- * # Kub.Dialog
+ * # Dialog
  *
- * 对话框
+ * 对话框.
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
 
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery||root.Zepto,root._);
-    }else if (typeof define === "function") {
-        define(function() {
-            return Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
-        });
-    } else {
-        Kub.Dialog = factory(root,root.jQuery||root.Zepto,root._);
+/**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite'),
+    template = require('./tpl/dialog')
+
+/**
+ * ## Dialog Constructor
+ *
+ * Dialog 构造函数。
+ *
+ * 使用：
+ * ```js
+ *   //可定制多个按钮
+ *   var dialog = new Kub.Dialog({
+ *       message:'这是个弹窗',
+ *       title:'弹窗',
+ *       buttons:[{
+ *           text:'确定',
+ *           handler:function(e,dialog){
+ *
+ *           }
+ *       },{
+ *          text:'取消',
+ *          handler:function(e,dialog){
+ *               //返回 event 与 dialog对象
+ *               dialog.close()
+ *          }
+ *       }]
+ *   })
+ * ```
+ */
+function Dialog(options) {
+    this.options = core.extend({}, _prototype.defaults, options || {})
+    init(this)
+}
+
+var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
+    DIALOG_SELECTOR = '.J_dialog',
+    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
+    EVENT_NAME = 'click'
+
+var $body = $(document.body)
+
+var _prototype = Dialog.prototype
+
+var render = function(dialog,data) {
+    var html = template(data)
+    dialog.$element = $(html).appendTo($body)
+    return this
+}
+
+var bindEvents = function(dialog){
+    var options = dialog.options
+
+    //注册按钮事件
+    dialog.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
+        var index = parseInt($(this).attr('data-index')),
+            button = options.buttons[index]
+
+        button.handler && button.handler.call(this, e, dialog)
+    })
+}
+
+var init = function(dialog) {
+
+    //渲染数据
+    render(dialog, dialog.options)
+
+    dialog.$dialog = dialog.$element.find(DIALOG_SELECTOR)
+
+    dialog.setPosition && dialog.setPosition()
+
+    dialog.show()
+
+    bindEvents(dialog)
+}
+
+/**
+ * ## Dialog.prototype.defaults
+ *
+ * 默认配置项。
+ *
+ * 配置项说明：
+ *
+ * * `modal` : `Boolean` 是否显示遮罩层。
+ *
+ * * `title` : `String` 对话框名称。
+ *
+ * * `showHeader` : `Boolean` 是否显示头部。
+ *
+ * * `message` : `String` 弹窗内容。
+ *
+ * * `className` : `String` 弹窗类名。
+ *
+ * * `animated` : `Boolean` 是否开启动画效果。
+ *
+ * * `buttons`: `Array` 弹窗按钮。
+ *
+ * ```js
+ * //例如：
+ * [{
+ *     text:'按钮名称',//按钮名称
+ *     className:'button-name',//按钮class类名
+ *     handler:function(){
+ *         //按钮单击触发事件
+ *     }
+ * }]
+ * ```
+ */
+_prototype.defaults = {
+    modal: true,
+    title: '',
+    showHeader: true,
+    message: '',
+    className: '',
+    animated: true,
+    buttons: null
+}
+
+/**
+ * ## Dialog.prototype.show
+ *
+ * 显示弹窗。
+ * @return {instance} 返回当前实例
+ */
+_prototype.show = function() {
+
+    this.$element.show()
+    this.options.animated && this.$dialog.addClass(ZOOMIN_CLASS)
+
+    return this
+}
+
+/**
+ * ## Dialog.prototype.hide
+ *
+ * 隐藏弹窗。
+ * @return {instance} 返回当前实例
+ */
+_prototype.hide = function() {
+
+    this.$element.hide()
+    this.options.animated && this.$dialog.removeClass(ZOOMIN_CLASS)
+
+    return this
+}
+
+/**
+ * ## Dialog.prototype.close
+ *
+ * 关闭弹窗。
+ * @return {instance} 返回当前实例
+ */
+_prototype.close = function() {
+    var opts = this.options
+
+    if (opts.closeHandler && opts.closeHandler.call(this) === false) {
+        return this
     }
-}(function(root,$,_){
 
-    /**
-     * ## Dialog Constructor
-     *
-     * Dialog 类
-     *
-     * 使用：
-     * ```js
-     *   //可定制多个按钮
-     *   var dialog = new Kub.Dialog({
-     *       message:"这是个弹窗",
-     *       title:"弹窗",
-     *       buttons:[{
-     *           text:"确定",
-     *           handler:function(e,dialog){
-     *               
-     *           }
-     *       },{
-     *          text:"取消",
-     *          handler:function(e,dialog){
-     *               //返回 event 与 dialog对象
-     *               dialog.close();
-     *          }
-     *       }]
-     *   });
-     * ```
-     */
-    var Dialog = function(options){
-        this.options = $.extend({}, Dialog.prototype.defaults, options||{});
+    this.hide()
+    this.$element.remove()
 
-        //由于按钮排列采用CSS解决，所以目前限制最大可包含5个按钮
-        this.options.buttons && this.options.buttons.length > 5 && (this.options.buttons.length = 5);
-        this._init();
-    },
-    $body = $("body"),
-    $html = $body.parent();
+    return this
+}
 
-    var ZOOMINCLASS = "kub-animated kub-zoomIn",
-        OVERFLOWCLASS =  "kub-ofh",
-        DIALOGID = "J_dialog" , 
-        DIALOGCLOSEID = "J_dialogClose",
-        DIALOGBUTTONCLASS = "J_dialogButton",
-        //弹窗模板
-        TEMPLATE = '<div class="kub-dialog-modal <%= data.className%> <%if( data.modal ){%> kub-modal <%}%>"> <div class="kub-dialog-wrapper"><div class="kub-dialog-container"> <div class="kub-dialog" id="J_dialog"> <%if(data.showHeader){%> <div class="kub-dialog-header clearfix"> <strong><%= data.title%></strong> <%if(data.closable){%><button class="kub-dialog-button kub-dialog-close" id="J_dialogClose">×</button><%}%> </div> <%}%> <div class="kub-dialog-body"> <%= data.message%> </div> <%if(data.buttons && data.buttons.length){%> <div class="kub-dialog-footer kub-column<%= data.buttons.length%>"> <% for (var i=0,j=data.buttons.length;i<j;i++){%><button class="kub-dialog-button J_dialogButton <%= data.buttons[i].className || ""%>" data-index="<%= i%>"><%= data.buttons[i].text%></button><%}%> </div> <%}%> </div></div></div> </div>'
-
-    ;(function(){
-        this.constructor = Dialog;
-
-        /**
-         * ## defaults
-         *
-         * 默认配置项。
-         *
-         * 配置项说明：
-         * 
-         * * `modal`: 是否显示遮罩层；
-         * 
-         * * `title`: 对话框名称；
-         *
-         * * `showHeader`: 是否显示头部；
-         * 
-         * * `closable`: 是否显示关闭按钮，`showHeader`为`true`时有效；
-         * 
-         * * `message`: 弹窗内容，可设置成`html`；
-         *
-         * * `className`: 弹窗类名；
-         * 
-         * * `scrollable`: 是否禁用页面滚动条；
-         * 
-         * * `animated`: 是否开启动画效果；
-         *
-         * * `buttons`: 弹窗按钮；
-         * 
-         * ```js
-         * [{   
-         *     text:"按钮名称",//按钮名称
-         *     className:"button-name",//按钮class类名
-         *     handler:function(){
-         *         //按钮单击触发事件
-         *     }
-         * }]
-         * ```
-         */
-        this.defaults = {
-            modal:true,
-            title:"",
-            showHeader:true,
-            closable:true,
-            message:"",
-            className:"",
-            scrollable:true,
-            animated:true,
-            buttons:null
-        };
-
-        this.i18n = {
-            zh:{
-                ok:"确定",
-                cancel:"取消"
-            },
-            en:{
-                ok:"Ok",
-                cancel:"Cancel"
-            }
-        };
-
-        //添加本地化，主要用在 `alert`,`confirm`,`prompt`
-        this.addLocale = function(name, locale) {
-            name && locale && (this.i18n[name] = locale);
-            return this;
-        };
-
-        this.inherit = function(c,p){
-            var F = function(){};
-            F.prototype = p.prototype;
-            c.prototype = new F();
-            c.prototype.constructor = c;
-            c.uber = p.prototype;
-        };
-
-        this._render = function(data){
-            if(this.completed){
-                return this;
-            }
-            var compiled = _.template(TEMPLATE),html = compiled({data:data});
-            this.$element = $(html).appendTo($body);
-            this.completed = true;
-            return this;
-        };
-
-        this._init = function(){
-            var self = this,options = self.options;
-
-            //解决 iphone 下，fixed定位问题
-            setTimeout(function(){
-                var $window = $(window);
-                $window.scrollTop($window.scrollTop());
-            },5);
-
-            //渲染数据
-            self._render(options);
-            this.$dialog = this.$element.find("#"+DIALOGID);
-            
-            self.show();
-            
-            self.setPosition();
-        
-            //监听事件
-            self.$element.find("#"+DIALOGCLOSEID).on("click",function(){
-                self.close();
-            });
-
-            //注册按钮事件
-            self.$element.on("click","."+DIALOGBUTTONCLASS,function(e){
-                var index = parseInt($(this).attr("data-index"));
-                options.buttons[index] && options.buttons[index].handler && options.buttons[index].handler.call(this,e,self);
-            });
-        };
-
-
-        //采用table-cell居中方式
-        this.setPosition = function(){
-            /*this.$dialog.css({
-                marginTop:-(this.$dialog.height()/2 || 100),
-                top:"50%"
-            });*/
-            return this;
-        };
-
-        var i = 0,scrollTop;
-        this.disableScrollbar = function(){
-            if(!this.options.scrollable){
-                i == 0 && (scrollTop = $body.scrollTop());
-                $body.addClass(OVERFLOWCLASS) && $html.addClass(OVERFLOWCLASS);
-            }
-            return this;
-        };
-
-        this.enableScrollbar = function(){
-            if(!this.options.scrollable){
-                i<1 && $body.removeClass(OVERFLOWCLASS) && $html.removeClass(OVERFLOWCLASS) && (i=0);
-                i == 0 && $body.scrollTop(scrollTop);
-            }
-            return this;
-        };
-
-        /**
-         * ## show
-         *
-         * 显示弹窗
-         * @return {instance} 返回当前实例
-         */
-        this.show = function(){
-            this.disableScrollbar();
-
-            !this.options.scrollable  && i++;
-            this.$element.show();
-
-            this.options.animated && this.$dialog.addClass(ZOOMINCLASS);
-            return this;
-        };
-
-        /**
-         * ## hide
-         *
-         * 隐藏弹窗
-         * @return {instance} 返回当前实例
-         */
-        this.hide = function(){
-            !this.options.scrollable && i--;
-            this.enableScrollbar();
-
-            this.$element.hide();
-            this.options.animated && this.$dialog.removeClass(ZOOMINCLASS);
-
-            return this;
-        };
-
-        /**
-         * ## close
-         *
-         * 关闭弹窗
-         * @return {instance} 返回当前实例
-         */
-        this.close = function(){
-            var self =this;
-            if(this.options.closeHandler && this.options.closeHandler.call(this) === false){
-                return this;
-            }
-
-            this.hide();
-            self.$element.remove();
-            
-            return this;
-        };
-
-    }).call(Dialog.prototype);
-    return Dialog;
-}));
+module.exports = Dialog

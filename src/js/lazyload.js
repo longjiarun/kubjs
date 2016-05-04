@@ -1,314 +1,296 @@
 /**
- * # Kub.LazyLoad
- * 
+ * # LazyLoad
+ *
  * 延迟加载组件。
- * 
+ *
  */
-!(function(factory){
-    var root =this,Kub = root.Kub = root.Kub ? root.Kub : {};
-    if (typeof module !== "undefined" && module.exports) {
-        module.exports = factory(root,root.jQuery||root.Zepto);
-    }else if(typeof define === "function"){
-        define(function(){
-            return Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
-        });
-    } else{
-        Kub.LazyLoad=factory(root,root.jQuery||root.Zepto);
+
+/**
+ * @require [core](./core.js.html)
+ * @require [Lite](./lite.js.html)
+ */
+var core = require('./core'),
+    $ = require('./lite')
+
+/**
+ * ## LazyLoad Constructor
+ *
+ * `LazyLoad` 构造函数。
+ *
+ * 使用：
+ * ```js
+ * var lazyload = new Kub.LazyLoad($('img'))
+ * ```
+ */
+function LazyLoad(element, options) {
+    this.$element = $(element)
+
+    this.options = core.extend({}, _prototype.defaults, options || {})
+
+    this.$container = $(this.options.container)
+
+    init(this)
+}
+
+var _window = window,
+    _prototype = LazyLoad.prototype
+
+var //横竖屏切换时 ，orientationchange 与 resize事件都会触发，所以只需监听 resize 即可
+    RESIZE_EVENT = 'resize',
+    //三星某款机型在监听非window容器的scroll事件时，会无限次触发，可以使用touchmove替代
+    //但可能会出现 页面加载时触发scroll无法触发scroll与惯性滚动停止时，无法触发的情况
+    //综上：依旧采用scroll解决，对于某些机型进行忽略
+    EVENT_NAME = 'scroll'
+
+
+//获取所有还未被加载的节点
+var getUnloadedElements = function(lazyload) {
+    var dom = []
+
+    lazyload.$element.each(function() {
+        !this.loaded && dom.push(this)
+    })
+
+    return dom
+}
+
+//加载所有在可视区域内的图片
+var loadElementsInViewport = function(lazyload) {
+    var elements
+
+    elements = getUnloadedElements(lazyload)
+
+    lazyload.completed  = elements.length === 0 ? true : false
+
+    elements.forEach(function(element) {
+        var $this = $(element)
+
+        lazyload.isVisible($this) && lazyload.load($this)
+    })
+}
+
+var init = function(lazyload) {
+    var options = lazyload.options,
+        timer
+
+    var handler = function() {
+        if (lazyload.completed) {
+            return
+        }
+
+        timer && clearTimeout(timer)
+
+        timer = setTimeout(function() {
+
+            loadElementsInViewport(lazyload)
+
+        }, options.delay)
     }
-}(function(root,$){
-    'use strict';
 
-    /**
-     * ## LazyLoad Constructor
-     *
-     * LazyLoad 类
-     *
-     * 使用：
-     * ```js
-     * var lazyload = new Kub.LazyLoad($("img"));
-     * ```
-     */
-    var LazyLoad = function(element,options){
-        this.$element = $(element);
+    //页面载入先执行下面
+    loadElementsInViewport(lazyload)
 
-        this.options=$.extend({},LazyLoad.prototype.defaults,options||{});
-        this.$window= $(window);
-        this.$container = (this.options.container === undefined ||
-                      this.options.container === window) ? (this.containerIsWindow=true,this.$window) : ($(this.options.container));
-        this._init();
-    };
-    (function(){
+    //页面紧接着触发scroll，走下面监听
+    lazyload.$container.on(EVENT_NAME, handler)
 
-        this.constructor=LazyLoad;
+    $(_window).on(RESIZE_EVENT, handler)
+}
 
-        /**
-         * ## defaults
-         *
-         * 默认配置项。
-         *
-         * 配置项说明：
-         * 
-         *   `container` : 图片存放容器，容器会监听事件
-         *   
-         *   `threshold` : 提前加载距离，默认50px
-         *   
-         *   `waitTime` : 等待时间，用户如果在 waitTime 时间内无操作，则会加载剩余默认图片
-         *   
-         *   `delay` : 事件监听时的延迟时间
-         *   
-         *   `attributeName` : 属性名称，默认会从dom上取出地址 `data-attributeName`
-         *   
-         *   `eventName` : 监听的事件名称
-         */
-        this.defaults={
-            container:window,
-            threshold:50,
-            waitTime:-1,
-            delay:150,
-            attributeName:"original",
-            eventName:"scroll resize"
-        };
-        
-       
-        //更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内        
-        this.updateElement = function(element){
-            var self=this;
-            self.$element=element;
-            //更新 dom 以后立即验证是否有元素已经显示
-            self.loadElementsInViewport();
-            return self;
-        };
+/**
+ * ## LazyLoad.prototype.defaults
+ *
+ * 默认配置项。
+ *
+ * 配置项说明：
+ *
+ *   `container` : `Selector` 图片存放的容器，容器会监听事件。
+ *
+ *   `threshold` : `Number` 提前加载距离。
+ *
+ *   `delay` : `Number` 事件监听时的延迟时间。
+ *
+ *   `attributeName` : `String` 属性名称。默认会从`element`上取出 `data-original` 属性。
+ *
+ */
+_prototype.defaults = {
+    container: _window,
+    threshold: 200,
+    delay: 100,
+    attributeName: 'original'
+}
 
-        /**
-         * ## getUnloadedElements
-         * 
-         * 获取所有还未被加载的节点
-         * 
-         * @return {instance} 当前实例
-         */
-        this.getUnloadedElements = function(){
-            var self =this;
-            return self.$element.filter(function(index){
-                return !this.loaded;
-            });
-        };
+//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
+_prototype.updateElement = function(element) {
 
-        /**
-         * ## loadAll
-         * 
-         * 强制加载所有图片，无论节点是否在可视区域内
-         * 
-         * @return {instance} 当前实例
-         */
-        this.loadAll = function(){
-            var self=this,options=self.options,elements;
-            elements=self.getUnloadedElements();
-            elements.each(function(){
-                var $this=$(this);
-                self.load($this,$this.attr("data-"+self.options.attributeName));
-            });
-            return self;
-        };
+    this.$element = $(element)
 
-        //加载所有在可视区域内的图片
-        this.loadElementsInViewport = function(){
-            var self=this,options=self.options,elements;
+    //更新 dom 以后立即验证是否有元素已经显示
+    loadElementsInViewport(this)
 
-            elements=self.getUnloadedElements();
-            elements.length == 0 && (self.completed=true);
-            elements.each(function(){
-                var $this=$(this),flag=true;
+    return this
+}
 
-                flag = self.isVisible($this,options);
-                flag && self.load($this,$this.attr("data-"+self.options.attributeName));
-            });
-            return self;
-        };
+/**
+ * ## LazyLoad.prototype.loadAll
+ *
+ * 强制加载所有图片，无论节点是否在可视区域内。
+ *
+ * @return {instance} 当前实例
+ */
+_prototype.loadAll = function() {
+    var self = this,
+        elements
 
-        /**
-         * ## isVisible
-         * 
-         * 是否可见
-         * @param {$}  $this         元素
-         * @param {Object}  options  参数
-         * @return {Boolean}         true ：可见 false ：不可见
-         */
-        this.isVisible = function($this,options){
-            var self=this;
-            if(self.abovethetop($this, options)){
-                return false;
-            }else if(self.belowthefold($this, options)){
-                return false;
-            }
-            if(self.leftofbegin($this, options)){
-                return false;
-            }else if(self.rightoffold($this, options)){
-                return false;
-            }
-            return true;
-        }
+    elements = getUnloadedElements(self)
 
-        this._loadAllIfTimeout = function(){
-            var self=this,options=self.options;
-            typeof options.waitTime ==="number" && !(options.waitTime !== +options.waitTime) && options.waitTime>0 && (self._waitTimer=setTimeout(function(){
-                self.loadAll();
-            },options.waitTime));
-            return self;
-        }
+    this.completed = true
 
-        this._init=function(){
-            var self=this,options=self.options;
+    elements.forEach(function(element) {
+        var $this = $(element)
 
-            this._handle = function(){
-                if(self.completed){
-                    return;
-                }
-                self._timer && clearTimeout(self._timer);
-                self._waitTimer && clearTimeout(self._waitTimer);
-                self._timer = setTimeout(function(){
-                    self.loadElementsInViewport();
-                    self._loadAllIfTimeout();
-                },options.delay);
-            };
+        self.load($this)
+    })
+    return self
+}
 
-            self.loadElementsInViewport();
-            self._loadAllIfTimeout();
-            
-            self.$container.on(options.eventName,self._handle);
-            //有可能 window resize 会影响到元素的位置
-            !self.containerIsWindow && self.$window.on("resize",self._handle);
-        };
+/**
+ * ## LazyLoad.prototype.isVisible
+ *
+ * 是否在视窗可见。
+ * @param {$}  $this         元素
+ * @param {Object}  options  参数
+ * @return {Boolean}         true ：可见 false ：不可见
+ */
+_prototype.isVisible = function($this) {
+    var options = this.options
 
-        /**
-         * ## load
-         * 
-         * 加载指定元素
-         * 
-         * @param {$} $element      加载的节点
-         * @param {String} original 图片地址
-         * @return {instance}       当前实例
-         */
-        this.load = function($element,original){
-            //如果原图片为空
-            if(!original){
-                return;
-            }
-            if ($element.is("img")) {
-                $element.attr("src", original);
-            } else {
-                $element.css("background-image", "url('" + original + "')");
-            }
-            $element[0].loaded=true;
-            return this;
-        };
+    if (this.abovethetop($this, options)) {
+        return false
+    } else if (this.belowthefold($this, options)) {
+        return false
+    }
+    if (this.leftofbegin($this, options)) {
+        return false
+    } else if (this.rightoffold($this, options)) {
+        return false
+    }
+    return true
+}
 
-        /**
-         * ## destroy
-         * 
-         * 销毁对象
-         * @return {instance} 当前实例
-         */
-        this.destroy = function(){
-            var self=this,options=self.options;
-            //取消监听
-            self.$container.off(options.eventName,self._handle);
-            !self.containerIsWindow && self.$window.off("resize",self._handle);
-            //clear timeout
-            self._timer && clearTimeout(self._timer);
-            self._waitTimer && clearTimeout(self._waitTimer);
+/**
+ * ## LazyLoad.prototype.load
+ *
+ * 加载指定元素。
+ *
+ * @param {$} $element      加载的节点
+ * @param {String} original 图片地址
+ * @return {instance}       当前实例
+ */
+_prototype.load = function($element) {
 
-            return self;
-        };
-        
-        /**
-         * 是否在可视区域内
-         * 
-         * @param {zepto} element 检查的元素
-         * @return {Boolean} 是：true 否 ：false
-         */
-        this.isInViewport = function($this){
-            return !this.belowthefold($this[0],this.options) && !this.abovethetop($this[0],this.options) && !this.rightoffold($this[0],this.options) && !this.leftofbegin($this[0],this.options);
-        };
+    var original = $element.attr('data-' + this.options.attributeName)
 
-        /**
-         * ## belowthefold
-         * 
-         * 是否在视窗下面
-         * 
-         * @param {Element} element 检查的元素
-         * @param {Object} settings 被检查时的参数
-         * @return {Boolean}        是：true 否 ：false
-         */
-        this.belowthefold = function(element, settings) {
-            var fold,$window=$(window);
-            if (settings.container === undefined || settings.container === window) {
-                fold = (window.innerHeight ? window.innerHeight : $window.height()) + $window.scrollTop();
-            } else {
-                fold = $(settings.container).offset().top + $(settings.container).height();
-            }
+    //如果原图片为空
+    if (!original) {
+        return
+    }
+    if ($element[0].nodeName === 'IMG') {
+        $element.attr('src', original)
+    } else {
+        $element.css('background-image', 'url(' + original + ')')
+    }
+    //记录该节点已被加载
+    $element[0].loaded = true
+    return this
+}
 
-            return fold <= $(element).offset().top - settings.threshold;
-        };
+/**
+ * ## LazyLoad.prototype.belowthefold
+ *
+ * 是否在视窗下面。
+ *
+ * @param {Element} element 检查的元素
+ * @param {Object} settings 被检查时的参数
+ * @return {Boolean}        是：true 否 ：false
+ */
+_prototype.belowthefold = function(element, settings) {
+    var fold,container = settings.container
 
-        /**
-         * ## abovethetop
-         * 
-         * 是否在视窗上面
-         * 
-         * @param {Element} element 检查的元素
-         * @param {Object} settings 被检查时的参数
-         * @return {Boolean}        是：true 否 ：false
-         */
-        this.abovethetop = function(element, settings) {
-            var fold,$window=$(window);
+    if (container === _window) {
+        fold = _window.innerHeight  + _window.scrollY
+    } else {
+        var $container = $(container), offset = $container.offset()
 
-            if (settings.container === undefined || settings.container === window) {
-                fold = $window.scrollTop();
-            } else {
-                fold = $(settings.container).offset().top;
-            }
+        fold = offset.top + $container[0].offsetHeight
+    }
 
-            return fold >= $(element).offset().top + settings.threshold  + $(element).height();
-        };
+    return fold <= $(element).offset().top - settings.threshold
+}
 
-        /**
-         * ## rightoffold
-         * 
-         * 是否在视窗右侧
-         * 
-         * @param {Element} element 检查的元素
-         * @param {Object} settings 被检查时的参数
-         * @return {Boolean}        是：true 否 ：false
-         */
-        this.rightoffold = function(element, settings) {
-            var fold,$window=$(window);
-            if (settings.container === undefined || settings.container === window) {
-                fold = $window.width() + $window.scrollLeft();
-            } else {
-                fold = $(settings.container).offset().left + $(settings.container).width();
-            }
-            return fold <= $(element).offset().left - settings.threshold;
-        };
+/**
+ * ## LazyLoad.prototype.abovethetop
+ *
+ * 是否在视窗上面。
+ *
+ * @param {Element} element 检查的元素
+ * @param {Object} settings 被检查时的参数
+ * @return {Boolean}        是：true 否 ：false
+ */
+_prototype.abovethetop = function(element, settings) {
+    var fold,container = settings.container
 
-        /**
-         * ## leftofbegin
-         * 
-         * 是否在视窗左侧
-         * 
-         * @param {Element} element 检查的元素
-         * @param {Object} settings 被检查时的参数
-         * @return {Boolean}        是：true 否 ：false
-         */
-        this.leftofbegin = function(element, settings) {
-            var fold,$window=$(window);
-            if (settings.container === undefined || settings.container === window) {
-                fold = $window.scrollLeft();
-            } else {
-                fold = $(settings.container).offset().left;
-            }
-            return fold >= $(element).offset().left + settings.threshold + $(element).width();
-        };
+    if (container === _window) {
+        fold = _window.scrollY
+    } else {
+        fold = $(container).offset().top
+    }
 
-    }).call(LazyLoad.prototype);
-    return LazyLoad;
-}));
+    var $element = $(element), offset = $element.offset()
+    return fold >= offset.top + settings.threshold + $element[0].offsetHeight
+}
+
+/**
+ * ## LazyLoad.prototype.rightoffold
+ *
+ * 是否在视窗右侧。
+ *
+ * @param {Element} element 检查的元素
+ * @param {Object} settings 被检查时的参数
+ * @return {Boolean}        是：true 否 ：false
+ */
+_prototype.rightoffold = function(element, settings) {
+    var fold,container = settings.container
+
+    if (container === _window) {
+        fold = _window.innerWidth + _window.scrollX
+    } else {
+        var $container = $(container), offset = $container.offset()
+        fold = offset.left + $container[0].offsetWidth
+    }
+    return fold <= $(element).offset().left - settings.threshold
+}
+
+/**
+ * ## LazyLoad.prototype.leftofbegin
+ *
+ * 是否在视窗左侧。
+ *
+ * @param {Element} element 检查的元素
+ * @param {Object} settings 被检查时的参数
+ * @return {Boolean}        是：true 否 ：false
+ */
+_prototype.leftofbegin = function(element, settings) {
+    var fold,container = settings.container
+
+    if (container === _window) {
+        fold = _window.scrollX
+    } else {
+        fold = $(container).offset().left
+    }
+
+    var $element = $(element), offset = $element.offset()
+
+    return fold >= offset.left + settings.threshold + $element[0].offsetWidth
+}
+
+module.exports = LazyLoad

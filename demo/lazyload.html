@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>lazyload Test</title>
+    <script type="text/javascript" src="../dist/js/kub.js"></script>
+    <style type="text/css">
+    body{
+    }
+    /* .wrapper{
+        width: 500px;
+        height: 400px;
+        overflow: auto;
+        border:2px solid #000;
+    }*/
+    div{
+        min-height: 300px;
+        position: relative;
+        width: 400px;
+        height: 400px;
+        float: left;
+    }
+    img{
+        position: absolute;
+        top:0px;
+        left:0;
+        right:0;
+        bottom:0;
+        margin:auto;
+        max-width: 100%;
+    }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-146061571896-8471243.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1452954993917-67566-s1.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-1445962586014-88063-s3.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-1446863343534-88393-s1.jpg?w=480&h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-1451461322912-16612-s3.jpg?w=480&h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1457243152834-82141-s1.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1459070472323-33732-s1.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop328518010-1449583238200-4492050.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop328518010-1449582242923-2840812.jpg?w=480&amp;h=0">
+    </div>
+
+    <div>
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop328518010-1459447591711-5099101.jpg?w=480&amp;h=0">
+    </div>
+</div>
+<div id="J_html" style="font-size:30px"></div>
+
+<script type="text/javascript">
+    var $ =  Kub.$;
+
+    var lazyload = new Kub.LazyLoad($('img'));
+
+    console.log(lazyload)
+</script>
+</body>
+</html>
