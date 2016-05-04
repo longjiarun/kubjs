@@ -1,4 +1,4 @@
-# 轻量级移动端类库 Kub
+# 轻量级移动端组件库 Kub
 
 ## 设计
 
@@ -28,7 +28,7 @@
 
 0. 遵循[语义化版本规范](http://semver.org/lang/zh-CN/)；
 
-0. `master`分支为最新的稳定的版本；
+0. `master`分支为最新的稳定的发布版本；
 
 0. `tags`中的分支对应每一个发布版本；
 
@@ -42,7 +42,6 @@
 
 ```
 git clone https://github.com/longjiarun/kubjs.git kub
-
 ```
 
 ### npm
@@ -124,6 +123,12 @@ new Dialog()
 //使用less
 require('kub/src/less/dialog.less')
 ```
+
+## 问题
+
+0. 通过[Github issues](https://github.com/longjiarun/kubjs/issues)反馈；
+
+0. 通过[Email](mailto:longjiarun@qq.com)反馈；
 
 ## 文档
 

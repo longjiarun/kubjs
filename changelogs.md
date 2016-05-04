@@ -26,3 +26,4 @@
 
 0. `setQuerystring`方法中`append`默认设置为`true`;
 
+0. 增加样式可配置功能；

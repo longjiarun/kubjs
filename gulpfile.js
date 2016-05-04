@@ -23,7 +23,7 @@ var src = 'src',
 
 var staticPath = path.join(build, static);
 
-var comment = '/*! Kub Mobile JavaScript Library v<%= pkg.version%>. (https://github.com/longjiarun/kubjs)*/\n';
+var comment = '/*! Kub Mobile JavaScript Components Library v<%= pkg.version%>. (https://github.com/longjiarun/kubjs)*/\n';
 
 //clean
 gulp.task('clean', function() {
