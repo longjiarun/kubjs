@@ -128,7 +128,6 @@ var createDelegator = function(handler, selector) {
 
     this.qsa = function(selector, context) {
         //querySelectorAll，如果存在两个相同ID，在ios7下，限定范围内查询 id 会返回两个节点
-
         context = context || _document
         selector = selector.trim()
         return slice.call(classSelectorRE.test(selector) ? context.getElementsByClassName(RegExp.$1) : tagSelectorRE.test(selector) ? context.getElementsByTagName(selector) : context.querySelectorAll(selector))
