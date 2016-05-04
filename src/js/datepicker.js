@@ -422,7 +422,6 @@ _prototype.getDate = function() {
         minute: getValue(this, 'minute'),
         second: getValue(this, 'second')
     }
-
     return new Date(values.year, values.month, values.day, values.hour, values.minute, values.second)
 }
 

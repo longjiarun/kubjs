@@ -116,6 +116,7 @@ gulp.task('js',['tpl'], function() {
     return stream.pipe(gulp.dest(staticPath));
 });
 
+
 //tpl
 gulp.task('tpl', function() {
     var target = path.join(src, 'js/tpl');
@@ -160,6 +161,7 @@ gulp.task('docs', function(cb) {
 gulp.task('default', ['clean'], function() {
     gulp.start('less', 'js');
 });
+
 
 //发布到CDN
 gulp.task('publish', ['default'], function() {
