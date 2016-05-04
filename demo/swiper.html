@@ -116,10 +116,12 @@
 
     //横向滚动
     var $swiperWrap = $(".J_horizontal");
-    new Kub.Swiper($swiperWrap.find(".swiper"),{
+
+    var swiper1 = new Kub.Swiper($swiperWrap.find(".swiper"),{
         infinite:true,
         slideSelector:$swiperWrap.find(".slide"),
         slideActiveClass:"active",
+        initialSlide:3,
         paginationSelector:$swiperWrap.find(".pagination li"),
         paginationActiveClass:"pagination-active",
         //滚动时触发slide事件
@@ -128,9 +130,11 @@
         }
     });
 
+    swiper1.prev();
+
     //纵向滚动
     var $swiperWrap1 = $(".J_vertical");
-    new Kub.Swiper($swiperWrap1.find(".swiper"),{
+    var swiper2 = new Kub.Swiper($swiperWrap1.find(".swiper"),{
         direction:"vertical",
         slideSelector:$swiperWrap1.find(".slide"),
         slideActiveClass:"active",
@@ -138,9 +142,11 @@
         paginationActiveClass:"pagination-active",
         //默认滚动位置
         slide:function(index){
-            //console.log("slide:"+index)
+            console.log("slide:"+index)
         }
     });
+
+    swiper2.slide(2);
 
 </script>
 </body>

@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.0.1. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.0.2. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -632,12 +632,10 @@
 	            if(type === 'string' && value == null) {
 
 	                if(!this.length || this[0].nodeType !== ELEMENT_NODE){
-	                    return null
-
+	                    return undefined
 	                }else{
 	                    return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
 	                }
-
 	            }else{
 	                return this.each(function() {
 	                    if (this.nodeType !== ELEMENT_NODE) return
@@ -761,7 +759,7 @@
 	         * 设置或获取Dom文本内容。
 	         */
 	        text: function(text) {
-	            return html ?
+	            return text ?
 	                this.each(function() {
 	                    this.textContent = text
 	                }) :

@@ -17,13 +17,15 @@
 <script type="text/javascript">
 
     function testConfirm(){
-        new Kub.Confirm({
+        var confirm1 = new Kub.Confirm({
             message:"这是一个confirm",
             confirm:function(e,dialog){
                 //监听确认事件，需要手动关闭对话框
+            },
+            cancel:function(e,a){
+                console.log(a)
             }
         });
-
     }
     //testConfirm();
 
@@ -38,7 +40,7 @@
             loader.hide();
         },3000);
     }
-    testLoader();
+    //testLoader();
 
     function testToast(){
         //1.5s以后消失
@@ -108,7 +110,7 @@
             }
         });
     }
-    testPrompt();
+    //testPrompt();
 </script>
 </body>
 </html>

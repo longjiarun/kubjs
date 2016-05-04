@@ -41,11 +41,11 @@
 ### CDN
 
 ```
-<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.0.1/index.css">
+<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.css">
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.1/index.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.js"></script>
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.1/index.style.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.style.js"></script>
 ```
 
 ### git
@@ -142,4 +142,4 @@ require('kub/src/less/dialog.less')
 
 ## 文档
 
-[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.0.1/kub.js.html)
+[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.0.2/kub.js.html)

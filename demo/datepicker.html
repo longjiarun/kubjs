@@ -23,7 +23,15 @@
     //可配置title 与 本地化
     var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
         title:"Date Picker",
-        locale:"en"
+        locale:"en",
+        cancelText:"Cancel",
+        cancel:function(e,datepicker){
+
+            datepicker.setDate(new Date());
+
+            //datepicker.hide()
+        },
+        confirmText:"Ok"
     });
 
     //自定义format
