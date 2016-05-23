@@ -219,13 +219,13 @@ var setActualDays = function(datepicker, year, month) {
 
 //绑定输入框聚焦事件
 var bindInputFocusEvent = function(datepicker) {
-    datepicker.$element.on(EVENT_NAME, function() {
+    datepicker.$element.on(EVENT_NAME, function(event) {
         //使输入框失去焦点
         datepicker.$element[0].blur()
 
         datepicker.show()
 
-        return false
+        event.preventDefault()
     })
 }
 

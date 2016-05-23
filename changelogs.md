@@ -1,11 +1,18 @@
 # 更新日志
 
+## v2.0.3
+
+### 解决的bug
+
+0. 修复`Datepicker`键盘会弹出问题；
+
+0. 修复`core.setQuerystring`会生成不符合规范的`a&a=1`地址；
+
 ## v2.0.2
 
 ### 解决的bug
 
 0. 修复`Lite.prototype.text`问题；
-
 
 ## v2.0.1
 
