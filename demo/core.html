@@ -19,9 +19,18 @@
         url:window.location.href
     })
 
+    console.log(a)
+
     console.log(Kub.core.getQuerystring(a))
 
     console.log(Kub.core.extend(true,{},{name:{age:1}},{name:{name:1}}));
+
+    a = Kub.core.setQuerystring({
+        name:undefined,
+        age:0
+    })
+
+    console.log(a)
 
 </script>
 </body>

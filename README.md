@@ -10,6 +10,8 @@
 
 0. 组件采用`commonjs`规范，采用`webpack`编译，对外提供源文件与编译后的文件；
 
+0. 提供模板源文件与预编译后的文件；
+
 0. `Kub`对外提供暴露全局的`Kub`变量，所有组件绑定在该变量中；
 
 0. 样式采用`less`编写，对外提供源文件与编译后的文件；
@@ -41,11 +43,11 @@
 ### CDN
 
 ```
-<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.css">
+<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.0.3/index.css">
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.3/index.js"></script>
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.2/index.style.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.0.3/index.style.js"></script>
 ```
 
 ### git
@@ -134,12 +136,38 @@ new Dialog()
 require('kub/src/less/dialog.less')
 ```
 
+## 与V1版本的区别
+
+描述与版本V1的区别，方便迁移到版本V2。
+
+0. 模块规范由`umd`修改为`commonjs`;
+
+0. 去除`zepto`、`underscore`、`hammerjs`依赖；
+
+0. 去除`js/extend`目录中的组件；
+
+0. 去除`calculator`组件；
+
+0. 将`os`模块迁移到`detect`中，绑定由`Kub.core.os`迁移到`Kub.os`;
+
+0. 增加`kub.js`与`kub.style.js`文件；
+
+0. 将模板从组件中抽离，提供模板预编译文件；
+
+0. 去除多余API，详见API文档；
+
+0. 将`css`文件夹名称修改为`less`；
+
+0. 将样式可配置项统一配置在`variables.less`中；
+
+0. 在`variables.less`中提供单位可配置变量`@unit: 1px;`;
+
 ## 问题
 
 0. 通过[Github issues](https://github.com/longjiarun/kubjs/issues)反馈；
 
 0. 通过[Email](mailto:longjiarun@qq.com)反馈；
 
-## 文档
+## API文档
 
-[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.0.2/kub.js.html)
+[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.0.3/kub.js.html)

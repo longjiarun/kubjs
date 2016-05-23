@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.0.2. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.0.3. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -952,7 +952,7 @@
 	    //将参数合并成字符串
 	    for (name in _params) {
 	        if (_params.hasOwnProperty(name)) {
-	            _queryString += (++f ? '&' : '') + (_params[name] !== '' ? name + '=' + (opts.raw ? _params[name] : encodeURIComponent(_params[name])) : name)
+	            _queryString += (++f ? '&' : '') + name + '=' + (_params[name] !== '' ? (opts.raw ? _params[name] : encodeURIComponent(_params[name])) : '')
 	        }
 	    }
 
@@ -3106,13 +3106,13 @@
 
 	//绑定输入框聚焦事件
 	var bindInputFocusEvent = function(datepicker) {
-	    datepicker.$element.on(EVENT_NAME, function() {
+	    datepicker.$element.on(EVENT_NAME, function(event) {
 	        //使输入框失去焦点
 	        datepicker.$element[0].blur()
 
 	        datepicker.show()
 
-	        return false
+	        event.preventDefault()
 	    })
 	}
 

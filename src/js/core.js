@@ -175,7 +175,7 @@ _prototype.setQuerystring = function(url, params, opts) {
     //将参数合并成字符串
     for (name in _params) {
         if (_params.hasOwnProperty(name)) {
-            _queryString += (++f ? '&' : '') + (_params[name] !== '' ? name + '=' + (opts.raw ? _params[name] : encodeURIComponent(_params[name])) : name)
+            _queryString += (++f ? '&' : '') + name + '=' + (_params[name] !== '' ? (opts.raw ? _params[name] : encodeURIComponent(_params[name])) : '')
         }
     }
 
