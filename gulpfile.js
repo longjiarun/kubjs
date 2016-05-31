@@ -6,7 +6,7 @@ var gulp = require('gulp'),
     webpack = require('webpack-stream'),
     rename = require('gulp-rename'),
     htmlmin = require('gulp-htmlmin'),
-    template = require('gulp-underscore-tpl'),
+    template = require('gulp-compile-template'),
     banner = require('gulp-banner'),
     eslint = require('gulp-eslint'),
     postcssClean = require('postcss-clean'),
@@ -116,7 +116,6 @@ gulp.task('js',['tpl'], function() {
     return stream.pipe(gulp.dest(staticPath));
 });
 
-
 //tpl
 gulp.task('tpl', function() {
     var target = path.join(src, 'js/tpl');
@@ -127,7 +126,9 @@ gulp.task('tpl', function() {
             removeComments: true
         }))
         .pipe(template({
-            variable: 'data'
+            underscore: {
+                variable: 'data'
+            }
         }))
         .pipe(gulp.dest(target))
 });
