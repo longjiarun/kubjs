@@ -45,7 +45,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(23);
+	module.exports = __webpack_require__(25);
 
 
 /***/ },
@@ -75,74 +75,79 @@
 	/**
 	 * ## Kub.core
 	 */
-	Kub.core = __webpack_require__(7)
+	Kub.core = __webpack_require__(8)
 
 	/**
 	 * ## Kub.os
 	 */
-	Kub.os = __webpack_require__(8)
+	Kub.os = __webpack_require__(9)
 
 	/**
 	 * ## Kub.dateHelper
 	 */
-	Kub.dateHelper = __webpack_require__(9)
+	Kub.dateHelper = __webpack_require__(10)
 
 	/**
 	 * ## Kub.cookie
 	 */
-	Kub.cookie = __webpack_require__(10)
+	Kub.cookie = __webpack_require__(11)
 
 	/**
 	 * ## Kub.LazyLoad
 	 */
-	Kub.LazyLoad = __webpack_require__(11)
+	Kub.LazyLoad = __webpack_require__(12)
 
 	/**
 	 * ## Kub.Dialog
 	 */
-	Kub.Dialog = __webpack_require__(12)
+	Kub.Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Kub.Alert
 	 */
-	Kub.Alert = __webpack_require__(14)
+	Kub.Alert = __webpack_require__(15)
 
 	/**
 	 * ## Kub.Confirm
 	 */
-	Kub.Confirm = __webpack_require__(15)
+	Kub.Confirm = __webpack_require__(16)
 
 	/**
 	 * ## Kub.Prompt
 	 */
-	Kub.Prompt = __webpack_require__(16)
+	Kub.Prompt = __webpack_require__(17)
 
 	/**
 	 * ## Kub.Toast
 	 */
-	Kub.Toast = __webpack_require__(18)
+	Kub.Toast = __webpack_require__(19)
 
 	/**
 	 * ## Kub.Loader
 	 */
-	Kub.Loader = __webpack_require__(19)
+	Kub.Loader = __webpack_require__(20)
 
 	/**
 	 * ## Kub.Swiper
 	 */
-	Kub.Swiper = __webpack_require__(20)
+	Kub.Swiper = __webpack_require__(21)
 
 	/**
 	 * ## Kub.DatePicker
 	 */
-	Kub.DatePicker = __webpack_require__(21)
+	Kub.DatePicker = __webpack_require__(22)
+
+	/**
+	 * ## Kub.Touch
+	 */
+	Kub.Touch = __webpack_require__(24)
 
 	module.exports = Kub
 
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Lite
@@ -150,6 +155,7 @@
 	 * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
 	 *
 	 */
+	__webpack_require__(7)
 	var $, Lite
 
 	var ELEMENT_NODE = 1,
@@ -225,25 +231,6 @@
 	    }
 
 	    return wrap()
-	}
-
-
-	//polyfill
-	//android 4.3
-	if (!_window.CustomEvent) {
-	    var CustomEvent = function(event, params) {
-	        var evt
-	        params = params || {
-	            bubbles: false,
-	            cancelable: false,
-	            detail: undefined
-	        }
-	        evt = document.createEvent("CustomEvent")
-	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-	        return evt
-	    }
-	    CustomEvent.prototype = _window.Event.prototype
-	    _window.CustomEvent = CustomEvent
 	}
 
 	var matches = (function() {
@@ -775,6 +762,31 @@
 /* 7 */
 /***/ function(module, exports) {
 
+	//CustomEvent polyfill
+	//android 4.3
+	var _window = window
+
+	if (!_window.CustomEvent) {
+	    var CustomEvent = function(event, params) {
+	        var evt
+	        params = params || {
+	            bubbles: false,
+	            cancelable: false,
+	            detail: undefined
+	        }
+	        evt = document.createEvent("CustomEvent")
+	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+	        return evt
+	    }
+	    CustomEvent.prototype = _window.Event.prototype
+	    _window.CustomEvent = CustomEvent
+	}
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
 	/**
 	 * # core
 	 *
@@ -1022,7 +1034,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -1095,7 +1107,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -1350,7 +1362,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -1420,7 +1432,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1434,7 +1446,7 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6)
 
 	/**
@@ -1722,7 +1734,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1735,9 +1747,9 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6),
-	    template = __webpack_require__(13)
+	    template = __webpack_require__(14)
 
 	/**
 	 * ## Dialog Constructor
@@ -1904,7 +1916,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -1942,7 +1954,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1955,8 +1967,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Alert Constructor
@@ -2019,7 +2031,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2032,8 +2044,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Confirm Constructor
@@ -2109,7 +2121,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2122,9 +2134,9 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12),
-	    template = __webpack_require__(17)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13),
+	    template = __webpack_require__(18)
 
 	var INPUT_SELECTOR = '.J_input'
 
@@ -2218,7 +2230,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -2236,7 +2248,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2249,8 +2261,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Toast Constructor
@@ -2321,7 +2333,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2335,8 +2347,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Loader Constructor
@@ -2393,7 +2405,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2407,8 +2419,8 @@
 	 * @require [os](./detect.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    os = __webpack_require__(8),
+	var core = __webpack_require__(8),
+	    os = __webpack_require__(9),
 	    $ = __webpack_require__(6)
 
 	/**
@@ -2882,7 +2894,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2899,13 +2911,13 @@
 	 * @require [Dialog](./dialog.js.html)
 	 * @require [DateHelper](./date.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6),
-	    os = __webpack_require__(8),
-	    Dialog = __webpack_require__(12),
-	    template = __webpack_require__(22)
+	    os = __webpack_require__(9),
+	    Dialog = __webpack_require__(13),
+	    template = __webpack_require__(23)
 
-	__webpack_require__(9)
+	__webpack_require__(10)
 
 	/**
 	 * ## DatePicker Constructor
@@ -3352,7 +3364,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -3422,7 +3434,223 @@
 	};
 
 /***/ },
-/* 23 */
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * # Touch
+	 *
+	 * debug 版本，注释暂时未添加
+	 */
+
+	__webpack_require__(7)
+
+	var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
+
+	var _window = window,
+	    isTouch = 'ontouchstart' in _window && MOBILE_REGEXP.test(navigator.userAgent)
+
+	var EVENTS_METHODS = [
+	    'preventDefault',
+	    'stopImmediatePropagation',
+	    'stopPropagation'
+	]
+
+	var SWIPE_TIMEOUT = 300,
+	    SWIPE_THRESHOLD = 10,
+	    SWIPER_VELOCITY = 0.25,
+
+	    TAP_DELAY = 50,
+	    TAP_TIMEOUT = 180,
+	    TAP_THRESHOLD = 9,
+
+	    LONGTAP_TIMEOUT = 500,
+
+	    START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+
+	    DIRECTIONS = ['up', 'right', 'down', 'left'],
+	    SWIPE_EVENT = 'swipe',
+
+	    PAN_START_EVENT = 'panstart',
+	    PAN_MOVE_EVENT = 'panmove',
+	    PAN_END_EVENT = 'panend',
+
+	    TAP_EVENT = 'tap',
+
+	    LONGTAP_EVENT = 'longtap'
+
+	var distance = function(p1, p2) {
+	    return Math.round(Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2)))
+	}
+
+	var angle = function(p1, p2) {
+	    var d = Math.abs(p2.x - p1.x)
+	    return Math.round(Math.acos(d / Math.sqrt(Math.pow(d, 2) + Math.pow(p2.y - p1.y, 2))) * 57.3)
+	}
+
+	var direction = function(p1, p2) {
+	    return (angle(p1, p2) > 45) ? ((p1.y < p2.y) ? 2 : 0) : ((p1.x < p2.x) ? 1 : 3)
+	}
+
+	// 如果触摸点位移大于 SWIPE_THRESHOLD 而且速度大于 SWIPER_VELOCITY
+	var matchSwipe = function(threshold, interval) {
+	    return threshold > SWIPE_THRESHOLD && threshold / interval > SWIPER_VELOCITY
+	}
+
+	// 如果触摸点位置大于 TAP_THRESHOLD 而且间隔时间小于 TAP_TIMEOUT
+	var matchTap = function(threshold, interval) {
+	    return threshold < TAP_THRESHOLD && interval < TAP_TIMEOUT
+	}
+
+	//获取触摸点
+	var getCoords = function(event) {
+	    var touches = event.touches,
+	        data = touches && touches.length ? touches : event.changedTouches
+
+	    return {
+	        x: isTouch ? data[0].pageX : event.pageX,
+	        y: isTouch ? data[0].pageY : event.pageY,
+	        e: isTouch ? data[0].target : event.target
+	    }
+	}
+
+	var getEventDetail = function(coords) {
+	    return {
+	        x: coords.x,
+	        y: coords.y
+	    }
+	}
+
+	var getThresholdAndInterval = function(p1,p2){
+	    return {
+	        threshold : distance(p1, p2),
+	        interval  : p2.t.getTime() - p1.t.getTime()
+	    }
+	}
+
+	var trigger = function(element, type, originalEvent, detail) {
+	    var event = new _window.CustomEvent(type, {
+	        detail: detail,
+	        bubbles: true,
+	        cancelable: true
+	    })
+
+	    event.originalEvent = originalEvent
+
+	    EVENTS_METHODS.forEach(function(name){
+	        event[name] = function(){
+	            originalEvent[name].apply(originalEvent,arguments)
+	        }
+	    })
+
+	    console.log(event)
+
+	    element.dispatchEvent(event)
+	}
+
+	var on = function(element, type, handler) {
+	    element.addEventListener(type, handler, false)
+	}
+
+	var clearTime = function(timer) {
+	    timer && clearTimeout(timer)
+	}
+
+	function Touch(element) {
+	    var startFlag = false,
+	        moveFlag = false,
+	        p1,
+	        p2,
+	        longTapTimer,
+	        tapTimer,
+	        cancelTap = false
+
+	    on(element, START_EVENT, function(event) {
+	        var coords = getCoords(event)
+	        p1 = coords
+	        p1.t = new Date()
+	        p2 = p1
+
+	        cancelTap = false
+
+	        //触发 longtap 事件
+	        isTouch && (longTapTimer = setTimeout(function() {
+	            trigger(coords.e, LONGTAP_EVENT, event)
+	        }, LONGTAP_TIMEOUT))
+
+	        startFlag = true
+	    })
+
+	    on(element, MOVE_EVENT, function(event) {
+	        if(!startFlag){
+	            return
+	        }
+
+	        var coords = getCoords(event), thresholdAndInterval
+
+	        p2 = coords
+	        p2.t = new Date()
+
+	        thresholdAndInterval = getThresholdAndInterval(p1,p2)
+
+	        // 如果触摸点不符合 tap 触发条件，则取消长按事件
+	        if(!cancelTap && !matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)){
+	            clearTime(longTapTimer)
+	            cancelTap = true
+	        }
+
+	        //触发 panstart 事件
+	        !moveFlag && trigger(coords.e, PAN_START_EVENT, event, getEventDetail(coords))
+
+	        //触发 panmove 事件
+	        trigger(coords.e, PAN_MOVE_EVENT, event, getEventDetail(coords))
+
+	        moveFlag = true
+	    })
+
+	    on(element, END_EVENT, function(event) {
+	        // 取消 longtap 事件定时器
+	        clearTime(longTapTimer)
+
+	        var coords = getCoords(event), thresholdAndInterval
+
+	        p2 = coords
+	        p2.t = new Date()
+
+	        thresholdAndInterval = getThresholdAndInterval(p1,p2)
+
+	        if (matchSwipe(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
+
+	            //触发 swipe['up', 'right', 'down', 'left'] 事件
+	            trigger(coords.e, SWIPE_EVENT + DIRECTIONS[direction(p1, p2)], event)
+
+	        } else if (!cancelTap && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
+
+	            // 取消 tap 事件定时器
+	            clearTime(tapTimer)
+	            isTouch && (tapTimer = setTimeout(function() {
+
+	                // 触发 tap 事件
+	                trigger(coords.e, TAP_EVENT, event)
+
+	            }, TAP_DELAY))
+	        }
+
+	        // 触发 panend 事件
+	        startFlag && moveFlag && trigger(coords.e, PAN_END_EVENT, event, getEventDetail(coords))
+
+	        startFlag = false
+	        moveFlag = false
+	    })
+	}
+
+	module.exports = Touch
+
+
+/***/ },
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3431,19 +3659,19 @@
 	 * 与`Kub`对象一致，增加样式文件。
 	 *
 	 */
-	__webpack_require__(24)
+	__webpack_require__(26)
 
 	module.exports = __webpack_require__(5)
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(25)({"insertAt":"top","css":".kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-dialog .kub-dialog-body{padding:12px}.kub-datepicker{font-size:16px;color:#333;text-align:center;white-space:nowrap;position:relative}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;top:54px;left:0;height:54px;width:100%;z-index:0;border:1px solid rgba(0,0,0,.1);border-radius:6px;box-shadow:0 0 108px rgba(0,0,0,.3);box-sizing:border-box}.kub-datepicker .kub-datepicker-column{position:relative;height:162px;padding:0 10px;display:inline-block;overflow:hidden;z-index:1}.kub-datepicker .kub-datepicker-column:after{position:absolute;font-size:12px;top:54px;right:0}.kub-datepicker .kub-datepicker-column ul li{line-height:54px;height:54px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}"})
+	__webpack_require__(27)({"insertAt":"top","css":".kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-dialog .kub-dialog-body{padding:12px}.kub-datepicker{font-size:16px;color:#333;text-align:center;white-space:nowrap;position:relative}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;top:54px;left:0;height:54px;width:100%;z-index:0;border:1px solid rgba(0,0,0,.1);border-radius:6px;box-shadow:0 0 108px rgba(0,0,0,.3);box-sizing:border-box}.kub-datepicker .kub-datepicker-column{position:relative;height:162px;padding:0 10px;display:inline-block;overflow:hidden;z-index:1}.kub-datepicker .kub-datepicker-column:after{position:absolute;font-size:12px;top:54px;right:0}.kub-datepicker .kub-datepicker-column ul li{line-height:54px;height:54px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}"})
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	var _document = document,

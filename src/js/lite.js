@@ -4,6 +4,7 @@
  * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
  *
  */
+require('./polyfill')
 var $, Lite
 
 var ELEMENT_NODE = 1,
@@ -79,25 +80,6 @@ $ = Lite = function(selector, context) {
     }
 
     return wrap()
-}
-
-
-//polyfill
-//android 4.3
-if (!_window.CustomEvent) {
-    var CustomEvent = function(event, params) {
-        var evt
-        params = params || {
-            bubbles: false,
-            cancelable: false,
-            detail: undefined
-        }
-        evt = document.createEvent("CustomEvent")
-        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-        return evt
-    }
-    CustomEvent.prototype = _window.Event.prototype
-    _window.CustomEvent = CustomEvent
 }
 
 var matches = (function() {

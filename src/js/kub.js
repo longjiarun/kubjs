@@ -79,4 +79,9 @@ Kub.Swiper = require('./swiper')
  */
 Kub.DatePicker = require('./datepicker')
 
+/**
+ * ## Kub.Touch
+ */
+Kub.Touch = require('./touch')
+
 module.exports = Kub
