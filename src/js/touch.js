@@ -106,8 +106,6 @@ var trigger = function(element, type, originalEvent, detail) {
         }
     })
 
-    console.log(event)
-
     element.dispatchEvent(event)
 }
 
