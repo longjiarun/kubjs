@@ -7,8 +7,7 @@
 require('./polyfill')
 var $, Lite
 
-var ELEMENT_NODE = 1,
-    ELEMENT_PROTOTYPE = Element.prototype
+var ELEMENT_NODE = 1
 
 var slice = Array.prototype.slice,
     readyRE = /complete|loaded|interactive/,
@@ -81,22 +80,6 @@ $ = Lite = function(selector, context) {
 
     return wrap()
 }
-
-var matches = (function() {
-    var names = [
-        //"mozMatchesSelector",
-        "webkitMatchesSelector",
-        //"msMatchesSelector",
-        "matches"
-    ]
-
-    var i = names.length
-    while (i--) {
-        var name = names[i]
-        if (!ELEMENT_PROTOTYPE[name]) continue
-        return name
-    }
-}())
 
 var createDelegator = function(handler, selector) {
     return function(e) {
@@ -180,7 +163,7 @@ var createDelegator = function(handler, selector) {
             element = element ? element : this[0]
 
             if (element && element.nodeType === ELEMENT_NODE) {
-                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+                return element === selector ? true : typeof selector === 'string' && element.matches(selector)
             }
 
             return false
@@ -195,24 +178,9 @@ var createDelegator = function(handler, selector) {
          *
          */
         closest: function(selector) {
-            var element = this[0],
-                prt = element,
-                dom
+            var element = this[0],dom
 
-            if(ELEMENT_PROTOTYPE.closest){
-                var child = element.children[0]
-
-                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
-
-            }else{
-                while (prt) {
-                    if (this.is(selector, prt)) {
-                        dom = prt
-                        break
-                    }
-                    prt = prt.parentElement
-                }
-            }
+            dom = element && typeof selector === 'string' ? element.closest(selector) : this.is(selector, element) ? element : null
 
             return $(dom)
         },

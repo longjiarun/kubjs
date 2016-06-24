@@ -158,8 +158,7 @@
 	__webpack_require__(7)
 	var $, Lite
 
-	var ELEMENT_NODE = 1,
-	    ELEMENT_PROTOTYPE = Element.prototype
+	var ELEMENT_NODE = 1
 
 	var slice = Array.prototype.slice,
 	    readyRE = /complete|loaded|interactive/,
@@ -232,22 +231,6 @@
 
 	    return wrap()
 	}
-
-	var matches = (function() {
-	    var names = [
-	        //"mozMatchesSelector",
-	        "webkitMatchesSelector",
-	        //"msMatchesSelector",
-	        "matches"
-	    ]
-
-	    var i = names.length
-	    while (i--) {
-	        var name = names[i]
-	        if (!ELEMENT_PROTOTYPE[name]) continue
-	        return name
-	    }
-	}())
 
 	var createDelegator = function(handler, selector) {
 	    return function(e) {
@@ -331,7 +314,7 @@
 	            element = element ? element : this[0]
 
 	            if (element && element.nodeType === ELEMENT_NODE) {
-	                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+	                return element === selector ? true : typeof selector === 'string' && element.matches(selector)
 	            }
 
 	            return false
@@ -346,24 +329,9 @@
 	         *
 	         */
 	        closest: function(selector) {
-	            var element = this[0],
-	                prt = element,
-	                dom
+	            var element = this[0],dom
 
-	            if(ELEMENT_PROTOTYPE.closest){
-	                var child = element.children[0]
-
-	                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
-
-	            }else{
-	                while (prt) {
-	                    if (this.is(selector, prt)) {
-	                        dom = prt
-	                        break
-	                    }
-	                    prt = prt.parentElement
-	                }
-	            }
+	            dom = element && typeof selector === 'string' ? element.closest(selector) : this.is(selector, element) ? element : null
 
 	            return $(dom)
 	        },
@@ -766,6 +734,9 @@
 	//android 4.3
 	var _window = window
 
+	var ELEMENT_NODE = 1,
+	    ELEMENT_PROTOTYPE = Element.prototype
+
 	if (!_window.CustomEvent) {
 	    var CustomEvent = function(event, params) {
 	        var evt
@@ -780,6 +751,38 @@
 	    }
 	    CustomEvent.prototype = _window.Event.prototype
 	    _window.CustomEvent = CustomEvent
+	}
+
+	//Element.prototype.matches polyfill
+	if (typeof ELEMENT_PROTOTYPE.matches !== 'function') {
+	    ELEMENT_PROTOTYPE.matches = ELEMENT_PROTOTYPE.msMatchesSelector || ELEMENT_PROTOTYPE.mozMatchesSelector || ELEMENT_PROTOTYPE.webkitMatchesSelector || function matches(selector) {
+	        var element = this;
+	        var elements = (element.document || element.ownerDocument).querySelectorAll(selector);
+	        var index = 0;
+
+	        while (elements[index] && elements[index] !== element) {
+	            ++index;
+	        }
+
+	        return Boolean(elements[index]);
+	    };
+	}
+
+	//Element.prototype.closest polyfill
+	if (typeof ELEMENT_PROTOTYPE.closest !== 'function') {
+	    ELEMENT_PROTOTYPE.closest = function closest(selector) {
+	        var element = this;
+
+	        while (element && element.nodeType === ELEMENT_NODE) {
+	            if (element.matches(selector)) {
+	                return element;
+	            }
+
+	            element = element.parentNode;
+	        }
+
+	        return null;
+	    };
 	}
 
 
@@ -3544,8 +3547,6 @@
 	            originalEvent[name].apply(originalEvent,arguments)
 	        }
 	    })
-
-	    console.log(event)
 
 	    element.dispatchEvent(event)
 	}
