@@ -10,12 +10,13 @@
 <style type="text/css">
 body{
     height: 10000px;
+    width:1000px;
     font-size:20px;
     cursor: pointer;
 }
 .touch{
     background: #f00;
-    width:100%;
+    width:400px;
     height: 100px;
     margin-bottom: 10px;
 }
@@ -28,28 +29,65 @@ body{
 var element = document.getElementById("J_touch")
 
 // var hammer = new Hammer(element)
-// hammer.on('tap', function(ev) {
-//     console.log(ev)
-// });
+
 // hammer.on('panstart', function(ev) {
-//     console.log(ev)
+//     console.log('panstart')
+// });
+
+// hammer.on('panmove', function(ev) {
+//     console.log('panmove')
+// });
+
+// hammer.on('panleft', function(ev) {
+//     console.log('panleft')
+// });
+
+// hammer.on('swipeleft', function(ev) {
+//     console.log('swipeleft')
+// });
+
+// hammer.on('panend', function(ev) {
+//     console.log('panend')
 // });
 
 </script>
 
 <script type="text/javascript">
-var $ = Kub.$;
+var $ = Kub.$,
+    $element = $(element)
 
-Kub.os.mobile && (window.console = {
-    log : function(msg){
-        $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
-    }
-})
+// Kub.os.mobile && (window.console = {
+//     log : function(msg){
+//         $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
+//     }
+// })
+
 new Kub.Touch( document.body )
 
-$(window).on('swipeleft','div',function(e){
+$element.on('tap', function(ev) {
+    console.log('tap')
+});
 
-    e.preventDefault()
+$element.on('panstart', function(ev) {
+    console.log('panstart')
+});
+
+$element.on('panmove', function(ev) {
+    console.log('panmove')
+});
+
+$element.on('panleft', function(ev) {
+    console.log('panleft')
+    console.log(ev)
+    ev.preventDefault()
+});
+
+$element.on('swipeleft', function(ev) {
+    console.log('swipeleft')
+});
+
+$element.on('panend', function(ev) {
+    console.log('panend')
 });
 
 document.body.appendChild(element.cloneNode(true))

@@ -4,6 +4,10 @@
  * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
  *
  */
+
+/**
+ * @require [polyfill](./polyfill.js.html)
+ */
 require('./polyfill')
 var $, Lite
 
@@ -83,8 +87,9 @@ $ = Lite = function(selector, context) {
 
 var createDelegator = function(handler, selector) {
     return function(e) {
-        if ($(e.target).closest(selector).length) {
-            handler.apply(e.target, arguments)
+        var match = $(e.target).closest(selector)
+        if (match.length) {
+            handler.apply(match, arguments)
         }
     }
 }
@@ -213,7 +218,10 @@ var createDelegator = function(handler, selector) {
          */
         show: function() {
             return this.each(function() {
+
                 this.style.display === 'none' && (this.style.display = '')
+
+                $(this).css('display') === 'none' && (this.style.display = 'block')
             })
         },
 

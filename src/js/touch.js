@@ -1,9 +1,14 @@
 /**
  * # Touch
  *
- * debug 版本，注释暂时未添加
+ * Touch 组件
+ * debug 版本
+ *
  */
 
+/**
+ * @require [polyfill](./polyfill.js.html)
+ */
 require('./polyfill')
 
 var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
@@ -17,12 +22,10 @@ var EVENTS_METHODS = [
     'stopPropagation'
 ]
 
-var SWIPE_TIMEOUT = 300,
-    SWIPE_THRESHOLD = 10,
+var SWIPE_THRESHOLD = 10,
     SWIPER_VELOCITY = 0.25,
 
-    TAP_DELAY = 50,
-    TAP_TIMEOUT = 180,
+    TAP_TIMEOUT = 200,
     TAP_THRESHOLD = 9,
 
     LONGTAP_TIMEOUT = 500,
@@ -34,6 +37,7 @@ var SWIPE_TIMEOUT = 300,
     DIRECTIONS = ['up', 'right', 'down', 'left'],
     SWIPE_EVENT = 'swipe',
 
+    PAN_EVENT = 'pan',
     PAN_START_EVENT = 'panstart',
     PAN_MOVE_EVENT = 'panmove',
     PAN_END_EVENT = 'panend',
@@ -42,15 +46,18 @@ var SWIPE_TIMEOUT = 300,
 
     LONGTAP_EVENT = 'longtap'
 
+// 获取位移量
 var distance = function(p1, p2) {
     return Math.round(Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2)))
 }
 
+// 获取角度，通过获取角度从而获取方向
 var angle = function(p1, p2) {
     var d = Math.abs(p2.x - p1.x)
     return Math.round(Math.acos(d / Math.sqrt(Math.pow(d, 2) + Math.pow(p2.y - p1.y, 2))) * 57.3)
 }
 
+// 获取方向
 var direction = function(p1, p2) {
     return (angle(p1, p2) > 45) ? ((p1.y < p2.y) ? 2 : 0) : ((p1.x < p2.x) ? 1 : 3)
 }
@@ -65,7 +72,7 @@ var matchTap = function(threshold, interval) {
     return threshold < TAP_THRESHOLD && interval < TAP_TIMEOUT
 }
 
-//获取触摸点
+// 获取触摸点数据
 var getCoords = function(event) {
     var touches = event.touches,
         data = touches && touches.length ? touches : event.changedTouches
@@ -77,6 +84,7 @@ var getCoords = function(event) {
     }
 }
 
+// 获取事件位置数据
 var getEventDetail = function(coords) {
     return {
         x: coords.x,
@@ -84,6 +92,7 @@ var getEventDetail = function(coords) {
     }
 }
 
+// 获取偏移值与时间间隔
 var getThresholdAndInterval = function(p1,p2){
     return {
         threshold : distance(p1, p2),
@@ -91,6 +100,7 @@ var getThresholdAndInterval = function(p1,p2){
     }
 }
 
+// 触发事件
 var trigger = function(element, type, originalEvent, detail) {
     var event = new _window.CustomEvent(type, {
         detail: detail,
@@ -98,6 +108,7 @@ var trigger = function(element, type, originalEvent, detail) {
         cancelable: true
     })
 
+    // 存储原事件对象
     event.originalEvent = originalEvent
 
     EVENTS_METHODS.forEach(function(name){
@@ -117,6 +128,22 @@ var clearTime = function(timer) {
     timer && clearTimeout(timer)
 }
 
+/**
+ * ## Touch Constructor
+ *
+ * `Touch`类。
+ *
+ * 使用方法：
+ * ```js
+ *
+ * new Kub.Touch(document.body)
+ *
+ * document.body.addEventListener('swipeleft','div',function(){
+ *     //do something
+ * })
+ *
+ * ```
+ */
 function Touch(element) {
     var startFlag = false,
         moveFlag = false,
@@ -147,24 +174,27 @@ function Touch(element) {
             return
         }
 
-        var coords = getCoords(event), thresholdAndInterval
+        var coords = getCoords(event), detail = getEventDetail(coords), thresholdAndInterval
 
         p2 = coords
         p2.t = new Date()
 
         thresholdAndInterval = getThresholdAndInterval(p1,p2)
 
-        // 如果触摸点不符合 tap 触发条件，则取消长按事件
+        // 如果触摸点不符合 longtap 触发条件，则取消长按事件
         if(!cancelTap && !matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)){
             clearTime(longTapTimer)
             cancelTap = true
         }
 
         //触发 panstart 事件
-        !moveFlag && trigger(coords.e, PAN_START_EVENT, event, getEventDetail(coords))
+        !moveFlag && trigger(coords.e, PAN_START_EVENT, event, detail)
+
+        //触发 pan['up', 'right', 'down', 'left'] 事件
+        trigger(coords.e, PAN_EVENT + DIRECTIONS[direction(p1, p2)], event, detail)
 
         //触发 panmove 事件
-        trigger(coords.e, PAN_MOVE_EVENT, event, getEventDetail(coords))
+        trigger(coords.e, PAN_MOVE_EVENT, event, detail)
 
         moveFlag = true
     })
@@ -180,21 +210,15 @@ function Touch(element) {
 
         thresholdAndInterval = getThresholdAndInterval(p1,p2)
 
+        // 如果达到 swipe 事件条件
         if (matchSwipe(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
             //触发 swipe['up', 'right', 'down', 'left'] 事件
             trigger(coords.e, SWIPE_EVENT + DIRECTIONS[direction(p1, p2)], event)
+        } else if (!cancelTap && isTouch && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
-        } else if (!cancelTap && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
-
-            // 取消 tap 事件定时器
-            clearTime(tapTimer)
-            isTouch && (tapTimer = setTimeout(function() {
-
-                // 触发 tap 事件
-                trigger(coords.e, TAP_EVENT, event)
-
-            }, TAP_DELAY))
+            // 触发 tap 事件
+            trigger(coords.e, TAP_EVENT, event)
         }
 
         // 触发 panend 事件

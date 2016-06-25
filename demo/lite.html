@@ -55,10 +55,13 @@
     var a = $('div').removeClass('as child').addClass('as asd').removeClass('as')
     console.log(a)
 
-    var hanlder1 = function(){
+    var hanlder1 = function(e){
+        console.log(e)
+        e.preventDefault();
         console.log(1);
     }
-    var hanlder2 = function(){
+    var hanlder2 = function(e){
+
         console.log(2);
     }
 
@@ -66,7 +69,8 @@
 
     $(document.body).on('keydown','.box2',hanlder2);
 
-    document.body.addEventListener('touchstart',function(){
+    document.body.addEventListener('touchstart',function(e){
+        e.preventDefault();
         console.log(3)
     },false)
 </script>
