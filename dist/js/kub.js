@@ -3530,8 +3530,8 @@
 	        data = touches && touches.length ? touches : event.changedTouches
 
 	    return {
-	        x: isTouch ? data[0].pageX : event.pageX,
-	        y: isTouch ? data[0].pageY : event.pageY,
+	        x: isTouch ? data[0].clientX : event.clientX,
+	        y: isTouch ? data[0].clientY : event.clientY,
 	        e: isTouch ? data[0].target : event.target
 	    }
 	}
@@ -3608,8 +3608,8 @@
 	 * ```
 	 */
 	function Touch(element) {
-	    var startFlag = false,
-	        moveFlag = false,
+	    var moveFlag = false,
+	        target,
 	        p1,
 	        p2,
 	        longTapTimer,
@@ -3628,16 +3628,17 @@
 
 	        cancelTap = false
 
+	        target = coords.e
+
 	        //触发 longtap 事件
 	        isTouch && (longTapTimer = setTimeout(function() {
-	            trigger(coords.e, LONGTAP_EVENT, event)
+	            trigger(target, LONGTAP_EVENT, event)
 	        }, LONGTAP_TIMEOUT))
 
-	        startFlag = true
 	    })
 
 	    on(element, MOVE_EVENT, function(event) {
-	        if(!startFlag){
+	        if(!target){
 	            return
 	        }
 
@@ -3658,17 +3659,17 @@
 	        }
 
 	        //触发 panstart 事件
-	        !moveFlag && trigger(coords.e, PAN_START_EVENT, event, detail)
+	        !moveFlag && trigger(target, PAN_START_EVENT, event, detail)
 
 	        direct = direction(p1, p2)
 
 	        actionsLength < SWIPE_MAX_MOVEMENT && (actions[direct] += 1, actionsLength += 1)
 
 	        //触发 pan['up', 'right', 'down', 'left'] 事件
-	        trigger(coords.e, PAN_EVENT + DIRECTIONS[direct], event, detail)
+	        trigger(target, PAN_EVENT + DIRECTIONS[direct], event, detail)
 
 	        //触发 panmove 事件
-	        trigger(coords.e, PAN_MOVE_EVENT, event, detail)
+	        trigger(target, PAN_MOVE_EVENT, event, detail)
 
 	        moveFlag = true
 	    })
@@ -3688,17 +3689,17 @@
 	        if (matchSwipe(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
 	            //触发 swipe['up', 'right', 'down', 'left'] 事件
-	            trigger(coords.e, SWIPE_EVENT + DIRECTIONS[findMatchedDirection(actions)], event)
+	            trigger(target, SWIPE_EVENT + DIRECTIONS[findMatchedDirection(actions)], event)
 	        } else if (!cancelTap && isTouch && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
 	            // 触发 tap 事件
-	            trigger(coords.e, TAP_EVENT, event)
+	            trigger(target, TAP_EVENT, event)
 	        }
 
 	        // 触发 panend 事件
-	        startFlag && moveFlag && trigger(coords.e, PAN_END_EVENT, event, getEventDetail(coords))
+	        target && moveFlag && trigger(target, PAN_END_EVENT, event, getEventDetail(coords))
 
-	        startFlag = false
+	        target = null
 	        moveFlag = false
 	    })
 	}
