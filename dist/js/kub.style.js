@@ -3472,8 +3472,9 @@
 	    'stopPropagation'
 	]
 
-	var SWIPE_THRESHOLD = 10,
-	    SWIPER_VELOCITY = 0.25,
+	var SWIPE_THRESHOLD = 12,
+	    SWIPE_VELOCITY = 0.3,
+	    SWIPE_MAX_MOVEMENT = 6,
 
 	    TAP_TIMEOUT = 200,
 	    TAP_THRESHOLD = 9,
@@ -3484,6 +3485,7 @@
 	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
 	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
 
+	    DIRECTION_ANGLE = 25,
 	    DIRECTIONS = ['up', 'right', 'down', 'left'],
 	    SWIPE_EVENT = 'swipe',
 
@@ -3509,12 +3511,12 @@
 
 	// 获取方向
 	var direction = function(p1, p2) {
-	    return (angle(p1, p2) > 45) ? ((p1.y < p2.y) ? 2 : 0) : ((p1.x < p2.x) ? 1 : 3)
+	    return (angle(p1, p2) > DIRECTION_ANGLE) ? ((p1.y < p2.y) ? 2 : 0) : ((p1.x < p2.x) ? 1 : 3)
 	}
 
-	// 如果触摸点位移大于 SWIPE_THRESHOLD 而且速度大于 SWIPER_VELOCITY
+	// 如果触摸点位移大于 SWIPE_THRESHOLD 而且速度大于 SWIPE_VELOCITY
 	var matchSwipe = function(threshold, interval) {
-	    return threshold > SWIPE_THRESHOLD && threshold / interval > SWIPER_VELOCITY
+	    return threshold > SWIPE_THRESHOLD && threshold / interval > SWIPE_VELOCITY
 	}
 
 	// 如果触摸点位置大于 TAP_THRESHOLD 而且间隔时间小于 TAP_TIMEOUT
@@ -3576,6 +3578,17 @@
 
 	var clearTime = function(timer) {
 	    timer && clearTimeout(timer)
+	    timer = null
+	}
+
+	var findMatchedDirection = function(actions){
+	    var index = 0, max = actions[index]
+
+	    actions.forEach(function(value,i){
+	        value > max && (max = value, index = i)
+	    })
+
+	    return index;
 	}
 
 	/**
@@ -3600,14 +3613,18 @@
 	        p1,
 	        p2,
 	        longTapTimer,
-	        tapTimer,
-	        cancelTap = false
+	        cancelTap = false,
+	        actions,
+	        actionsLength
 
 	    on(element, START_EVENT, function(event) {
 	        var coords = getCoords(event)
 	        p1 = coords
 	        p1.t = new Date()
 	        p2 = p1
+
+	        actions = [0,0,0,0]
+	        actionsLength = 0
 
 	        cancelTap = false
 
@@ -3624,7 +3641,10 @@
 	            return
 	        }
 
-	        var coords = getCoords(event), detail = getEventDetail(coords), thresholdAndInterval
+	        var coords = getCoords(event),
+	            detail = getEventDetail(coords),
+	            thresholdAndInterval,
+	            direct
 
 	        p2 = coords
 	        p2.t = new Date()
@@ -3640,8 +3660,12 @@
 	        //触发 panstart 事件
 	        !moveFlag && trigger(coords.e, PAN_START_EVENT, event, detail)
 
+	        direct = direction(p1, p2)
+
+	        actionsLength < SWIPE_MAX_MOVEMENT && (actions[direct] += 1, actionsLength += 1)
+
 	        //触发 pan['up', 'right', 'down', 'left'] 事件
-	        trigger(coords.e, PAN_EVENT + DIRECTIONS[direction(p1, p2)], event, detail)
+	        trigger(coords.e, PAN_EVENT + DIRECTIONS[direct], event, detail)
 
 	        //触发 panmove 事件
 	        trigger(coords.e, PAN_MOVE_EVENT, event, detail)
@@ -3664,7 +3688,7 @@
 	        if (matchSwipe(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
 	            //触发 swipe['up', 'right', 'down', 'left'] 事件
-	            trigger(coords.e, SWIPE_EVENT + DIRECTIONS[direction(p1, p2)], event)
+	            trigger(coords.e, SWIPE_EVENT + DIRECTIONS[findMatchedDirection(actions)], event)
 	        } else if (!cancelTap && isTouch && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
 
 	            // 触发 tap 事件

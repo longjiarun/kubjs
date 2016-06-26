@@ -28,27 +28,43 @@ body{
 
 var element = document.getElementById("J_touch")
 
-// var hammer = new Hammer(element)
+var hammer = new Hammer(element)
 
-// hammer.on('panstart', function(ev) {
-//     console.log('panstart')
-// });
+hammer.on('panstart', function(ev) {
+    console.log('panstart')
+});
 
-// hammer.on('panmove', function(ev) {
-//     console.log('panmove')
-// });
+hammer.on('panmove', function(ev) {
+    console.log('panmove')
+});
 
-// hammer.on('panleft', function(ev) {
-//     console.log('panleft')
-// });
+hammer.on('panleft', function(ev) {
+    console.log('panleft')
+});
 
-// hammer.on('swipeleft', function(ev) {
-//     console.log('swipeleft')
-// });
+hammer.on('panright', function(ev) {
+    console.log('panright')
+});
 
-// hammer.on('panend', function(ev) {
-//     console.log('panend')
-// });
+hammer.on('panup', function(ev) {
+    console.log('panup')
+});
+
+
+hammer.on('pandown', function(ev) {
+    console.log('pandown')
+});
+
+hammer.on('swipeleft', function(ev) {
+    console.log('swipeleft')
+});
+hammer.on('swiperight', function(ev) {
+    console.log('swiperight',ev)
+});
+
+hammer.on('panend', function(ev) {
+    console.log('panend',ev)
+});
 
 </script>
 
@@ -62,7 +78,7 @@ var $ = Kub.$,
 //     }
 // })
 
-new Kub.Touch( document.body )
+//new Kub.Touch( document.body )
 
 $element.on('tap', function(ev) {
     console.log('tap')
@@ -79,7 +95,7 @@ $element.on('panmove', function(ev) {
 $element.on('panleft', function(ev) {
     console.log('panleft')
     console.log(ev)
-    ev.preventDefault()
+    //ev.preventDefault()
 });
 
 $element.on('swipeleft', function(ev) {
