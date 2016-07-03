@@ -85,11 +85,14 @@ $ = Lite = function(selector, context) {
     return wrap()
 }
 
-var createDelegator = function(handler, selector) {
+var createDelegator = function(handler, selector, element) {
     return function(e) {
         var match = $(e.target).closest(selector)
-        if (match.length) {
-            handler.apply(match, arguments)
+
+        // 1、存在代理节点
+        // 2、排除$('.className').on('click','.className',handler) 情况
+        if (match.length && match[0] !== element) {
+            handler.apply(match[0], arguments)
         }
     }
 }
@@ -396,7 +399,7 @@ var createDelegator = function(handler, selector) {
                     var element = this, listeners
 
                     if (f) {
-                        handler.delegator = createDelegator(handler, selector)
+                        handler.delegator = createDelegator(handler, selector, element)
                     }
 
                     listeners = element.listeners || {}

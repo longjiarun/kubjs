@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>Lite Test</title>
     <script type="text/javascript" src="../dist/js/kub.js"></script>
-
-    <!-- <script type="text/javascript" src="../bower_components/zepto/zepto.js"></script>-->
-    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+    <!-- <script type="text/javascript" src="../bower_components/sprintjs/sprint.js"></script> -->
+    <script type="text/javascript" src="../bower_components/zepto/zepto.js"></script>
+    <!-- <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script> -->
     <style type="text/css">
         .box{
             width: 300px;
@@ -29,10 +29,11 @@
 
 <div class="box1 box">
     1
+    <a href="https://www.baidu.com" class="box2">sadad</a>
     <div class="box2 box">
         2
         <div class="box3 box">
-            3
+            <p>3</p>
         </div>
     </div>
 </div>
@@ -46,33 +47,45 @@
 </div>
 
 <script type="text/javascript">
+
     var $ =  typeof Kub !== "undefined" ? Kub.$ : $;
 
-    var a = $('.parent').eq(1).closest('.parent')
-    console.log(a)
+    // var a = $('.parent').eq(1).closest('.parent')
+    // console.log(a)
 
 
-    var a = $('div').removeClass('as child').addClass('as asd').removeClass('as')
-    console.log(a)
+    // var a = $('div').removeClass('as child').addClass('as asd').removeClass('as')
+    // console.log(a)
 
-    var hanlder1 = function(e){
-        console.log(e)
-        e.preventDefault();
-        console.log(1);
-    }
-    var hanlder2 = function(e){
+    // var hanlder1 = function(e){
+    //     console.log(e)
+    //     e.preventDefault();
+    //     console.log(1);
+    // }
+    // var hanlder2 = function(e){
 
-        console.log(2);
-    }
+    //     console.log(2);
+    // }
 
-    $(document.body).on('click dblclick','.box2', hanlder1);
+    // $(document.body).on('click dblclick','.box2', hanlder1);
 
-    $(document.body).on('keydown','.box2',hanlder2);
+    // $(document.body).on('keydown','.box2',hanlder2);
 
-    document.body.addEventListener('touchstart',function(e){
-        e.preventDefault();
+    // document.body.addEventListener('touchstart',function(e){
+    //     e.preventDefault();
+    //     console.log(3)
+    // },false)
+
+    $(document.body).on('click','.box3', function(event){
         console.log(3)
-    },false)
+        event.stopPropagation();
+        return false
+    });
+
+    $(document.body).on('click','.box2', function(event){
+        console.log(2)
+        event.preventDefault()
+    });
 </script>
 </body>
 </html>

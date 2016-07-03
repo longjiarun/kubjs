@@ -236,11 +236,14 @@
 	    return wrap()
 	}
 
-	var createDelegator = function(handler, selector) {
+	var createDelegator = function(handler, selector, element) {
 	    return function(e) {
 	        var match = $(e.target).closest(selector)
-	        if (match.length) {
-	            handler.apply(match, arguments)
+
+	        // 1、存在代理节点
+	        // 2、排除$('.className').on('click','.className',handler) 情况
+	        if (match.length && match[0] !== element) {
+	            handler.apply(match[0], arguments)
 	        }
 	    }
 	}
@@ -547,7 +550,7 @@
 	                    var element = this, listeners
 
 	                    if (f) {
-	                        handler.delegator = createDelegator(handler, selector)
+	                        handler.delegator = createDelegator(handler, selector, element)
 	                    }
 
 	                    listeners = element.listeners || {}
@@ -3472,8 +3475,8 @@
 	    'stopPropagation'
 	]
 
-	var SWIPE_THRESHOLD = 12,
-	    SWIPE_VELOCITY = 0.3,
+	var SWIPE_THRESHOLD = 10,
+	    SWIPE_VELOCITY = 0.25,
 	    SWIPE_MAX_MOVEMENT = 6,
 
 	    TAP_TIMEOUT = 200,
@@ -3516,12 +3519,12 @@
 
 	// 如果触摸点位移大于 SWIPE_THRESHOLD 而且速度大于 SWIPE_VELOCITY
 	var matchSwipe = function(threshold, interval) {
-	    return threshold > SWIPE_THRESHOLD && threshold / interval > SWIPE_VELOCITY
+	    return threshold != null && threshold > SWIPE_THRESHOLD && threshold / interval > SWIPE_VELOCITY
 	}
 
 	// 如果触摸点位置大于 TAP_THRESHOLD 而且间隔时间小于 TAP_TIMEOUT
 	var matchTap = function(threshold, interval) {
-	    return threshold < TAP_THRESHOLD && interval < TAP_TIMEOUT
+	    return threshold != null && threshold < TAP_THRESHOLD && interval < TAP_TIMEOUT
 	}
 
 	// 获取触摸点数据
@@ -3547,8 +3550,8 @@
 	// 获取偏移值与时间间隔
 	var getThresholdAndInterval = function(p1,p2){
 	    return {
-	        threshold : distance(p1, p2),
-	        interval  : p2.t.getTime() - p1.t.getTime()
+	        threshold : p1 && p2 && distance(p1, p2),
+	        interval  : p1 && p2 && (p2.t.getTime() - p1.t.getTime())
 	    }
 	}
 

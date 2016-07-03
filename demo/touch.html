@@ -72,11 +72,11 @@ var element = document.getElementById("J_touch")
 var $ = Kub.$,
     $element = $(element)
 
-// Kub.os.mobile && (window.console = {
-//     log : function(msg){
-//         $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
-//     }
-// })
+Kub.os.mobile && (window.console = {
+    log : function(msg){
+        $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
+    }
+})
 
 new Kub.Touch( document.body )
 
@@ -91,12 +91,13 @@ $element.on('panstart', function(ev) {
 
 $element.on('panmove', function(ev) {
     console.log('panmove')
+    ev.preventDefault()
 });
 
 $element.on('panleft', function(ev) {
     console.log('panleft')
     console.log(ev)
-    //ev.preventDefault()
+    ev.preventDefault()
 });
 
 $element.on('swipeleft', function(ev) {
@@ -110,22 +111,22 @@ $element.on('panend', function(ev) {
 document.body.appendChild(element.cloneNode(true))
 
 
-console.log(element.pageX)
-var progress = 1;
-function step(timestamp) {
+// console.log(element.pageX)
+// var progress = 1;
+// function step(timestamp) {
 
-    console.log(progress)
+//     console.log(progress)
 
-    progress++;
-    if (progress < 100) {
-        window.requestAnimationFrame(step);
-    }else{
-        console.timeEnd('test')
-    }
-}
+//     progress++;
+//     if (progress < 100) {
+//         window.requestAnimationFrame(step);
+//     }else{
+//         console.timeEnd('test')
+//     }
+// }
 
-console.time('test')
-window.requestAnimationFrame(step);
+// console.time('test')
+// window.requestAnimationFrame(step);
 
 </script>
 </body>
