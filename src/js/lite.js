@@ -286,6 +286,9 @@ var createDelegator = function(handler, selector, element) {
 
             var ele = this[0],
                 obj = ele.getBoundingClientRect()
+
+            //why window.pageXOffset
+            //http://www.cnblogs.com/hutaoer/archive/2013/02/25/3078872.html
             return {
                 left: obj.left + _window.pageXOffset,
                 top: obj.top + _window.pageYOffset,

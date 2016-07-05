@@ -138,7 +138,7 @@ var findMatchedDirection = function(actions){
         value > max && (max = value, index = i)
     })
 
-    return index;
+    return index
 }
 
 /**
@@ -213,6 +213,7 @@ function Touch(element) {
 
         direct = direction(p1, p2)
 
+        // 取出前SWIPE_MAX_MOVEMENT移动记录
         actionsLength < SWIPE_MAX_MOVEMENT && (actions[direct] += 1, actionsLength += 1)
 
         //触发 pan['up', 'right', 'down', 'left'] 事件

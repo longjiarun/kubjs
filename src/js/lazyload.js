@@ -192,7 +192,7 @@ _prototype.load = function($element) {
 
     //如果原图片为空
     if (!original) {
-        return
+        return this
     }
     if ($element[0].nodeName === 'IMG') {
         $element.attr('src', original)

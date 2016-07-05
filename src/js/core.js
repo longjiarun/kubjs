@@ -160,7 +160,8 @@ _prototype.setQuerystring = function(url, params, opts) {
         if (params.hasOwnProperty(name)) {
             value = params[name]
         }
-        _params[name] = value != undefined ? value : ''
+
+        _params[name] = value != undefined ? (opts.raw ? value : decodeURIComponent(value)) : ''
     })
 
     //如果是追加，则合并参数

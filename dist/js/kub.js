@@ -437,6 +437,9 @@
 
 	            var ele = this[0],
 	                obj = ele.getBoundingClientRect()
+
+	            //why window.pageXOffset
+	            //http://www.cnblogs.com/hutaoer/archive/2013/02/25/3078872.html
 	            return {
 	                left: obj.left + _window.pageXOffset,
 	                top: obj.top + _window.pageYOffset,
@@ -743,7 +746,8 @@
 
 	//CustomEvent polyfill
 	//android 4.3
-	var _window = window
+	var _window = window,
+	    _document = document
 
 	var ELEMENT_NODE = 1,
 	    ELEMENT_PROTOTYPE = Element.prototype
@@ -756,7 +760,7 @@
 	            cancelable: false,
 	            detail: undefined
 	        }
-	        evt = document.createEvent("CustomEvent")
+	        evt = _document.createEvent("CustomEvent")
 	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
 	        return evt
 	    }
@@ -765,35 +769,51 @@
 	}
 
 	//Element.prototype.matches polyfill
+
+	/*
+	    //代码1
+	    var iframe = document.createElement('iframe')
+	    document.body.appendChild(iframe)
+
+	    iframe.contentWindow.document.open()
+
+	    var script = document.createElement('script')
+	    iframe.contentWindow.document.appendChild(script)
+
+	    console.log(script.ownerDocument === document)
+	    //输出false
+	    iframe.contentWindow.document.close()
+	*/
 	if (typeof ELEMENT_PROTOTYPE.matches !== 'function') {
 	    ELEMENT_PROTOTYPE.matches = ELEMENT_PROTOTYPE.msMatchesSelector || ELEMENT_PROTOTYPE.mozMatchesSelector || ELEMENT_PROTOTYPE.webkitMatchesSelector || function matches(selector) {
-	        var element = this;
-	        var elements = (element.document || element.ownerDocument).querySelectorAll(selector);
-	        var index = 0;
+	        var element = this,
+	            // 查找当前节点的根节点时，必须使用element.ownerDocument，见代码1
+	            elements = element.ownerDocument.querySelectorAll(selector),
+	            index = 0
 
 	        while (elements[index] && elements[index] !== element) {
-	            ++index;
+	            ++index
 	        }
 
-	        return Boolean(elements[index]);
-	    };
+	        return !!elements[index]
+	    }
 	}
 
 	//Element.prototype.closest polyfill
 	if (typeof ELEMENT_PROTOTYPE.closest !== 'function') {
 	    ELEMENT_PROTOTYPE.closest = function closest(selector) {
-	        var element = this;
+	        var element = this
 
 	        while (element && element.nodeType === ELEMENT_NODE) {
 	            if (element.matches(selector)) {
-	                return element;
+	                return element
 	            }
 
-	            element = element.parentNode;
+	            element = element.parentNode
 	        }
 
-	        return null;
-	    };
+	        return null
+	    }
 	}
 
 
@@ -963,7 +983,8 @@
 	        if (params.hasOwnProperty(name)) {
 	            value = params[name]
 	        }
-	        _params[name] = value != undefined ? value : ''
+
+	        _params[name] = value != undefined ? (opts.raw ? value : decodeURIComponent(value)) : ''
 	    })
 
 	    //如果是追加，则合并参数
@@ -1400,6 +1421,9 @@
 	 * ```
 	 *
 	 */
+	var _document = document,
+	    _encodeURIComponent = encodeURIComponent
+
 	function cookie(key, value, options) {
 	    var days, time, result, decode
 
@@ -1416,7 +1440,7 @@
 	        if (value === null || value === undefined) options.expires = -1
 
 	        if (typeof options.expires === 'number') {
-	            days = (options.expires)
+	            days = options.expires
 	            time = options.expires = new Date()
 
 	            time.setTime(time.getTime() + days)
@@ -1424,9 +1448,9 @@
 
 	        value = String(value)
 
-	        return (document.cookie = [
-	            encodeURIComponent(key), '=',
-	            options.raw ? value : encodeURIComponent(value),
+	        return (_document.cookie = [
+	            _encodeURIComponent(key), '=',
+	            options.raw ? value : _encodeURIComponent(value),
 	            options.expires ? '; expires=' + options.expires.toUTCString() : '',
 	            options.path ? '; path=' + options.path : '',
 	            options.domain ? '; domain=' + options.domain : '',
@@ -1439,7 +1463,7 @@
 
 	    decode = options.raw ? function (s) { return s } : decodeURIComponent
 
-	    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null
+	    return (result = new RegExp('(?:^|; )' + _encodeURIComponent(key) + '=([^;]*)').exec(_document.cookie)) ? decode(result[1]) : null
 	}
 
 	module.exports = cookie
@@ -1643,7 +1667,7 @@
 
 	    //如果原图片为空
 	    if (!original) {
-	        return
+	        return this
 	    }
 	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original)
@@ -3591,7 +3615,7 @@
 	        value > max && (max = value, index = i)
 	    })
 
-	    return index;
+	    return index
 	}
 
 	/**
@@ -3666,6 +3690,7 @@
 
 	        direct = direction(p1, p2)
 
+	        // 取出前SWIPE_MAX_MOVEMENT移动记录
 	        actionsLength < SWIPE_MAX_MOVEMENT && (actions[direct] += 1, actionsLength += 1)
 
 	        //触发 pan['up', 'right', 'down', 'left'] 事件
