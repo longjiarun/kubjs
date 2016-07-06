@@ -162,7 +162,13 @@ _prototype.loadAll = function() {
  * @return {Boolean}         true ：可见 false ：不可见
  */
 _prototype.isVisible = function($this) {
-    var options = this.options
+    var options = this.options,
+        element = $this[0]
+
+    //如果节点不可见，则不进行加载
+    if(element.offsetWidth == 0 && element.offsetHeight == 0){
+        return false
+    }
 
     if (this.abovethetop($this, options)) {
         return false
