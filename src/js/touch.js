@@ -1,14 +1,22 @@
 /**
  * # Touch
  *
- * Touch 组件
- * debug 版本
+ * 移动端事件组件。
+ *
+ * 支持的事件包含：
+ *
+ * `tap` `longtap`
+ *
+ * `panstart` `panmove` `panup` `pandown` `panleft` `panright` `panend`
+ *
+ * `swipeleft` `swiperight` `swipeup` `swipedown`
  *
  */
 
 /**
  * @require [polyfill](./polyfill.js.html)
  */
+
 require('./polyfill')
 
 var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
@@ -78,7 +86,6 @@ var matchTap = function(threshold, interval) {
 var getCoords = function(event) {
     var touches = event.touches,
         data = touches && touches.length ? touches : event.changedTouches
-
     return {
         x: isTouch ? data[0].clientX : event.clientX,
         y: isTouch ? data[0].clientY : event.clientY,
@@ -149,9 +156,15 @@ var findMatchedDirection = function(actions){
  * 使用方法：
  * ```js
  *
- * new Kub.Touch(document.body)
+ * new Kub.Touch(element)
  *
- * document.body.addEventListener('swipeleft','div',function(){
+ * // swipeleft 事件，支持事件代理
+ * element.addEventListener('swipeleft','div',function(){
+ *     //do something
+ * })
+ *
+ * // tap 事件
+ * element.addEventListener('tap',function(){
  *     //do something
  * })
  *

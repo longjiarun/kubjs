@@ -72,15 +72,15 @@ var element = document.getElementById("J_touch")
 var $ = Kub.$,
     $element = $(element)
 
-Kub.os.mobile && (window.console = {
-    log : function(msg){
-        $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
-    }
-})
+// Kub.os.mobile && (window.console = {
+//     log : function(msg){
+//         $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
+//     }
+// })
 
 new Kub.Touch( document.body )
 
-$element.on('tap', function(ev) {
+$(document.body).on('tap','div', function(ev) {
     console.log('tap')
     console.log(ev)
 });
@@ -109,24 +109,6 @@ $element.on('panend', function(ev) {
 });
 
 document.body.appendChild(element.cloneNode(true))
-
-
-// console.log(element.pageX)
-// var progress = 1;
-// function step(timestamp) {
-
-//     console.log(progress)
-
-//     progress++;
-//     if (progress < 100) {
-//         window.requestAnimationFrame(step);
-//     }else{
-//         console.timeEnd('test')
-//     }
-// }
-
-// console.time('test')
-// window.requestAnimationFrame(step);
 
 </script>
 </body>

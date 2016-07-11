@@ -490,8 +490,8 @@ var createDelegator = function(handler, selector, element) {
          */
         remove: function() {
             return this.each(function() {
-                var parentElement = this.parentElement
-                parentElement && parentElement.removeChild(this)
+                var parentNode = this.parentNode
+                parentNode && parentNode.removeChild(this)
             })
         },
 

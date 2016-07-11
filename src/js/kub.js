@@ -7,6 +7,8 @@
 var _window = window,
     Kub = _window.Kub = _window.Kub || {}
 
+Kub.version = '2.1.0'
+
 /**
  * ## Kub.$
  *

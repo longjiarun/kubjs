@@ -1,11 +1,11 @@
-//CustomEvent polyfill
-//android 4.3
 var _window = window,
     _document = document
 
 var ELEMENT_NODE = 1,
     ELEMENT_PROTOTYPE = Element.prototype
 
+//CustomEvent polyfill
+//android 4.3
 if (!_window.CustomEvent) {
     var CustomEvent = function(event, params) {
         var evt
@@ -23,25 +23,12 @@ if (!_window.CustomEvent) {
 }
 
 //Element.prototype.matches polyfill
-
-/*
-    //代码1
-    var iframe = document.createElement('iframe')
-    document.body.appendChild(iframe)
-
-    iframe.contentWindow.document.open()
-
-    var script = document.createElement('script')
-    iframe.contentWindow.document.appendChild(script)
-
-    console.log(script.ownerDocument === document)
-    //输出false
-    iframe.contentWindow.document.close()
-*/
 if (typeof ELEMENT_PROTOTYPE.matches !== 'function') {
     ELEMENT_PROTOTYPE.matches = ELEMENT_PROTOTYPE.msMatchesSelector || ELEMENT_PROTOTYPE.mozMatchesSelector || ELEMENT_PROTOTYPE.webkitMatchesSelector || function matches(selector) {
         var element = this,
-            // 查找当前节点的根节点时，必须使用element.ownerDocument，见代码1
+            // 查找当前节点的根节点时，必须使用element.ownerDocument
+            // 当节点插入到iframe中时，该节点的document就不是父窗口中的document，而是iframe中的document
+            // 会造成 document.querySelectorAll(selector) 查询不到改节点，所以需要element.ownerDocument替代document
             elements = element.ownerDocument.querySelectorAll(selector),
             index = 0
 

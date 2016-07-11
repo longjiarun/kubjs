@@ -166,6 +166,7 @@ _prototype.isVisible = function($this) {
         element = $this[0]
 
     //如果节点不可见，则不进行加载
+    //会出现误判的可能，比如节点本身宽度与高度设置为0
     if(element.offsetWidth == 0 && element.offsetHeight == 0){
         return false
     }

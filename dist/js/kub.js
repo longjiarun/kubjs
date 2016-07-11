@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.0.3. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.1.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,6 +64,8 @@
 	 */
 	var _window = window,
 	    Kub = _window.Kub = _window.Kub || {}
+
+	Kub.version = '2.1.0'
 
 	/**
 	 * ## Kub.$
@@ -641,8 +643,8 @@
 	         */
 	        remove: function() {
 	            return this.each(function() {
-	                var parentElement = this.parentElement
-	                parentElement && parentElement.removeChild(this)
+	                var parentNode = this.parentNode
+	                parentNode && parentNode.removeChild(this)
 	            })
 	        },
 
@@ -744,14 +746,14 @@
 /* 7 */
 /***/ function(module, exports) {
 
-	//CustomEvent polyfill
-	//android 4.3
 	var _window = window,
 	    _document = document
 
 	var ELEMENT_NODE = 1,
 	    ELEMENT_PROTOTYPE = Element.prototype
 
+	//CustomEvent polyfill
+	//android 4.3
 	if (!_window.CustomEvent) {
 	    var CustomEvent = function(event, params) {
 	        var evt
@@ -769,25 +771,12 @@
 	}
 
 	//Element.prototype.matches polyfill
-
-	/*
-	    //代码1
-	    var iframe = document.createElement('iframe')
-	    document.body.appendChild(iframe)
-
-	    iframe.contentWindow.document.open()
-
-	    var script = document.createElement('script')
-	    iframe.contentWindow.document.appendChild(script)
-
-	    console.log(script.ownerDocument === document)
-	    //输出false
-	    iframe.contentWindow.document.close()
-	*/
 	if (typeof ELEMENT_PROTOTYPE.matches !== 'function') {
 	    ELEMENT_PROTOTYPE.matches = ELEMENT_PROTOTYPE.msMatchesSelector || ELEMENT_PROTOTYPE.mozMatchesSelector || ELEMENT_PROTOTYPE.webkitMatchesSelector || function matches(selector) {
 	        var element = this,
-	            // 查找当前节点的根节点时，必须使用element.ownerDocument，见代码1
+	            // 查找当前节点的根节点时，必须使用element.ownerDocument
+	            // 当节点插入到iframe中时，该节点的document就不是父窗口中的document，而是iframe中的document
+	            // 会造成 document.querySelectorAll(selector) 查询不到改节点，所以需要element.ownerDocument替代document
 	            elements = element.ownerDocument.querySelectorAll(selector),
 	            index = 0
 
@@ -984,6 +973,7 @@
 	            value = params[name]
 	        }
 
+	        // 获取到的中文参数为编码后的，需decodeURIComponent解码
 	        _params[name] = value != undefined ? (opts.raw ? value : decodeURIComponent(value)) : ''
 	    })
 
@@ -1641,6 +1631,7 @@
 	        element = $this[0]
 
 	    //如果节点不可见，则不进行加载
+	    //会出现误判的可能，比如节点本身宽度与高度设置为0
 	    if(element.offsetWidth == 0 && element.offsetHeight == 0){
 	        return false
 	    }
@@ -2717,13 +2708,14 @@
 	    var $element = swiper.$element
 
 	    var handler = function() {
-	        var callback = swiper.options.slide,
+	        var options = swiper.options,
+	            callback = options.slide,
 	            index = swiper._ui.active
 
 	        resetSlideIndex(swiper)
 
 	        //计算出真实索引值
-	        swiper.options.infinite && (index = swiper._ui.active - 1)
+	        options.infinite && (index = swiper._ui.active - 1)
 
 	        callback && callback.call(swiper, index)
 	    }
@@ -2752,6 +2744,8 @@
 	        startCoords
 
 	    var start = function(event) {
+	            stopAuto(swiper)
+
 	            flag = true
 	            event = event.originalEvent || event
 
@@ -2780,6 +2774,8 @@
 	                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
 
 	            swiper.slide(index)
+
+	            beginAuto(swiper)
 	        }
 
 	    //监听横竖屏
@@ -2814,6 +2810,26 @@
 	    }
 	}
 
+	// 开始自动切换
+	var beginAuto = function(swiper){
+	    var options = swiper.options,
+	        _ui = swiper._ui,
+	        auto = options.auto
+
+	    auto && (swiper._timer = setInterval(function(){
+	        // 由于一些特殊设计
+	        // 对非循环滚动采用自动计算索引值的方式
+	        options.infinite ? swiper.next() : swiper.slide( (_ui.active + 1) % _ui.slidesLength )
+	    }, auto))
+	}
+
+	// 停止自动切换
+	var stopAuto = function(swiper){
+	    var timer = swiper._timer
+
+	    timer && clearInterval(timer)
+	}
+
 	//初始化
 	var init = function(swiper) {
 	    var options = swiper.options
@@ -2828,6 +2844,8 @@
 
 	    //滚动到默认位置
 	    swiper.slide(initialSlide, 0)
+
+	    beginAuto(swiper)
 
 	    //绑定事件
 	    bindEvents(swiper)
@@ -2845,6 +2863,8 @@
 	 * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
 	 *
 	 * * `duration`: `Number` 切换速度。
+	 *
+	 * * `auto`: `Number` 自动切换速度。0表示不自动切换，默认为0 。
 	 *
 	 * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
 	 *
@@ -3484,14 +3504,22 @@
 	/**
 	 * # Touch
 	 *
-	 * Touch 组件
-	 * debug 版本
+	 * 移动端事件组件。
+	 *
+	 * 支持的事件包含：
+	 *
+	 * `tap` `longtap`
+	 *
+	 * `panstart` `panmove` `panup` `pandown` `panleft` `panright` `panend`
+	 *
+	 * `swipeleft` `swiperight` `swipeup` `swipedown`
 	 *
 	 */
 
 	/**
 	 * @require [polyfill](./polyfill.js.html)
 	 */
+
 	__webpack_require__(7)
 
 	var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
@@ -3561,7 +3589,6 @@
 	var getCoords = function(event) {
 	    var touches = event.touches,
 	        data = touches && touches.length ? touches : event.changedTouches
-
 	    return {
 	        x: isTouch ? data[0].clientX : event.clientX,
 	        y: isTouch ? data[0].clientY : event.clientY,
@@ -3632,9 +3659,15 @@
 	 * 使用方法：
 	 * ```js
 	 *
-	 * new Kub.Touch(document.body)
+	 * new Kub.Touch(element)
 	 *
-	 * document.body.addEventListener('swipeleft','div',function(){
+	 * // swipeleft 事件，支持事件代理
+	 * element.addEventListener('swipeleft','div',function(){
+	 *     //do something
+	 * })
+	 *
+	 * // tap 事件
+	 * element.addEventListener('tap',function(){
 	 *     //do something
 	 * })
 	 *

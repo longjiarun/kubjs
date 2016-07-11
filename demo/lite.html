@@ -9,6 +9,11 @@
     <script type="text/javascript" src="../bower_components/zepto/zepto.js"></script>
     <!-- <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script> -->
     <style type="text/css">
+        body{
+            width:10000px;
+            height: 10000px;
+            padding:2px;
+        }
         .box{
             width: 300px;
             height: 300px;
@@ -23,9 +28,24 @@
         .box3{
             background: #00f;
         }
+        #offset{
+            width:100px;
+            height: 100px;
+            border:10px solid #f00;
+            background: #0f0;
+            padding:6px;
+            margin:5px;
+            overflow: auto;
+        }
     </style>
 </head>
 <body>
+
+<div id="offset">
+    <div style="width:1000px;height:1000px">
+    <div id="inner" style="width:50px;height:50px;background:#00f"></div>
+    </div>
+</div>
 
 <div class="box1 box">
     1
@@ -47,34 +67,49 @@
 </div>
 
 <script type="text/javascript">
+    var offset = document.getElementById("offset"),
+        inner = document.getElementById("inner")
 
     var $ =  typeof Kub !== "undefined" ? Kub.$ : $;
 
-    // var a = $('.parent').eq(1).closest('.parent')
-    // console.log(a)
+    //代码1
+    var iframe = document.createElement('iframe')
+    document.body.appendChild(iframe)
+
+    iframe.contentWindow.document.open()
+
+    var script = document.createElement('script')
+    iframe.contentWindow.document.appendChild(script)
+
+    console.log(script.ownerDocument === document)
+    //输出false
+    iframe.contentWindow.document.close()
+
+    var a = $('.parent').eq(1).closest('.parent')
+    console.log(a)
 
 
-    // var a = $('div').removeClass('as child').addClass('as asd').removeClass('as')
-    // console.log(a)
+    var a = $('div').removeClass('as child').addClass('as asd').removeClass('as')
+    console.log(a)
 
-    // var hanlder1 = function(e){
-    //     console.log(e)
-    //     e.preventDefault();
-    //     console.log(1);
-    // }
-    // var hanlder2 = function(e){
+    var hanlder1 = function(e){
+        console.log(e)
+        e.preventDefault();
+        console.log(1);
+    }
+    var hanlder2 = function(e){
 
-    //     console.log(2);
-    // }
+        console.log(2);
+    }
 
-    // $(document.body).on('click dblclick','.box2', hanlder1);
+    $(document.body).on('click dblclick','.box2', hanlder1);
 
-    // $(document.body).on('keydown','.box2',hanlder2);
+    $(document.body).on('keydown','.box2',hanlder2);
 
-    // document.body.addEventListener('touchstart',function(e){
-    //     e.preventDefault();
-    //     console.log(3)
-    // },false)
+    document.body.addEventListener('touchstart',function(e){
+        e.preventDefault();
+        console.log(3)
+    },false)
 
     $(document.body).on('click','.box3', function(event){
         console.log(3)

@@ -263,13 +263,14 @@ var bindTransitionEndEvent = function(swiper) {
     var $element = swiper.$element
 
     var handler = function() {
-        var callback = swiper.options.slide,
+        var options = swiper.options,
+            callback = options.slide,
             index = swiper._ui.active
 
         resetSlideIndex(swiper)
 
         //计算出真实索引值
-        swiper.options.infinite && (index = swiper._ui.active - 1)
+        options.infinite && (index = swiper._ui.active - 1)
 
         callback && callback.call(swiper, index)
     }
@@ -298,6 +299,8 @@ var bindEvents = function(swiper) {
         startCoords
 
     var start = function(event) {
+            stopAuto(swiper)
+
             flag = true
             event = event.originalEvent || event
 
@@ -326,6 +329,8 @@ var bindEvents = function(swiper) {
                 index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
 
             swiper.slide(index)
+
+            beginAuto(swiper)
         }
 
     //监听横竖屏
@@ -360,6 +365,26 @@ var slideTo = function(swiper, index, duration) {
     }
 }
 
+// 开始自动切换
+var beginAuto = function(swiper){
+    var options = swiper.options,
+        _ui = swiper._ui,
+        auto = options.auto
+
+    auto && (swiper._timer = setInterval(function(){
+        // 由于一些特殊设计
+        // 对非循环滚动采用自动计算索引值的方式
+        options.infinite ? swiper.next() : swiper.slide( (_ui.active + 1) % _ui.slidesLength )
+    }, auto))
+}
+
+// 停止自动切换
+var stopAuto = function(swiper){
+    var timer = swiper._timer
+
+    timer && clearInterval(timer)
+}
+
 //初始化
 var init = function(swiper) {
     var options = swiper.options
@@ -374,6 +399,8 @@ var init = function(swiper) {
 
     //滚动到默认位置
     swiper.slide(initialSlide, 0)
+
+    beginAuto(swiper)
 
     //绑定事件
     bindEvents(swiper)
@@ -391,6 +418,8 @@ var init = function(swiper) {
  * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
  *
  * * `duration`: `Number` 切换速度。
+ *
+ * * `auto`: `Number` 自动切换速度。0表示不自动切换，默认为0 。
  *
  * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
  *
