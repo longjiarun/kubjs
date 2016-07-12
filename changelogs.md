@@ -24,6 +24,8 @@
 
 0. 增加`Kub.version`版本号；
 
+0. `Kub.Swiper`增加`auto`自动滚动功能；
+
 ## v2.0.3
 
 ### 解决的bug
