@@ -7,6 +7,8 @@
 var _window = window,
     Kub = _window.Kub = _window.Kub || {}
 
+Kub.version = '2.1.0'
+
 /**
  * ## Kub.$
  *
@@ -78,5 +80,10 @@ Kub.Swiper = require('./swiper')
  * ## Kub.DatePicker
  */
 Kub.DatePicker = require('./datepicker')
+
+/**
+ * ## Kub.Touch
+ */
+Kub.Touch = require('./touch')
 
 module.exports = Kub

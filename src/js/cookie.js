@@ -19,6 +19,9 @@
  * ```
  *
  */
+var _document = document,
+    _encodeURIComponent = encodeURIComponent
+
 function cookie(key, value, options) {
     var days, time, result, decode
 
@@ -35,7 +38,7 @@ function cookie(key, value, options) {
         if (value === null || value === undefined) options.expires = -1
 
         if (typeof options.expires === 'number') {
-            days = (options.expires)
+            days = options.expires
             time = options.expires = new Date()
 
             time.setTime(time.getTime() + days)
@@ -43,9 +46,9 @@ function cookie(key, value, options) {
 
         value = String(value)
 
-        return (document.cookie = [
-            encodeURIComponent(key), '=',
-            options.raw ? value : encodeURIComponent(value),
+        return (_document.cookie = [
+            _encodeURIComponent(key), '=',
+            options.raw ? value : _encodeURIComponent(value),
             options.expires ? '; expires=' + options.expires.toUTCString() : '',
             options.path ? '; path=' + options.path : '',
             options.domain ? '; domain=' + options.domain : '',
@@ -58,7 +61,7 @@ function cookie(key, value, options) {
 
     decode = options.raw ? function (s) { return s } : decodeURIComponent
 
-    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null
+    return (result = new RegExp('(?:^|; )' + _encodeURIComponent(key) + '=([^;]*)').exec(_document.cookie)) ? decode(result[1]) : null
 }
 
 module.exports = cookie

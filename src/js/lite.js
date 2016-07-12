@@ -4,10 +4,14 @@
  * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
  *
  */
+
+/**
+ * @require [polyfill](./polyfill.js.html)
+ */
+require('./polyfill')
 var $, Lite
 
-var ELEMENT_NODE = 1,
-    ELEMENT_PROTOTYPE = Element.prototype
+var ELEMENT_NODE = 1
 
 var slice = Array.prototype.slice,
     readyRE = /complete|loaded|interactive/,
@@ -81,45 +85,14 @@ $ = Lite = function(selector, context) {
     return wrap()
 }
 
-
-//polyfill
-//android 4.3
-if (!_window.CustomEvent) {
-    var CustomEvent = function(event, params) {
-        var evt
-        params = params || {
-            bubbles: false,
-            cancelable: false,
-            detail: undefined
-        }
-        evt = document.createEvent("CustomEvent")
-        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-        return evt
-    }
-    CustomEvent.prototype = _window.Event.prototype
-    _window.CustomEvent = CustomEvent
-}
-
-var matches = (function() {
-    var names = [
-        //"mozMatchesSelector",
-        "webkitMatchesSelector",
-        //"msMatchesSelector",
-        "matches"
-    ]
-
-    var i = names.length
-    while (i--) {
-        var name = names[i]
-        if (!ELEMENT_PROTOTYPE[name]) continue
-        return name
-    }
-}())
-
-var createDelegator = function(handler, selector) {
+var createDelegator = function(handler, selector, element) {
     return function(e) {
-        if ($(e.target).closest(selector).length) {
-            handler.apply(e.target, arguments)
+        var match = $(e.target).closest(selector)
+
+        // 1、存在代理节点
+        // 2、排除$('.className').on('click','.className',handler) 情况
+        if (match.length && match[0] !== element) {
+            handler.apply(match[0], arguments)
         }
     }
 }
@@ -198,7 +171,7 @@ var createDelegator = function(handler, selector) {
             element = element ? element : this[0]
 
             if (element && element.nodeType === ELEMENT_NODE) {
-                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+                return element === selector ? true : typeof selector === 'string' && element.matches(selector)
             }
 
             return false
@@ -213,24 +186,9 @@ var createDelegator = function(handler, selector) {
          *
          */
         closest: function(selector) {
-            var element = this[0],
-                prt = element,
-                dom
+            var element = this[0],dom
 
-            if(ELEMENT_PROTOTYPE.closest){
-                var child = element.children[0]
-
-                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
-
-            }else{
-                while (prt) {
-                    if (this.is(selector, prt)) {
-                        dom = prt
-                        break
-                    }
-                    prt = prt.parentElement
-                }
-            }
+            dom = element && typeof selector === 'string' ? element.closest(selector) : this.is(selector, element) ? element : null
 
             return $(dom)
         },
@@ -263,7 +221,10 @@ var createDelegator = function(handler, selector) {
          */
         show: function() {
             return this.each(function() {
+
                 this.style.display === 'none' && (this.style.display = '')
+
+                $(this).css('display') === 'none' && (this.style.display = 'block')
             })
         },
 
@@ -325,6 +286,9 @@ var createDelegator = function(handler, selector) {
 
             var ele = this[0],
                 obj = ele.getBoundingClientRect()
+
+            //why window.pageXOffset
+            //http://www.cnblogs.com/hutaoer/archive/2013/02/25/3078872.html
             return {
                 left: obj.left + _window.pageXOffset,
                 top: obj.top + _window.pageYOffset,
@@ -438,7 +402,7 @@ var createDelegator = function(handler, selector) {
                     var element = this, listeners
 
                     if (f) {
-                        handler.delegator = createDelegator(handler, selector)
+                        handler.delegator = createDelegator(handler, selector, element)
                     }
 
                     listeners = element.listeners || {}
@@ -526,8 +490,8 @@ var createDelegator = function(handler, selector) {
          */
         remove: function() {
             return this.each(function() {
-                var parentElement = this.parentElement
-                parentElement && parentElement.removeChild(this)
+                var parentNode = this.parentNode
+                parentNode && parentNode.removeChild(this)
             })
         },
 

@@ -162,7 +162,14 @@ _prototype.loadAll = function() {
  * @return {Boolean}         true ：可见 false ：不可见
  */
 _prototype.isVisible = function($this) {
-    var options = this.options
+    var options = this.options,
+        element = $this[0]
+
+    //如果节点不可见，则不进行加载
+    //会出现误判的可能，比如节点本身宽度与高度设置为0
+    if(element.offsetWidth == 0 && element.offsetHeight == 0){
+        return false
+    }
 
     if (this.abovethetop($this, options)) {
         return false
@@ -192,7 +199,7 @@ _prototype.load = function($element) {
 
     //如果原图片为空
     if (!original) {
-        return
+        return this
     }
     if ($element[0].nodeName === 'IMG') {
         $element.attr('src', original)

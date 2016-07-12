@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Touch Test</title>
+    <script type="text/javascript" src="../dist/js/kub.js"></script>
+</head>
+<body>
+<style type="text/css">
+body{
+    height: 10000px;
+    width:1000px;
+    font-size:20px;
+    cursor: pointer;
+}
+.touch{
+    background: #f00;
+    width:400px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+</style>
+<div id="J_touch" class="touch"></div>
+<div id="J_log"></div>
+<script type="text/javascript" src="../bower_components/hammerjs/hammer.js"></script>
+<script>
+
+var element = document.getElementById("J_touch")
+
+// var hammer = new Hammer(element)
+
+// hammer.on('panstart', function(ev) {
+//     console.log('panstart')
+// });
+
+// hammer.on('panmove', function(ev) {
+//     console.log('panmove')
+// });
+
+// hammer.on('panleft', function(ev) {
+//     console.log('panleft')
+// });
+
+// hammer.on('panright', function(ev) {
+//     console.log('panright')
+// });
+
+// hammer.on('panup', function(ev) {
+//     console.log('panup')
+// });
+
+
+// hammer.on('pandown', function(ev) {
+//     console.log('pandown')
+// });
+
+// hammer.on('swipeleft', function(ev) {
+//     console.log('swipeleft')
+// });
+// hammer.on('swiperight', function(ev) {
+//     console.log('swiperight',ev)
+// });
+
+// hammer.on('panend', function(ev) {
+//     console.log('panend',ev)
+// });
+
+</script>
+
+<script type="text/javascript">
+var $ = Kub.$,
+    $element = $(element)
+
+// Kub.os.mobile && (window.console = {
+//     log : function(msg){
+//         $("#J_log").prepend('<div>' + JSON.stringify(arguments).replace(/"/g,'') + '</div>')
+//     }
+// })
+
+new Kub.Touch( document.body )
+
+$(document.body).on('tap','div', function(ev) {
+    console.log('tap')
+    console.log(ev)
+});
+
+$element.on('panstart', function(ev) {
+    console.log('panstart')
+});
+
+$element.on('panmove', function(ev) {
+    console.log('panmove')
+    ev.preventDefault()
+});
+
+$element.on('panleft', function(ev) {
+    console.log('panleft')
+    console.log(ev)
+    ev.preventDefault()
+});
+
+$element.on('swipeleft', function(ev) {
+    console.log('swipeleft')
+});
+
+$element.on('panend', function(ev) {
+    console.log('panend')
+});
+
+document.body.appendChild(element.cloneNode(true))
+
+</script>
+</body>
+</html>

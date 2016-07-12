@@ -1,5 +1,31 @@
 # 更新日志
 
+## v2.1.0
+
+### 解决的bug
+
+0. 修复`core.setQuerystring`在获取中文参数编码错误问题；
+
+0. 修复`LazyLoad.prototype.load` 链式调用问题；
+
+0. 修复`Lite`事件代理`this`指针指向问题；
+
+0. 修复`Lite`事件代理不允许代理自身问题；
+
+0. 修复`Lite.prototype.remove`无法移除文本节点问题；
+
+### 优化点
+
+0. 将兼容性解决代码抽离到`polyfill.js`中；
+
+### 新增功能
+
+0. 增加`Touch`移动事件组件；
+
+0. 增加`Kub.version`版本号；
+
+0. `Kub.Swiper`增加`auto`自动滚动功能；
+
 ## v2.0.3
 
 ### 解决的bug

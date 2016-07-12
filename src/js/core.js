@@ -160,7 +160,9 @@ _prototype.setQuerystring = function(url, params, opts) {
         if (params.hasOwnProperty(name)) {
             value = params[name]
         }
-        _params[name] = value != undefined ? value : ''
+
+        // 获取到的中文参数为编码后的，需decodeURIComponent解码
+        _params[name] = value != undefined ? (opts.raw ? value : decodeURIComponent(value)) : ''
     })
 
     //如果是追加，则合并参数

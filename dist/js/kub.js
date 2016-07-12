@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.0.3. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.1.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -65,6 +65,8 @@
 	var _window = window,
 	    Kub = _window.Kub = _window.Kub || {}
 
+	Kub.version = '2.1.0'
+
 	/**
 	 * ## Kub.$
 	 *
@@ -75,74 +77,79 @@
 	/**
 	 * ## Kub.core
 	 */
-	Kub.core = __webpack_require__(7)
+	Kub.core = __webpack_require__(8)
 
 	/**
 	 * ## Kub.os
 	 */
-	Kub.os = __webpack_require__(8)
+	Kub.os = __webpack_require__(9)
 
 	/**
 	 * ## Kub.dateHelper
 	 */
-	Kub.dateHelper = __webpack_require__(9)
+	Kub.dateHelper = __webpack_require__(10)
 
 	/**
 	 * ## Kub.cookie
 	 */
-	Kub.cookie = __webpack_require__(10)
+	Kub.cookie = __webpack_require__(11)
 
 	/**
 	 * ## Kub.LazyLoad
 	 */
-	Kub.LazyLoad = __webpack_require__(11)
+	Kub.LazyLoad = __webpack_require__(12)
 
 	/**
 	 * ## Kub.Dialog
 	 */
-	Kub.Dialog = __webpack_require__(12)
+	Kub.Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Kub.Alert
 	 */
-	Kub.Alert = __webpack_require__(14)
+	Kub.Alert = __webpack_require__(15)
 
 	/**
 	 * ## Kub.Confirm
 	 */
-	Kub.Confirm = __webpack_require__(15)
+	Kub.Confirm = __webpack_require__(16)
 
 	/**
 	 * ## Kub.Prompt
 	 */
-	Kub.Prompt = __webpack_require__(16)
+	Kub.Prompt = __webpack_require__(17)
 
 	/**
 	 * ## Kub.Toast
 	 */
-	Kub.Toast = __webpack_require__(18)
+	Kub.Toast = __webpack_require__(19)
 
 	/**
 	 * ## Kub.Loader
 	 */
-	Kub.Loader = __webpack_require__(19)
+	Kub.Loader = __webpack_require__(20)
 
 	/**
 	 * ## Kub.Swiper
 	 */
-	Kub.Swiper = __webpack_require__(20)
+	Kub.Swiper = __webpack_require__(21)
 
 	/**
 	 * ## Kub.DatePicker
 	 */
-	Kub.DatePicker = __webpack_require__(21)
+	Kub.DatePicker = __webpack_require__(22)
+
+	/**
+	 * ## Kub.Touch
+	 */
+	Kub.Touch = __webpack_require__(24)
 
 	module.exports = Kub
 
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Lite
@@ -150,10 +157,14 @@
 	 * 类似于`Zepto`，提供部分与Dom相关的方法，方法使用保持与`Zepto`一致。
 	 *
 	 */
+
+	/**
+	 * @require [polyfill](./polyfill.js.html)
+	 */
+	__webpack_require__(7)
 	var $, Lite
 
-	var ELEMENT_NODE = 1,
-	    ELEMENT_PROTOTYPE = Element.prototype
+	var ELEMENT_NODE = 1
 
 	var slice = Array.prototype.slice,
 	    readyRE = /complete|loaded|interactive/,
@@ -227,45 +238,14 @@
 	    return wrap()
 	}
 
-
-	//polyfill
-	//android 4.3
-	if (!_window.CustomEvent) {
-	    var CustomEvent = function(event, params) {
-	        var evt
-	        params = params || {
-	            bubbles: false,
-	            cancelable: false,
-	            detail: undefined
-	        }
-	        evt = document.createEvent("CustomEvent")
-	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-	        return evt
-	    }
-	    CustomEvent.prototype = _window.Event.prototype
-	    _window.CustomEvent = CustomEvent
-	}
-
-	var matches = (function() {
-	    var names = [
-	        //"mozMatchesSelector",
-	        "webkitMatchesSelector",
-	        //"msMatchesSelector",
-	        "matches"
-	    ]
-
-	    var i = names.length
-	    while (i--) {
-	        var name = names[i]
-	        if (!ELEMENT_PROTOTYPE[name]) continue
-	        return name
-	    }
-	}())
-
-	var createDelegator = function(handler, selector) {
+	var createDelegator = function(handler, selector, element) {
 	    return function(e) {
-	        if ($(e.target).closest(selector).length) {
-	            handler.apply(e.target, arguments)
+	        var match = $(e.target).closest(selector)
+
+	        // 1、存在代理节点
+	        // 2、排除$('.className').on('click','.className',handler) 情况
+	        if (match.length && match[0] !== element) {
+	            handler.apply(match[0], arguments)
 	        }
 	    }
 	}
@@ -344,7 +324,7 @@
 	            element = element ? element : this[0]
 
 	            if (element && element.nodeType === ELEMENT_NODE) {
-	                return element === selector ? true : typeof selector === 'string' && element[matches](selector)
+	                return element === selector ? true : typeof selector === 'string' && element.matches(selector)
 	            }
 
 	            return false
@@ -359,24 +339,9 @@
 	         *
 	         */
 	        closest: function(selector) {
-	            var element = this[0],
-	                prt = element,
-	                dom
+	            var element = this[0],dom
 
-	            if(ELEMENT_PROTOTYPE.closest){
-	                var child = element.children[0]
-
-	                dom = child && typeof selector === 'string' ? child.closest(selector) : this.is(selector, element) ? element : null
-
-	            }else{
-	                while (prt) {
-	                    if (this.is(selector, prt)) {
-	                        dom = prt
-	                        break
-	                    }
-	                    prt = prt.parentElement
-	                }
-	            }
+	            dom = element && typeof selector === 'string' ? element.closest(selector) : this.is(selector, element) ? element : null
 
 	            return $(dom)
 	        },
@@ -409,7 +374,10 @@
 	         */
 	        show: function() {
 	            return this.each(function() {
+
 	                this.style.display === 'none' && (this.style.display = '')
+
+	                $(this).css('display') === 'none' && (this.style.display = 'block')
 	            })
 	        },
 
@@ -471,6 +439,9 @@
 
 	            var ele = this[0],
 	                obj = ele.getBoundingClientRect()
+
+	            //why window.pageXOffset
+	            //http://www.cnblogs.com/hutaoer/archive/2013/02/25/3078872.html
 	            return {
 	                left: obj.left + _window.pageXOffset,
 	                top: obj.top + _window.pageYOffset,
@@ -584,7 +555,7 @@
 	                    var element = this, listeners
 
 	                    if (f) {
-	                        handler.delegator = createDelegator(handler, selector)
+	                        handler.delegator = createDelegator(handler, selector, element)
 	                    }
 
 	                    listeners = element.listeners || {}
@@ -672,8 +643,8 @@
 	         */
 	        remove: function() {
 	            return this.each(function() {
-	                var parentElement = this.parentElement
-	                parentElement && parentElement.removeChild(this)
+	                var parentNode = this.parentNode
+	                parentNode && parentNode.removeChild(this)
 	            })
 	        },
 
@@ -773,6 +744,70 @@
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	var _window = window,
+	    _document = document
+
+	var ELEMENT_NODE = 1,
+	    ELEMENT_PROTOTYPE = Element.prototype
+
+	//CustomEvent polyfill
+	//android 4.3
+	if (!_window.CustomEvent) {
+	    var CustomEvent = function(event, params) {
+	        var evt
+	        params = params || {
+	            bubbles: false,
+	            cancelable: false,
+	            detail: undefined
+	        }
+	        evt = _document.createEvent("CustomEvent")
+	        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+	        return evt
+	    }
+	    CustomEvent.prototype = _window.Event.prototype
+	    _window.CustomEvent = CustomEvent
+	}
+
+	//Element.prototype.matches polyfill
+	if (typeof ELEMENT_PROTOTYPE.matches !== 'function') {
+	    ELEMENT_PROTOTYPE.matches = ELEMENT_PROTOTYPE.msMatchesSelector || ELEMENT_PROTOTYPE.mozMatchesSelector || ELEMENT_PROTOTYPE.webkitMatchesSelector || function matches(selector) {
+	        var element = this,
+	            // 查找当前节点的根节点时，必须使用element.ownerDocument
+	            // 当节点插入到iframe中时，该节点的document就不是父窗口中的document，而是iframe中的document
+	            // 会造成 document.querySelectorAll(selector) 查询不到改节点，所以需要element.ownerDocument替代document
+	            elements = element.ownerDocument.querySelectorAll(selector),
+	            index = 0
+
+	        while (elements[index] && elements[index] !== element) {
+	            ++index
+	        }
+
+	        return !!elements[index]
+	    }
+	}
+
+	//Element.prototype.closest polyfill
+	if (typeof ELEMENT_PROTOTYPE.closest !== 'function') {
+	    ELEMENT_PROTOTYPE.closest = function closest(selector) {
+	        var element = this
+
+	        while (element && element.nodeType === ELEMENT_NODE) {
+	            if (element.matches(selector)) {
+	                return element
+	            }
+
+	            element = element.parentNode
+	        }
+
+	        return null
+	    }
+	}
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -937,7 +972,9 @@
 	        if (params.hasOwnProperty(name)) {
 	            value = params[name]
 	        }
-	        _params[name] = value != undefined ? value : ''
+
+	        // 获取到的中文参数为编码后的，需decodeURIComponent解码
+	        _params[name] = value != undefined ? (opts.raw ? value : decodeURIComponent(value)) : ''
 	    })
 
 	    //如果是追加，则合并参数
@@ -1022,7 +1059,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -1095,7 +1132,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -1350,7 +1387,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -1374,6 +1411,9 @@
 	 * ```
 	 *
 	 */
+	var _document = document,
+	    _encodeURIComponent = encodeURIComponent
+
 	function cookie(key, value, options) {
 	    var days, time, result, decode
 
@@ -1390,7 +1430,7 @@
 	        if (value === null || value === undefined) options.expires = -1
 
 	        if (typeof options.expires === 'number') {
-	            days = (options.expires)
+	            days = options.expires
 	            time = options.expires = new Date()
 
 	            time.setTime(time.getTime() + days)
@@ -1398,9 +1438,9 @@
 
 	        value = String(value)
 
-	        return (document.cookie = [
-	            encodeURIComponent(key), '=',
-	            options.raw ? value : encodeURIComponent(value),
+	        return (_document.cookie = [
+	            _encodeURIComponent(key), '=',
+	            options.raw ? value : _encodeURIComponent(value),
 	            options.expires ? '; expires=' + options.expires.toUTCString() : '',
 	            options.path ? '; path=' + options.path : '',
 	            options.domain ? '; domain=' + options.domain : '',
@@ -1413,14 +1453,14 @@
 
 	    decode = options.raw ? function (s) { return s } : decodeURIComponent
 
-	    return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null
+	    return (result = new RegExp('(?:^|; )' + _encodeURIComponent(key) + '=([^;]*)').exec(_document.cookie)) ? decode(result[1]) : null
 	}
 
 	module.exports = cookie
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1434,7 +1474,7 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6)
 
 	/**
@@ -1587,7 +1627,14 @@
 	 * @return {Boolean}         true ：可见 false ：不可见
 	 */
 	_prototype.isVisible = function($this) {
-	    var options = this.options
+	    var options = this.options,
+	        element = $this[0]
+
+	    //如果节点不可见，则不进行加载
+	    //会出现误判的可能，比如节点本身宽度与高度设置为0
+	    if(element.offsetWidth == 0 && element.offsetHeight == 0){
+	        return false
+	    }
 
 	    if (this.abovethetop($this, options)) {
 	        return false
@@ -1617,7 +1664,7 @@
 
 	    //如果原图片为空
 	    if (!original) {
-	        return
+	        return this
 	    }
 	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original)
@@ -1722,7 +1769,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1735,9 +1782,9 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6),
-	    template = __webpack_require__(13)
+	    template = __webpack_require__(14)
 
 	/**
 	 * ## Dialog Constructor
@@ -1904,7 +1951,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -1942,7 +1989,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1955,8 +2002,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Alert Constructor
@@ -2019,7 +2066,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2032,8 +2079,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Confirm Constructor
@@ -2109,7 +2156,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2122,9 +2169,9 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12),
-	    template = __webpack_require__(17)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13),
+	    template = __webpack_require__(18)
 
 	var INPUT_SELECTOR = '.J_input'
 
@@ -2218,7 +2265,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -2236,7 +2283,7 @@
 	};
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2249,8 +2296,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Toast Constructor
@@ -2321,7 +2368,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2335,8 +2382,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    Dialog = __webpack_require__(12)
+	var core = __webpack_require__(8),
+	    Dialog = __webpack_require__(13)
 
 	/**
 	 * ## Loader Constructor
@@ -2393,7 +2440,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2407,8 +2454,8 @@
 	 * @require [os](./detect.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(7),
-	    os = __webpack_require__(8),
+	var core = __webpack_require__(8),
+	    os = __webpack_require__(9),
 	    $ = __webpack_require__(6)
 
 	/**
@@ -2661,13 +2708,14 @@
 	    var $element = swiper.$element
 
 	    var handler = function() {
-	        var callback = swiper.options.slide,
+	        var options = swiper.options,
+	            callback = options.slide,
 	            index = swiper._ui.active
 
 	        resetSlideIndex(swiper)
 
 	        //计算出真实索引值
-	        swiper.options.infinite && (index = swiper._ui.active - 1)
+	        options.infinite && (index = swiper._ui.active - 1)
 
 	        callback && callback.call(swiper, index)
 	    }
@@ -2696,6 +2744,8 @@
 	        startCoords
 
 	    var start = function(event) {
+	            stopAuto(swiper)
+
 	            flag = true
 	            event = event.originalEvent || event
 
@@ -2724,6 +2774,8 @@
 	                index = getCoordinates(swiper, distance.distanceX, distance.distanceY).index
 
 	            swiper.slide(index)
+
+	            beginAuto(swiper)
 	        }
 
 	    //监听横竖屏
@@ -2758,6 +2810,26 @@
 	    }
 	}
 
+	// 开始自动切换
+	var beginAuto = function(swiper){
+	    var options = swiper.options,
+	        _ui = swiper._ui,
+	        auto = options.auto
+
+	    auto && (swiper._timer = setInterval(function(){
+	        // 由于一些特殊设计
+	        // 对非循环滚动采用自动计算索引值的方式
+	        options.infinite ? swiper.next() : swiper.slide( (_ui.active + 1) % _ui.slidesLength )
+	    }, auto))
+	}
+
+	// 停止自动切换
+	var stopAuto = function(swiper){
+	    var timer = swiper._timer
+
+	    timer && clearInterval(timer)
+	}
+
 	//初始化
 	var init = function(swiper) {
 	    var options = swiper.options
@@ -2772,6 +2844,8 @@
 
 	    //滚动到默认位置
 	    swiper.slide(initialSlide, 0)
+
+	    beginAuto(swiper)
 
 	    //绑定事件
 	    bindEvents(swiper)
@@ -2789,6 +2863,8 @@
 	 * * `threshold`: `Number` 最小触发距离。手指移动距离必须超过`threshold`才允许切换。
 	 *
 	 * * `duration`: `Number` 切换速度。
+	 *
+	 * * `auto`: `Number` 自动切换速度。0表示不自动切换，默认为0 。
 	 *
 	 * * `infinite`: `Boolean` 是否循环滚动 true ：循环 false ：不循环。
 	 *
@@ -2882,7 +2958,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2899,13 +2975,13 @@
 	 * @require [Dialog](./dialog.js.html)
 	 * @require [DateHelper](./date.js.html)
 	 */
-	var core = __webpack_require__(7),
+	var core = __webpack_require__(8),
 	    $ = __webpack_require__(6),
-	    os = __webpack_require__(8),
-	    Dialog = __webpack_require__(12),
-	    template = __webpack_require__(22)
+	    os = __webpack_require__(9),
+	    Dialog = __webpack_require__(13),
+	    template = __webpack_require__(23)
 
-	__webpack_require__(9)
+	__webpack_require__(10)
 
 	/**
 	 * ## DatePicker Constructor
@@ -3352,7 +3428,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -3420,6 +3496,283 @@
 	__p+=' <li></li></ul></div><div class="kub-datepicker-overlay"></div></div>';
 	return __p;
 	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * # Touch
+	 *
+	 * 移动端事件组件。
+	 *
+	 * 支持的事件包含：
+	 *
+	 * `tap` `longtap`
+	 *
+	 * `panstart` `panmove` `panup` `pandown` `panleft` `panright` `panend`
+	 *
+	 * `swipeleft` `swiperight` `swipeup` `swipedown`
+	 *
+	 */
+
+	/**
+	 * @require [polyfill](./polyfill.js.html)
+	 */
+
+	__webpack_require__(7)
+
+	var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
+
+	var _window = window,
+	    isTouch = 'ontouchstart' in _window && MOBILE_REGEXP.test(navigator.userAgent)
+
+	var EVENTS_METHODS = [
+	    'preventDefault',
+	    'stopImmediatePropagation',
+	    'stopPropagation'
+	]
+
+	var SWIPE_THRESHOLD = 10,
+	    SWIPE_VELOCITY = 0.25,
+	    SWIPE_MAX_MOVEMENT = 6,
+
+	    TAP_TIMEOUT = 200,
+	    TAP_THRESHOLD = 9,
+
+	    LONGTAP_TIMEOUT = 500,
+
+	    START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+
+	    DIRECTION_ANGLE = 25,
+	    DIRECTIONS = ['up', 'right', 'down', 'left'],
+	    SWIPE_EVENT = 'swipe',
+
+	    PAN_EVENT = 'pan',
+	    PAN_START_EVENT = 'panstart',
+	    PAN_MOVE_EVENT = 'panmove',
+	    PAN_END_EVENT = 'panend',
+
+	    TAP_EVENT = 'tap',
+
+	    LONGTAP_EVENT = 'longtap'
+
+	// 获取位移量
+	var distance = function(p1, p2) {
+	    return Math.round(Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2)))
+	}
+
+	// 获取角度，通过获取角度从而获取方向
+	var angle = function(p1, p2) {
+	    var d = Math.abs(p2.x - p1.x)
+	    return Math.round(Math.acos(d / Math.sqrt(Math.pow(d, 2) + Math.pow(p2.y - p1.y, 2))) * 57.3)
+	}
+
+	// 获取方向
+	var direction = function(p1, p2) {
+	    return (angle(p1, p2) > DIRECTION_ANGLE) ? ((p1.y < p2.y) ? 2 : 0) : ((p1.x < p2.x) ? 1 : 3)
+	}
+
+	// 如果触摸点位移大于 SWIPE_THRESHOLD 而且速度大于 SWIPE_VELOCITY
+	var matchSwipe = function(threshold, interval) {
+	    return threshold != null && threshold > SWIPE_THRESHOLD && threshold / interval > SWIPE_VELOCITY
+	}
+
+	// 如果触摸点位置大于 TAP_THRESHOLD 而且间隔时间小于 TAP_TIMEOUT
+	var matchTap = function(threshold, interval) {
+	    return threshold != null && threshold < TAP_THRESHOLD && interval < TAP_TIMEOUT
+	}
+
+	// 获取触摸点数据
+	var getCoords = function(event) {
+	    var touches = event.touches,
+	        data = touches && touches.length ? touches : event.changedTouches
+	    return {
+	        x: isTouch ? data[0].clientX : event.clientX,
+	        y: isTouch ? data[0].clientY : event.clientY,
+	        e: isTouch ? data[0].target : event.target
+	    }
+	}
+
+	// 获取事件位置数据
+	var getEventDetail = function(coords) {
+	    return {
+	        x: coords.x,
+	        y: coords.y
+	    }
+	}
+
+	// 获取偏移值与时间间隔
+	var getThresholdAndInterval = function(p1,p2){
+	    return {
+	        threshold : p1 && p2 && distance(p1, p2),
+	        interval  : p1 && p2 && (p2.t.getTime() - p1.t.getTime())
+	    }
+	}
+
+	// 触发事件
+	var trigger = function(element, type, originalEvent, detail) {
+	    var event = new _window.CustomEvent(type, {
+	        detail: detail,
+	        bubbles: true,
+	        cancelable: true
+	    })
+
+	    // 存储原事件对象
+	    event.originalEvent = originalEvent
+
+	    EVENTS_METHODS.forEach(function(name){
+	        event[name] = function(){
+	            originalEvent[name].apply(originalEvent,arguments)
+	        }
+	    })
+
+	    element.dispatchEvent(event)
+	}
+
+	var on = function(element, type, handler) {
+	    element.addEventListener(type, handler, false)
+	}
+
+	var clearTime = function(timer) {
+	    timer && clearTimeout(timer)
+	    timer = null
+	}
+
+	var findMatchedDirection = function(actions){
+	    var index = 0, max = actions[index]
+
+	    actions.forEach(function(value,i){
+	        value > max && (max = value, index = i)
+	    })
+
+	    return index
+	}
+
+	/**
+	 * ## Touch Constructor
+	 *
+	 * `Touch`类。
+	 *
+	 * 使用方法：
+	 * ```js
+	 *
+	 * new Kub.Touch(element)
+	 *
+	 * // swipeleft 事件，支持事件代理
+	 * element.addEventListener('swipeleft','div',function(){
+	 *     //do something
+	 * })
+	 *
+	 * // tap 事件
+	 * element.addEventListener('tap',function(){
+	 *     //do something
+	 * })
+	 *
+	 * ```
+	 */
+	function Touch(element) {
+	    var moveFlag = false,
+	        target,
+	        p1,
+	        p2,
+	        longTapTimer,
+	        cancelTap = false,
+	        actions,
+	        actionsLength
+
+	    on(element, START_EVENT, function(event) {
+	        var coords = getCoords(event)
+	        p1 = coords
+	        p1.t = new Date()
+	        p2 = p1
+
+	        actions = [0,0,0,0]
+	        actionsLength = 0
+
+	        cancelTap = false
+
+	        target = coords.e
+
+	        //触发 longtap 事件
+	        isTouch && (longTapTimer = setTimeout(function() {
+	            trigger(target, LONGTAP_EVENT, event)
+	        }, LONGTAP_TIMEOUT))
+
+	    })
+
+	    on(element, MOVE_EVENT, function(event) {
+	        if(!target){
+	            return
+	        }
+
+	        var coords = getCoords(event),
+	            detail = getEventDetail(coords),
+	            thresholdAndInterval,
+	            direct
+
+	        p2 = coords
+	        p2.t = new Date()
+
+	        thresholdAndInterval = getThresholdAndInterval(p1,p2)
+
+	        // 如果触摸点不符合 longtap 触发条件，则取消长按事件
+	        if(!cancelTap && !matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)){
+	            clearTime(longTapTimer)
+	            cancelTap = true
+	        }
+
+	        //触发 panstart 事件
+	        !moveFlag && trigger(target, PAN_START_EVENT, event, detail)
+
+	        direct = direction(p1, p2)
+
+	        // 取出前SWIPE_MAX_MOVEMENT移动记录
+	        actionsLength < SWIPE_MAX_MOVEMENT && (actions[direct] += 1, actionsLength += 1)
+
+	        //触发 pan['up', 'right', 'down', 'left'] 事件
+	        trigger(target, PAN_EVENT + DIRECTIONS[direct], event, detail)
+
+	        //触发 panmove 事件
+	        trigger(target, PAN_MOVE_EVENT, event, detail)
+
+	        moveFlag = true
+	    })
+
+	    on(element, END_EVENT, function(event) {
+	        // 取消 longtap 事件定时器
+	        clearTime(longTapTimer)
+
+	        var coords = getCoords(event), thresholdAndInterval
+
+	        p2 = coords
+	        p2.t = new Date()
+
+	        thresholdAndInterval = getThresholdAndInterval(p1,p2)
+
+	        // 如果达到 swipe 事件条件
+	        if (matchSwipe(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
+
+	            //触发 swipe['up', 'right', 'down', 'left'] 事件
+	            trigger(target, SWIPE_EVENT + DIRECTIONS[findMatchedDirection(actions)], event)
+	        } else if (!cancelTap && isTouch && matchTap(thresholdAndInterval.threshold, thresholdAndInterval.interval)) {
+
+	            // 触发 tap 事件
+	            trigger(target, TAP_EVENT, event)
+	        }
+
+	        // 触发 panend 事件
+	        target && moveFlag && trigger(target, PAN_END_EVENT, event, getEventDetail(coords))
+
+	        target = null
+	        moveFlag = false
+	    })
+	}
+
+	module.exports = Touch
+
 
 /***/ }
 /******/ ]);

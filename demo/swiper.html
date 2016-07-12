@@ -117,32 +117,33 @@
     //横向滚动
     var $swiperWrap = $(".J_horizontal");
 
-    var swiper1 = new Kub.Swiper($swiperWrap.find(".swiper"),{
-        infinite:true,
-        slideSelector:$swiperWrap.find(".slide"),
-        slideActiveClass:"active",
-        initialSlide:3,
-        paginationSelector:$swiperWrap.find(".pagination li"),
-        paginationActiveClass:"pagination-active",
+    var swiper1 = new Kub.Swiper($swiperWrap.find(".swiper"), {
+        infinite: true,
+        slideSelector: $swiperWrap.find(".slide"),
+        slideActiveClass: "active",
+        // 自动切换时间
+        auto: 2000,
+        initialSlide: 3,
+        paginationSelector: $swiperWrap.find(".pagination li"),
+        paginationActiveClass: "pagination-active",
         //滚动时触发slide事件
-        slide:function(index){
+        slide: function(index) {
             //console.log("slide:"+index,this)
         }
     });
 
-    swiper1.prev();
-
     //纵向滚动
     var $swiperWrap1 = $(".J_vertical");
-    var swiper2 = new Kub.Swiper($swiperWrap1.find(".swiper"),{
-        direction:"vertical",
-        slideSelector:$swiperWrap1.find(".slide"),
-        slideActiveClass:"active",
-        paginationSelector:$swiperWrap1.find(".pagination li"),
-        paginationActiveClass:"pagination-active",
+    var swiper2 = new Kub.Swiper($swiperWrap1.find(".swiper"), {
+        direction: "vertical",
+        slideSelector: $swiperWrap1.find(".slide"),
+        slideActiveClass: "active",
+        paginationSelector: $swiperWrap1.find(".pagination li"),
+        paginationActiveClass: "pagination-active",
+        auto: 2000,
         //默认滚动位置
-        slide:function(index){
-            console.log("slide:"+index)
+        slide: function(index) {
+            console.log("slide:" + index)
         }
     });
 
