@@ -583,7 +583,7 @@
 	         */
 	        trigger: function(type, detail) {
 	            return this.each(function() {
-	                this.dispatchEvent($.Event(type, {
+	                this.dispatchEvent && this.dispatchEvent($.Event(type, {
 	                    detail: detail,
 	                    bubbles: true,
 	                    cancelable: true
@@ -3629,7 +3629,7 @@
 	        }
 	    })
 
-	    element.dispatchEvent(event)
+	    element.dispatchEvent && element.dispatchEvent(event)
 	}
 
 	var on = function(element, type, handler) {
