@@ -24,12 +24,15 @@
     var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
         title:"Date Picker",
         locale:"en",
+        format:"yyyy-MM-dd,HH:mm:ss",
         cancelText:"Cancel",
         cancel:function(e,datepicker){
-
             datepicker.setDate(new Date());
 
             //datepicker.hide()
+        },
+        confirm:function(e,datepicker){
+            console.log(datepicker.getDate());
         },
         confirmText:"Ok"
     });
@@ -41,6 +44,7 @@
         confirm:function(e,datepicker,formatDate){
             //格式化后的date
             console.log(formatDate)
+
 
             //手动关闭选择器
             datepicker.hide();

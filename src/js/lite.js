@@ -430,7 +430,7 @@ var createDelegator = function(handler, selector, element) {
          */
         trigger: function(type, detail) {
             return this.each(function() {
-                this.dispatchEvent && this.dispatchEvent($.Event(type, {
+                this && this.dispatchEvent && this.dispatchEvent($.Event(type, {
                     detail: detail,
                     bubbles: true,
                     cancelable: true

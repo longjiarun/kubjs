@@ -147,36 +147,40 @@ var setTranslate = function($this, x, y) {
 //设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
 var setValue = function(datepicker, name, value) {
     var $this = datepicker._ui[name],
-        index,
-        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
+        index, $item
 
-    if ($item.length) {
+    if ($this && ($item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')).length) {
         index = parseInt($item.attr('data-index'))
 
         $this[0].index = index
 
         setTranslate($this, 0, -index * HEIGHT_UNIT)
     }
+
 }
 
 //获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
 var getValue = function(datepicker, name) {
     var $this = datepicker._ui[name],
-        $items = $this.find(COLUMN_ITEM_SELECTOR),
-        index = $this[0].index + 1,
+        $items, index, value
+
+    if ($this) {
+        $items = $this.find(COLUMN_ITEM_SELECTOR)
+        index = $this[0].index + 1
         value = parseInt($items.eq(index).attr('data-value'))
+    }
 
     return value ? value : 0
 }
 
 //移除不需要的列
 var removeColumns = function(format, ui) {
-    format.indexOf('y') === -1 && ui.year.remove()
-    format.indexOf('M') === -1 && ui.month.remove()
-    format.indexOf('d') === -1 && ui.day.remove()
-    format.indexOf('H') === -1 && ui.hour.remove()
-    format.indexOf('m') === -1 && ui.minute.remove()
-    format.indexOf('s') === -1 && ui.second.remove()
+    format.indexOf('y') === -1 && (ui.year.remove(), ui.year = null)
+    format.indexOf('M') === -1 && (ui.month.remove(), ui.month = null)
+    format.indexOf('d') === -1 && (ui.day.remove(), ui.day = null)
+    format.indexOf('H') === -1 && (ui.hour.remove(), ui.hour = null)
+    format.indexOf('m') === -1 && (ui.minute.remove(), ui.minute = null)
+    format.indexOf('s') === -1 && (ui.second.remove(), ui.second = null)
 }
 
 //渲染对话框
@@ -273,7 +277,7 @@ var bindEvents = function(datepicker) {
             setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
         }
 
-    datepicker._ui.columns.each(function(){
+    datepicker._ui.columns.each(function() {
 
         $(this).on(START_EVENT, function() {
             start.apply(this, arguments)

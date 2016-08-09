@@ -126,7 +126,7 @@ var trigger = function(element, type, originalEvent, detail) {
         }
     })
 
-    element.dispatchEvent && element.dispatchEvent(event)
+    element && element.dispatchEvent && element.dispatchEvent(event)
 }
 
 var on = function(element, type, handler) {
