@@ -48,12 +48,13 @@ var ZOOMIN_CLASS = 'kub-animated kub-zoomin',
     DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
     EVENT_NAME = 'click'
 
-var $body = $(document.body)
+var $body
 
 var _prototype = Dialog.prototype
 
 var render = function(dialog,data) {
     var html = template(data)
+
     dialog.$element = $(html).appendTo($body)
     return this
 }
@@ -71,6 +72,8 @@ var bindEvents = function(dialog){
 }
 
 var init = function(dialog) {
+
+    !$body && ($body = $(document.body))
 
     //渲染数据
     render(dialog, dialog.options)

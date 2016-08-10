@@ -21,7 +21,8 @@ var slice = Array.prototype.slice,
     spaceRE = /\s+/g
 
 var _document = document,
-    _window = window
+    _window = window,
+    _undefined = undefined
 
 function wrap(dom, selector) {
     dom = dom || []
@@ -303,7 +304,7 @@ var createDelegator = function(handler, selector, element) {
          * 添加`class`。
          */
         addClass: function(name) {
-            if (!name) return this
+            if (name == _undefined) return this
 
             return this.each(function() {
                 if (!('className' in this)) return
@@ -328,7 +329,7 @@ var createDelegator = function(handler, selector, element) {
             return this.each(function() {
                 if (!('className' in this)) return
 
-                if (name === undefined) return this.className = ''
+                if (name === _undefined) return this.className = ''
 
                 var className = this.className
 
@@ -390,12 +391,12 @@ var createDelegator = function(handler, selector, element) {
         on: function(type, selector, handler) {
             var f = true
 
-            if (typeof selector !== "string") {
+            if (typeof selector !== 'string') {
                 f = false
                 handler = selector
             }
 
-            if (handler) {
+            if (typeof handler == 'function') {
                 var types = type && type.trim().split(spaceRE)
 
                 types && this.each(function() {
@@ -450,7 +451,7 @@ var createDelegator = function(handler, selector, element) {
             if(type === 'string' && value == null) {
 
                 if(!this.length || this[0].nodeType !== ELEMENT_NODE){
-                    return undefined
+                    return _undefined
                 }else{
                     return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
                 }
@@ -565,7 +566,7 @@ var createDelegator = function(handler, selector, element) {
          *
          */
         html: function(html) {
-            return html ?
+            return html != _undefined ?
                 this.each(function() {
                     this.innerHTML = html
                 }) :
@@ -577,7 +578,7 @@ var createDelegator = function(handler, selector, element) {
          * 设置或获取Dom文本内容。
          */
         text: function(text) {
-            return text ?
+            return text != _undefined ?
                 this.each(function() {
                     this.textContent = text
                 }) :

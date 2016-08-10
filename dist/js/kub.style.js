@@ -174,7 +174,8 @@
 	    spaceRE = /\s+/g
 
 	var _document = document,
-	    _window = window
+	    _window = window,
+	    _undefined = undefined
 
 	function wrap(dom, selector) {
 	    dom = dom || []
@@ -456,7 +457,7 @@
 	         * 添加`class`。
 	         */
 	        addClass: function(name) {
-	            if (!name) return this
+	            if (name == _undefined) return this
 
 	            return this.each(function() {
 	                if (!('className' in this)) return
@@ -481,7 +482,7 @@
 	            return this.each(function() {
 	                if (!('className' in this)) return
 
-	                if (name === undefined) return this.className = ''
+	                if (name === _undefined) return this.className = ''
 
 	                var className = this.className
 
@@ -543,12 +544,12 @@
 	        on: function(type, selector, handler) {
 	            var f = true
 
-	            if (typeof selector !== "string") {
+	            if (typeof selector !== 'string') {
 	                f = false
 	                handler = selector
 	            }
 
-	            if (handler) {
+	            if (typeof handler == 'function') {
 	                var types = type && type.trim().split(spaceRE)
 
 	                types && this.each(function() {
@@ -603,7 +604,7 @@
 	            if(type === 'string' && value == null) {
 
 	                if(!this.length || this[0].nodeType !== ELEMENT_NODE){
-	                    return undefined
+	                    return _undefined
 	                }else{
 	                    return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
 	                }
@@ -718,7 +719,7 @@
 	         *
 	         */
 	        html: function(html) {
-	            return html ?
+	            return html != _undefined ?
 	                this.each(function() {
 	                    this.innerHTML = html
 	                }) :
@@ -730,7 +731,7 @@
 	         * 设置或获取Dom文本内容。
 	         */
 	        text: function(text) {
-	            return text ?
+	            return text != _undefined ?
 	                this.each(function() {
 	                    this.textContent = text
 	                }) :
@@ -1822,12 +1823,13 @@
 	    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
 	    EVENT_NAME = 'click'
 
-	var $body = $(document.body)
+	var $body
 
 	var _prototype = Dialog.prototype
 
 	var render = function(dialog,data) {
 	    var html = template(data)
+
 	    dialog.$element = $(html).appendTo($body)
 	    return this
 	}
@@ -1845,6 +1847,8 @@
 	}
 
 	var init = function(dialog) {
+
+	    !$body && ($body = $(document.body))
 
 	    //渲染数据
 	    render(dialog, dialog.options)
