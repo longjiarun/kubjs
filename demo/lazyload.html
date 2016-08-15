@@ -19,9 +19,9 @@
         position: relative;
         width: 400px;
         height: 400px;
-        float: left;
+
     }
-    img{
+    /*img{
         position: absolute;
         top:0px;
         left:0;
@@ -29,18 +29,18 @@
         bottom:0;
         margin:auto;
         max-width: 100%;
-    }
+    }*/
     </style>
 </head>
 <body>
+    <img style="display:none" src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1452954993917-67566-s1.jpg?w=480&amp;h=0">
 
 <div class="wrapper">
     <div>
-        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-146061571896-8471243.jpg?w=480&amp;h=0">
+        <img   src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop210788446-146061571896-8471243.jpg?w=480&amp;h=0">
     </div>
 
     <div>
-        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1452954993917-67566-s1.jpg?w=480&amp;h=0">
     </div>
 
     <div>
@@ -60,7 +60,7 @@
     </div>
 
     <div>
-        <img style="display:none" src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1459070472323-33732-s1.jpg?w=480&amp;h=0">
+        <img src="http://wd.geilicdn.com/bfeb0dd977e07a599cce2e0a5e7dbb68.gif" data-original="http://wd.geilicdn.com/vshop162034398-1459070472323-33732-s1.jpg?w=480&amp;h=0">
     </div>
 
     <div>
@@ -80,7 +80,12 @@
 <script type="text/javascript">
     var $ =  Kub.$;
 
-    var lazyload = new Kub.LazyLoad($('img'));
+    var lazyload = new Kub.LazyLoad($('img'),{
+        load : function(){
+
+        }
+    });
+
 </script>
 </body>
 </html>
