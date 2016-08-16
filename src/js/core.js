@@ -112,7 +112,7 @@ _prototype.extend = function(target, source) {
  * })
  *
  * //传入url
- * Kub.core.setQuerystring('http://www.weidian.com?userId=123',{
+ * Kub.core.setQuerystring('http://www.a.com?userId=123',{
  *     name:'kub'
  * })
  *
@@ -205,7 +205,7 @@ _prototype.setQuerystring = function(url, params, opts) {
  * var name = params.name
  *
  * //传入url
- * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123')
+ * var params = Kub.core.getQuerystring('http://www.a.com?userId=123')
  *
  * var userId = params.userId
  *

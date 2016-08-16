@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>DatePicker Test</title>
+    <script type="text/javascript" src="../dist/js/kub.style.js"></script>
+
 </head>
 <body>
+
 时间选择器1
 <div><input type="text" id="J_datepicker"/></div>
 时间选择器2
@@ -13,7 +16,6 @@
 时间选择器3
 <div><input type="text" id="J_datepicker2"/></div>
 
-<script type="text/javascript" src="../dist/js/kub.style.js"></script>
 <script type="text/javascript">
     var $ = Kub.$
     //采用默认的format yyyy-MM-dd
@@ -24,12 +26,15 @@
     var datepicker1 = new Kub.DatePicker($("#J_datepicker1"),{
         title:"Date Picker",
         locale:"en",
+        format:"yyyy-MM-dd,HH",
         cancelText:"Cancel",
         cancel:function(e,datepicker){
-
             datepicker.setDate(new Date());
 
             //datepicker.hide()
+        },
+        confirm:function(e,datepicker){
+            console.log(datepicker.getDate());
         },
         confirmText:"Ok"
     });

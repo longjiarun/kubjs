@@ -111,12 +111,15 @@ var init = function(lazyload) {
  *
  *   `attributeName` : `String` 属性名称。默认会从`element`上取出 `data-original` 属性。
  *
+ *   `load` : `Function` 图片加载事件。
+ *
  */
 _prototype.defaults = {
     container: _window,
     threshold: 200,
     delay: 100,
-    attributeName: 'original'
+    attributeName: 'original',
+    load:null
 }
 
 //更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
@@ -166,8 +169,7 @@ _prototype.isVisible = function($this) {
         element = $this[0]
 
     //如果节点不可见，则不进行加载
-    //会出现误判的可能，比如节点本身宽度与高度设置为0
-    if(element.offsetWidth == 0 && element.offsetHeight == 0){
+    if(element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0){
         return false
     }
 
@@ -195,7 +197,9 @@ _prototype.isVisible = function($this) {
  */
 _prototype.load = function($element) {
 
-    var original = $element.attr('data-' + this.options.attributeName)
+    var options = this.options,
+        original = $element.attr('data-' + options.attributeName),
+        load = options.load
 
     //如果原图片为空
     if (!original) {
@@ -208,6 +212,10 @@ _prototype.load = function($element) {
     }
     //记录该节点已被加载
     $element[0].loaded = true
+
+    // 触发 load 事件
+    load && load.call($element[0])
+
     return this
 }
 

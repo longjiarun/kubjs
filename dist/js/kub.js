@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.1.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.2.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -174,7 +174,8 @@
 	    spaceRE = /\s+/g
 
 	var _document = document,
-	    _window = window
+	    _window = window,
+	    _undefined = undefined
 
 	function wrap(dom, selector) {
 	    dom = dom || []
@@ -456,7 +457,7 @@
 	         * 添加`class`。
 	         */
 	        addClass: function(name) {
-	            if (!name) return this
+	            if (name == _undefined) return this
 
 	            return this.each(function() {
 	                if (!('className' in this)) return
@@ -481,7 +482,7 @@
 	            return this.each(function() {
 	                if (!('className' in this)) return
 
-	                if (name === undefined) return this.className = ''
+	                if (name === _undefined) return this.className = ''
 
 	                var className = this.className
 
@@ -543,12 +544,12 @@
 	        on: function(type, selector, handler) {
 	            var f = true
 
-	            if (typeof selector !== "string") {
+	            if (typeof selector !== 'string') {
 	                f = false
 	                handler = selector
 	            }
 
-	            if (handler) {
+	            if (typeof handler == 'function') {
 	                var types = type && type.trim().split(spaceRE)
 
 	                types && this.each(function() {
@@ -583,7 +584,7 @@
 	         */
 	        trigger: function(type, detail) {
 	            return this.each(function() {
-	                this.dispatchEvent($.Event(type, {
+	                this && this.dispatchEvent && this.dispatchEvent($.Event(type, {
 	                    detail: detail,
 	                    bubbles: true,
 	                    cancelable: true
@@ -603,7 +604,7 @@
 	            if(type === 'string' && value == null) {
 
 	                if(!this.length || this[0].nodeType !== ELEMENT_NODE){
-	                    return undefined
+	                    return _undefined
 	                }else{
 	                    return (!(result = this[0].getAttribute(name)) && name in this[0]) ? this[0][name] : result
 	                }
@@ -718,7 +719,7 @@
 	         *
 	         */
 	        html: function(html) {
-	            return html ?
+	            return html != _undefined ?
 	                this.each(function() {
 	                    this.innerHTML = html
 	                }) :
@@ -730,7 +731,7 @@
 	         * 设置或获取Dom文本内容。
 	         */
 	        text: function(text) {
-	            return text ?
+	            return text != _undefined ?
 	                this.each(function() {
 	                    this.textContent = text
 	                }) :
@@ -924,7 +925,7 @@
 	 * })
 	 *
 	 * //传入url
-	 * Kub.core.setQuerystring('http://www.weidian.com?userId=123',{
+	 * Kub.core.setQuerystring('http://www.a.com?userId=123',{
 	 *     name:'kub'
 	 * })
 	 *
@@ -1017,7 +1018,7 @@
 	 * var name = params.name
 	 *
 	 * //传入url
-	 * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123')
+	 * var params = Kub.core.getQuerystring('http://www.a.com?userId=123')
 	 *
 	 * var userId = params.userId
 	 *
@@ -1405,7 +1406,7 @@
 	 *
 	 * //配置cookie相关属性
 	 * Kub.cookie('name','kub',{
-	 *     domain:'.weidian.com'
+	 *     domain:'.a.com'
 	 *
 	 * })
 	 * ```
@@ -1576,12 +1577,15 @@
 	 *
 	 *   `attributeName` : `String` 属性名称。默认会从`element`上取出 `data-original` 属性。
 	 *
+	 *   `load` : `Function` 图片加载事件。
+	 *
 	 */
 	_prototype.defaults = {
 	    container: _window,
 	    threshold: 200,
 	    delay: 100,
-	    attributeName: 'original'
+	    attributeName: 'original',
+	    load:null
 	}
 
 	//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
@@ -1631,8 +1635,7 @@
 	        element = $this[0]
 
 	    //如果节点不可见，则不进行加载
-	    //会出现误判的可能，比如节点本身宽度与高度设置为0
-	    if(element.offsetWidth == 0 && element.offsetHeight == 0){
+	    if(element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0){
 	        return false
 	    }
 
@@ -1660,7 +1663,9 @@
 	 */
 	_prototype.load = function($element) {
 
-	    var original = $element.attr('data-' + this.options.attributeName)
+	    var options = this.options,
+	        original = $element.attr('data-' + options.attributeName),
+	        load = options.load
 
 	    //如果原图片为空
 	    if (!original) {
@@ -1673,6 +1678,10 @@
 	    }
 	    //记录该节点已被加载
 	    $element[0].loaded = true
+
+	    // 触发 load 事件
+	    load && load.call($element[0])
+
 	    return this
 	}
 
@@ -1822,12 +1831,13 @@
 	    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
 	    EVENT_NAME = 'click'
 
-	var $body = $(document.body)
+	var $body
 
 	var _prototype = Dialog.prototype
 
 	var render = function(dialog,data) {
 	    var html = template(data)
+
 	    dialog.$element = $(html).appendTo($body)
 	    return this
 	}
@@ -1845,6 +1855,8 @@
 	}
 
 	var init = function(dialog) {
+
+	    !$body && ($body = $(document.body))
 
 	    //渲染数据
 	    render(dialog, dialog.options)
@@ -3110,36 +3122,40 @@
 	//设置时间选择器中某一列的值，可设置年、月、日、时、分、秒的值
 	var setValue = function(datepicker, name, value) {
 	    var $this = datepicker._ui[name],
-	        index,
-	        $item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')
+	        index, $item
 
-	    if ($item.length) {
+	    if ($this && ($item = $this.find(COLUMN_ITEM_SELECTOR + '[data-value="' + value + '"]')).length) {
 	        index = parseInt($item.attr('data-index'))
 
 	        $this[0].index = index
 
 	        setTranslate($this, 0, -index * HEIGHT_UNIT)
 	    }
+
 	}
 
 	//获取时间选择器中某一列的值，可获取年、月、日、时、分、秒的值
 	var getValue = function(datepicker, name) {
 	    var $this = datepicker._ui[name],
-	        $items = $this.find(COLUMN_ITEM_SELECTOR),
-	        index = $this[0].index + 1,
+	        $items, index, value
+
+	    if ($this) {
+	        $items = $this.find(COLUMN_ITEM_SELECTOR)
+	        index = $this[0].index + 1
 	        value = parseInt($items.eq(index).attr('data-value'))
+	    }
 
 	    return value ? value : 0
 	}
 
 	//移除不需要的列
 	var removeColumns = function(format, ui) {
-	    format.indexOf('y') === -1 && ui.year.remove()
-	    format.indexOf('M') === -1 && ui.month.remove()
-	    format.indexOf('d') === -1 && ui.day.remove()
-	    format.indexOf('H') === -1 && ui.hour.remove()
-	    format.indexOf('m') === -1 && ui.minute.remove()
-	    format.indexOf('s') === -1 && ui.second.remove()
+	    format.indexOf('y') === -1 && (ui.year.remove(), ui.year = null)
+	    format.indexOf('M') === -1 && (ui.month.remove(), ui.month = null)
+	    format.indexOf('d') === -1 && (ui.day.remove(), ui.day = null)
+	    format.indexOf('H') === -1 && (ui.hour.remove(), ui.hour = null)
+	    format.indexOf('m') === -1 && (ui.minute.remove(), ui.minute = null)
+	    format.indexOf('s') === -1 && (ui.second.remove(), ui.second = null)
 	}
 
 	//渲染对话框
@@ -3236,7 +3252,7 @@
 	            setTranslate($activeElement, 0, -HEIGHT_UNIT * $activeElement[0].index)
 	        }
 
-	    datepicker._ui.columns.each(function(){
+	    datepicker._ui.columns.each(function() {
 
 	        $(this).on(START_EVENT, function() {
 	            start.apply(this, arguments)
@@ -3629,7 +3645,7 @@
 	        }
 	    })
 
-	    element.dispatchEvent(event)
+	    element && element.dispatchEvent && element.dispatchEvent(event)
 	}
 
 	var on = function(element, type, handler) {

@@ -72,6 +72,14 @@
 
     var $ =  typeof Kub !== "undefined" ? Kub.$ : $;
 
+    var $parent = $(".parent");
+
+    console.log( $("<div>1</div><div>2</div><!--sd-->") );
+
+    $($("<div>1</div><div>2</div>")).each(function(){
+        console.log(this.dispatchEvent);
+    });
+
     //代码1
     var iframe = document.createElement('iframe')
     document.body.appendChild(iframe)
@@ -121,6 +129,9 @@
         console.log(2)
         event.preventDefault()
     });
+
+    $(document.body).off('click',12);
+
 </script>
 </body>
 </html>
