@@ -1,6 +1,6 @@
 {
   "name": "kub",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Kub Mobile JavaScript Components Library",
   "main": "src/js/kub.js",
   "directories": {},

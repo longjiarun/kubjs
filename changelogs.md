@@ -1,5 +1,23 @@
 # 更新日志
 
+## v2.2.0
+
+### 解决的bug
+
+0. 修复 `Datepicker.prototype.getDate` 方法返回多余时间区间问题；
+
+0. 修复 `Dialog` 代码放到 `head` 区域时，无法插入节点；
+
+0. 修复 `Lite.prototype.html` 无法插入 0 问题；
+
+0. 修复 `Lite.prototype.text` 无法插入 0 问题；
+
+0. 修复 `LazyLoad.prototype.isVisible` 对不可见元素检测失败问题；
+
+### 新增功能
+
+0. `LazyLoad` 组件增加`load`加载事件；
+
 ## v2.1.0
 
 ### 解决的bug

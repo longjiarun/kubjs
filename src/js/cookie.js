@@ -13,7 +13,7 @@
  *
  * //配置cookie相关属性
  * Kub.cookie('name','kub',{
- *     domain:'.weidian.com'
+ *     domain:'.a.com'
  *
  * })
  * ```

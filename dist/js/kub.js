@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.1.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.2.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -925,7 +925,7 @@
 	 * })
 	 *
 	 * //传入url
-	 * Kub.core.setQuerystring('http://www.weidian.com?userId=123',{
+	 * Kub.core.setQuerystring('http://www.a.com?userId=123',{
 	 *     name:'kub'
 	 * })
 	 *
@@ -1018,7 +1018,7 @@
 	 * var name = params.name
 	 *
 	 * //传入url
-	 * var params = Kub.core.getQuerystring('http://www.weidian.com?userId=123')
+	 * var params = Kub.core.getQuerystring('http://www.a.com?userId=123')
 	 *
 	 * var userId = params.userId
 	 *
@@ -1406,7 +1406,7 @@
 	 *
 	 * //配置cookie相关属性
 	 * Kub.cookie('name','kub',{
-	 *     domain:'.weidian.com'
+	 *     domain:'.a.com'
 	 *
 	 * })
 	 * ```
