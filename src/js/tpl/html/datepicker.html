@@ -1,6 +1,16 @@
+<div class="kub-datepicker-header">
+    <button class="kub-datepicker-button J_dialogButton" data-index="0">
+        <%= data.cancelText%>
+    </button>
+    <div class="kub-datepicker-header-text"><%= data.title%></div>
+    <button class="kub-datepicker-button J_dialogButton" data-index="1">
+        <%= data.confirmText%>
+    </button>
+</div>
 <div class="kub-datepicker">
     <div class="kub-datepicker-column year" data-type="year">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=data.yearRange[0],j=0;i<=data.yearRange[1];i++,j++){%>
                 <li data-value="<%= i%>" data-index="<%= j%>">
@@ -8,10 +18,12 @@
                 </li>
             <%}%>
             <li ></li>
+            <li></li>
         </ul>
     </div>
     <div class="kub-datepicker-column month" data-type="month">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=1 ;i<= 12; i++){%>
                 <li data-value="<%= i-1%>" data-index="<%= i-1%>">
@@ -19,10 +31,12 @@
                 </li>
             <%}%>
             <li ></li>
+            <li></li>
         </ul>
     </div>
     <div class="kub-datepicker-column day" data-type="day">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=1 ;i<=31;i++){%>
                 <li data-value="<%= i%>" data-index="<%= i-1%>">
@@ -30,10 +44,12 @@
                 </li>
             <%}%>
             <li ></li>
+            <li></li>
         </ul>
     </div>
     <div class="kub-datepicker-column hour" data-type="hour">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=0 ;i<=23;i++){%>
                 <li data-value="<%= i%>" data-index="<%= i%>">
@@ -41,10 +57,12 @@
                 </li>
             <%}%>
             <li ></li>
+            <li></li>
         </ul>
     </div>
     <div class="kub-datepicker-column minute" data-type="minute">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=0 ;i<=59;i++){%>
                 <li data-value="<%= i%>" data-index="<%= i%>">
@@ -52,16 +70,19 @@
                 </li>
             <%}%>
             <li ></li>
+            <li></li>
         </ul>
     </div>
     <div class="kub-datepicker-column second" data-type="second">
         <ul>
+            <li></li>
             <li></li>
             <%for(var i=0 ;i<=59;i++){%>
                 <li data-value="<%= i%>" data-index="<%= i%>">
                     <%= ( i < 10 ? ( "0" + i) : i)%>
                 </li>
             <%}%>
+            <li></li>
             <li></li>
         </ul>
     </div>

@@ -86,4 +86,9 @@ Kub.DatePicker = require('./datepicker')
  */
 Kub.Touch = require('./touch')
 
+/**
+ * ## Kub.Popup
+ */
+Kub.Popup = require('./popup')
+
 module.exports = Kub

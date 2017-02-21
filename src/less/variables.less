@@ -76,14 +76,28 @@
  * datepicker.less
  */
 @datepicker-font-size: 16 * @unit;
-@datepicker-body-padding: 12 * @unit;
-@datepicker-color: #333;
+@datepicker-color: #000;
+@datepicker-date-color: #999;
 
-@datepicker-column-height: 54px;
-@datepicker-column-padding: 0 10 * @unit;
+@datepicker-header-height: 40 * @unit;
+@datepicker-height: @datepicker-header-height + @datepicker-column-height * 5;
+
+@datepicker-button-padding: 16 * @unit;
+@datepicker-button-color: #999;
+@datepicker-button-confirm-color: #222;
+
+@datepicker-linear-gradient-start:rgba(255,255,255,0.9);
+@datepicker-linear-gradient-end:rgba(255,255,255,0.35);
+
+@datepicker-column-height: 48px;
 @datepicker-column-font-size: 12 * @unit;
 
 //datepicker-overlay
-@datepicker-overlay-border-radius: @dialog-border-radius;
 @datepicker-overlay-border: 1px solid rgba(0, 0, 0, @dialog-opacity);
-@datepicker-overlay-box-shadow: 0 0 @datepicker-column-height * 2 rgba(0, 0, 0, @dialog-opacity * 3);
+
+
+/**
+ * popup.less
+ */
+@popup-duration:350ms;
+@popup-height:60%;

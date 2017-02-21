@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Popup Test</title>
+    <script type="text/javascript" src="../dist/js/kub.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/css/kub.css">
+</head>
+<body>
+<script type="text/javascript">
+    var popup
+    function test(){
+        popup = new Kub.Popup({
+            message:'<div style="height:1000px">123</div>',
+            modal:false
+        });
+
+        //popup.hide();
+    }
+    //test();
+</script>
+<button onclick="test()">测试弹窗</button>
+
+</body>
+</html>

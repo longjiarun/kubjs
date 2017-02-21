@@ -9,16 +9,74 @@
  * @require [core](./core.js.html)
  * @require [Lite](./lite.js.html)
  * @require [detect](./detect.js.html)
- * @require [Dialog](./dialog.js.html)
+ * @require [Popup](./popup.js.html)
  * @require [DateHelper](./date.js.html)
  */
 var core = require('./core'),
     $ = require('./lite'),
     os = require('./detect'),
-    Dialog = require('./dialog'),
-    template = require('./tpl/datepicker')
+    Popup = require('./popup'),
+    template = require('./tpl/datepicker');
 
 require('./date')
+
+var HEIGHT_UNIT = 54,
+    DURATION = 200,
+    COLUMN_SELECTOR = '.kub-datepicker-column',
+    POPUP_CLASS_NAME = 'kub-datepicker-popup',
+    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
+    COLUMN_ITEM_SELECTOR = 'li',
+    COLUMN_CONTAINER_SELECTOR = 'ul'
+
+var $document = $(document),
+    isTouch = os.mobile
+
+var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+    EVENT_NAME = 'click'
+
+//渲染对话框
+var render = function(datepicker) {
+
+    var options = datepicker.options,
+        html = template(options)
+
+    var popup = datepicker.$element[0].popup = new Popup({
+        title: options.title,
+        message: html,
+        className: options.className || '' + ' ' + POPUP_CLASS_NAME,
+        closeHandler:function(){
+            this.hide()
+            return false
+        }
+    })
+
+    var handlers = [{
+        handler: function(e) {
+            var cancel = options.cancel
+            cancel ? cancel.call(this, e, datepicker) : popup.hide()
+        }
+    }, {
+        handler: function(e) {
+            var confirm = options.confirm,
+                formatDate = datepicker.getDate().format(options.format)
+
+            confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
+                datepicker.$element[0].value = formatDate
+                popup.hide()
+            }()
+        }
+    }]
+
+    //注册按钮事件
+    popup.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
+        var index = parseInt($(this).attr('data-index')),
+            handler = handlers[index].handler
+
+        handler && handler.call(this, e, popup)
+    })
+}
 
 /**
  * ## DatePicker Constructor
@@ -49,28 +107,8 @@ require('./date')
  *  })
  * ```
  */
-function DatePicker(element, options) {
-    this.$element = $(element)
-    this.options = core.extend({}, _prototype.defaults, options || {})
 
-    init(this)
-}
-
-var HEIGHT_UNIT = 54,
-    DURATION = 200,
-    COLUMN_SELECTOR = '.kub-datepicker-column',
-    COLUMN_ITEM_SELECTOR = 'li',
-    COLUMN_CONTAINER_SELECTOR = 'ul'
-
-var $document = $(document),
-    isTouch = os.mobile
-
-var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
-    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
-    END_EVENT = isTouch ? 'touchend' : 'mouseup',
-    EVENT_NAME = 'click'
-
-var _prototype = DatePicker.prototype
+var _prototype
 
 //获取触摸点
 var getCoords = function(event) {
@@ -107,7 +145,7 @@ var getDays = function(year, month) {
 //根据偏移量算出索引值
 var getIndexByDistance = function(y, max) {
     //去掉空白的两行
-    max = max - 3
+    max = max - 5
     y = y > 0 ? 0 : y
     var index = Math.round(Math.abs(y) / HEIGHT_UNIT)
     return index > max ? max : index
@@ -166,7 +204,7 @@ var getValue = function(datepicker, name) {
 
     if ($this) {
         $items = $this.find(COLUMN_ITEM_SELECTOR)
-        index = $this[0].index + 1
+        index = $this[0].index+2
         value = parseInt($items.eq(index).attr('data-value'))
     }
 
@@ -183,35 +221,7 @@ var removeColumns = function(format, ui) {
     format.indexOf('s') === -1 && (ui.second.remove(), ui.second = null)
 }
 
-//渲染对话框
-var render = function(datepicker) {
-    var options = datepicker.options,
-        html = template(options)
 
-    datepicker.$element[0].dialog = new Dialog({
-        title: options.title,
-        message: html,
-        className: options.className,
-        buttons: [{
-            text: options.cancelText,
-            handler: function(e, dialog) {
-                var cancel = options.cancel
-                cancel ? cancel.call(this, e, datepicker) : dialog.hide()
-            }
-        }, {
-            text: options.confirmText,
-            handler: function(e, dialog) {
-                var confirm = options.confirm,
-                    formatDate = datepicker.getDate().format(options.format)
-
-                confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
-                    datepicker.$element[0].value = formatDate
-                    dialog.hide()
-                }()
-            }
-        }]
-    })
-}
 
 //重置每月最大天数
 var setActualDays = function(datepicker, year, month) {
@@ -293,7 +303,7 @@ var bindEvents = function(datepicker) {
     bindInputFocusEvent(datepicker)
 }
 
-var init = function(datepicker) {
+function init(datepicker) {
     var options = datepicker.options,
         $element,
         ui
@@ -301,7 +311,7 @@ var init = function(datepicker) {
     //创建对话框
     render(datepicker)
 
-    $element = datepicker.$element[0].dialog.$element
+    $element = datepicker.$element[0].popup.$element
 
     //缓存dom
     ui = datepicker._ui = {
@@ -315,7 +325,7 @@ var init = function(datepicker) {
     ui.columns = $element.find(COLUMN_SELECTOR)
 
     //设置块高度
-    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight || HEIGHT_UNIT
 
     //隐藏对话框
     datepicker.hide()
@@ -333,6 +343,14 @@ var init = function(datepicker) {
     bindEvents(datepicker)
 }
 
+function DatePicker(element, options) {
+    this.$element = $(element)
+    this.options = core.extend({}, _prototype.defaults, options || {})
+
+    init(this)
+}
+
+_prototype = DatePicker.prototype
 
 /**
  * ## DatePicker.prototype.defaults
@@ -363,7 +381,7 @@ var init = function(datepicker) {
  *
  * * `format`: `String` 日期格式。
  *
- * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-dialog`默认类名。
+ * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-popup`默认类名。
  *
  * * `date`: `Date` 默认显示时间。
  *
@@ -371,13 +389,13 @@ var init = function(datepicker) {
  */
 _prototype.defaults = {
     locale: 'zh',
-    title: '选择时间',
+    title: '',
     confirmText: '确定',
     confirm: null,
     cancelText: '取消',
     cancel: null,
     format: 'yyyy-MM-dd',
-    className: 'kub-datepicker-dialog',
+    className: '',
     date: new Date(),
     yearRange: [1970, 2050]
 }
@@ -437,7 +455,7 @@ _prototype.getDate = function() {
  * @return {instance} 当前实例
  */
 _prototype.close = function() {
-    this.$element[0].dialog.close()
+    this.$element[0].popup.close()
     return this
 }
 
@@ -449,7 +467,7 @@ _prototype.close = function() {
  * @return {instance} 当前实例
  */
 _prototype.show = function() {
-    this.$element[0].dialog.show()
+    this.$element[0].popup.show()
     return this
 }
 
@@ -461,7 +479,7 @@ _prototype.show = function() {
  * @return {instance} 当前实例
  */
 _prototype.hide = function() {
-    this.$element[0].dialog.hide()
+    this.$element[0].popup.hide()
     return this
 }
 

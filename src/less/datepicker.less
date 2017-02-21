@@ -1,8 +1,10 @@
 @import "variables";
-@import "dialog";
-.kub-datepicker-dialog {
-    .kub-dialog-body {
-        padding: @datepicker-body-padding;
+@import "popup";
+
+.kub-datepicker-popup {
+    .kub-popup {
+        bottom: -@datepicker-height;
+        height: @datepicker-height;
     }
 }
 .kub-datepicker {
@@ -11,7 +13,29 @@
     text-align: center;
     white-space: nowrap;
     position: relative;
+    display: -webkit-box;
+    display: flex;
+    height: @datepicker-column-height * 5;
 
+    &:before, &:after {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: @datepicker-column-height * 2;
+        z-index: 2;
+        content: '';
+        pointer-events: none;
+    }
+    &:before {
+        top: 0;
+        background: -webkit-linear-gradient(top,@datepicker-linear-gradient-start ,@datepicker-linear-gradient-end);
+        background: linear-gradient(top,@datepicker-linear-gradient-start ,@datepicker-linear-gradient-end);
+    }
+    &:after {
+        bottom: 0;
+        background: -webkit-linear-gradient(top,@datepicker-linear-gradient-end ,@datepicker-linear-gradient-start);
+        background: linear-gradient(top,@datepicker-linear-gradient-end ,@datepicker-linear-gradient-start);
+    }
     ul, li {
         list-style: none;
         margin: 0;
@@ -19,32 +43,35 @@
     }
     .kub-datepicker-overlay {
         position: absolute;
-        top: @datepicker-column-height;
         left: 0;
+        top: @datepicker-column-height * 2;
         height: @datepicker-column-height;
         width: 100%;
-        z-index: 0;
         border: @datepicker-overlay-border;
-        border-radius: @datepicker-overlay-border-radius;
-        box-shadow: @datepicker-overlay-box-shadow;
-        box-sizing: border-box;
+        border-width: 1px 0 1px 0;
+        z-index: 3;
+        pointer-events: none;
     }
     .kub-datepicker-column {
+        display: block;
         position: relative;
-        height: @datepicker-column-height * 3;
-        padding: @datepicker-column-padding;
-        display: inline-block;
         overflow: hidden;
         z-index: 1;
+        -webkit-box-flex: 1;
+        flex: 1;
+        height: @datepicker-column-height * 5;
 
         &:after {
             position: absolute;
+            top: @datepicker-column-height * 2;
+            right: 2%;
+            color: @datepicker-date-color;
             font-size: @datepicker-column-font-size;
-            top: @datepicker-column-height;
-            right: 0
+            line-height: @datepicker-column-height;
         }
         ul {
             li {
+                width: 100%;
                 line-height: @datepicker-column-height;
                 height: @datepicker-column-height;
             }
@@ -87,5 +114,38 @@
     }
     .second:after {
         content: "s";
+    }
+}
+.kub-datepicker-header {
+    line-height: @datepicker-header-height;
+    text-align: center;
+    background: @dialog-header-background;
+    color: @dialog-color;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    .kub-datepicker-button {
+        display: block;
+
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+
+        line-height: @datepicker-header-height;
+        border: none;
+        background: none;
+        text-align: left;
+        padding: 0 @datepicker-button-padding;
+        font-size: @datepicker-font-size;
+        color: @datepicker-button-color;
+
+        &:last-child {
+            text-align: right;
+            color: @datepicker-button-confirm-color;
+        }
+        &:focus {
+            outline: 0;
+        }
     }
 }
