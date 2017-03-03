@@ -122,7 +122,13 @@ _prototype.defaults = {
     load:null
 }
 
-//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
+/**
+ * ## LazyLoad.prototype.updateElement
+ *
+ * 更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内，修改的节点为替换，不是增加，意味着原来的节点会被替换。
+ *
+ * @return {instance} 当前实例
+ */
 _prototype.updateElement = function(element) {
 
     this.$element = $(element)

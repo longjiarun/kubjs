@@ -1,0 +1,32 @@
+@import "variables";
+@import "animate";
+@import "dialog";
+
+.kub-popup-modal{
+    -webkit-transition:background @popup-duration;
+    transition:background @popup-duration;
+
+    background: none;
+}
+
+.kub-popup{
+    background: @dialog-white;
+    width:100%;
+    position: absolute;
+    left:0;
+
+    bottom:-@popup-height;
+    height: @popup-height;
+    z-index:1;
+
+    -webkit-transition:bottom @popup-duration;
+    transition:bottom @popup-duration;
+}
+
+.kub-popup-animation{
+    background: @dialog-modal-background;
+
+    .kub-popup{
+        bottom:0;
+    }
+}

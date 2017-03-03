@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.2.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.3.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -45,7 +45,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(25);
+	module.exports = __webpack_require__(28);
 
 
 /***/ },
@@ -53,7 +53,8 @@
 /* 2 */,
 /* 3 */,
 /* 4 */,
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -65,90 +66,95 @@
 	var _window = window,
 	    Kub = _window.Kub = _window.Kub || {}
 
-	Kub.version = '2.1.0'
+	Kub.version = '2.3.0'
 
 	/**
 	 * ## Kub.$
 	 *
 	 * 类 `Zepto` 模块。
 	 */
-	Kub.$ = __webpack_require__(6)
+	Kub.$ = __webpack_require__(7)
 
 	/**
 	 * ## Kub.core
 	 */
-	Kub.core = __webpack_require__(8)
+	Kub.core = __webpack_require__(9)
 
 	/**
 	 * ## Kub.os
 	 */
-	Kub.os = __webpack_require__(9)
+	Kub.os = __webpack_require__(10)
 
 	/**
 	 * ## Kub.dateHelper
 	 */
-	Kub.dateHelper = __webpack_require__(10)
+	Kub.dateHelper = __webpack_require__(11)
 
 	/**
 	 * ## Kub.cookie
 	 */
-	Kub.cookie = __webpack_require__(11)
+	Kub.cookie = __webpack_require__(12)
 
 	/**
 	 * ## Kub.LazyLoad
 	 */
-	Kub.LazyLoad = __webpack_require__(12)
+	Kub.LazyLoad = __webpack_require__(13)
 
 	/**
 	 * ## Kub.Dialog
 	 */
-	Kub.Dialog = __webpack_require__(13)
+	Kub.Dialog = __webpack_require__(14)
 
 	/**
 	 * ## Kub.Alert
 	 */
-	Kub.Alert = __webpack_require__(15)
+	Kub.Alert = __webpack_require__(16)
 
 	/**
 	 * ## Kub.Confirm
 	 */
-	Kub.Confirm = __webpack_require__(16)
+	Kub.Confirm = __webpack_require__(17)
 
 	/**
 	 * ## Kub.Prompt
 	 */
-	Kub.Prompt = __webpack_require__(17)
+	Kub.Prompt = __webpack_require__(18)
 
 	/**
 	 * ## Kub.Toast
 	 */
-	Kub.Toast = __webpack_require__(19)
+	Kub.Toast = __webpack_require__(20)
 
 	/**
 	 * ## Kub.Loader
 	 */
-	Kub.Loader = __webpack_require__(20)
+	Kub.Loader = __webpack_require__(21)
 
 	/**
 	 * ## Kub.Swiper
 	 */
-	Kub.Swiper = __webpack_require__(21)
+	Kub.Swiper = __webpack_require__(22)
 
 	/**
 	 * ## Kub.DatePicker
 	 */
-	Kub.DatePicker = __webpack_require__(22)
+	Kub.DatePicker = __webpack_require__(23)
 
 	/**
 	 * ## Kub.Touch
 	 */
-	Kub.Touch = __webpack_require__(24)
+	Kub.Touch = __webpack_require__(27)
+
+	/**
+	 * ## Kub.Popup
+	 */
+	Kub.Popup = __webpack_require__(24)
 
 	module.exports = Kub
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -161,7 +167,7 @@
 	/**
 	 * @require [polyfill](./polyfill.js.html)
 	 */
-	__webpack_require__(7)
+	__webpack_require__(8)
 	var $, Lite
 
 	var ELEMENT_NODE = 1
@@ -744,7 +750,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	var _window = window,
@@ -808,7 +814,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/**
@@ -1060,7 +1066,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/**
@@ -1133,7 +1139,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -1388,7 +1394,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	/**
@@ -1461,7 +1467,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1475,8 +1481,8 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    $ = __webpack_require__(6)
+	var core = __webpack_require__(9),
+	    $ = __webpack_require__(7)
 
 	/**
 	 * ## LazyLoad Constructor
@@ -1588,7 +1594,13 @@
 	    load:null
 	}
 
-	//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
+	/**
+	 * ## LazyLoad.prototype.updateElement
+	 *
+	 * 更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内，修改的节点为替换，不是增加，意味着原来的节点会被替换。
+	 *
+	 * @return {instance} 当前实例
+	 */
 	_prototype.updateElement = function(element) {
 
 	    this.$element = $(element)
@@ -1778,7 +1790,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1791,9 +1803,9 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    $ = __webpack_require__(6),
-	    template = __webpack_require__(14)
+	var core = __webpack_require__(9),
+	    $ = __webpack_require__(7),
+	    template = __webpack_require__(15)
 
 	/**
 	 * ## Dialog Constructor
@@ -1963,7 +1975,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -2001,7 +2013,7 @@
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2014,8 +2026,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    Dialog = __webpack_require__(13)
+	var core = __webpack_require__(9),
+	    Dialog = __webpack_require__(14)
 
 	/**
 	 * ## Alert Constructor
@@ -2078,7 +2090,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2091,8 +2103,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    Dialog = __webpack_require__(13)
+	var core = __webpack_require__(9),
+	    Dialog = __webpack_require__(14)
 
 	/**
 	 * ## Confirm Constructor
@@ -2168,7 +2180,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2181,9 +2193,9 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    Dialog = __webpack_require__(13),
-	    template = __webpack_require__(18)
+	var core = __webpack_require__(9),
+	    Dialog = __webpack_require__(14),
+	    template = __webpack_require__(19)
 
 	var INPUT_SELECTOR = '.J_input'
 
@@ -2277,7 +2289,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
@@ -2295,7 +2307,7 @@
 	};
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2308,8 +2320,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    Dialog = __webpack_require__(13)
+	var core = __webpack_require__(9),
+	    Dialog = __webpack_require__(14)
 
 	/**
 	 * ## Toast Constructor
@@ -2380,7 +2392,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2394,8 +2406,8 @@
 	 * @require [core](./core.js.html)
 	 * @extend [Dialog](./dialog.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    Dialog = __webpack_require__(13)
+	var core = __webpack_require__(9),
+	    Dialog = __webpack_require__(14)
 
 	/**
 	 * ## Loader Constructor
@@ -2452,7 +2464,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2466,9 +2478,9 @@
 	 * @require [os](./detect.js.html)
 	 * @require [Lite](./lite.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    os = __webpack_require__(9),
-	    $ = __webpack_require__(6)
+	var core = __webpack_require__(9),
+	    os = __webpack_require__(10),
+	    $ = __webpack_require__(7)
 
 	/**
 	 * ## Swiper Constructor
@@ -2970,7 +2982,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2984,16 +2996,73 @@
 	 * @require [core](./core.js.html)
 	 * @require [Lite](./lite.js.html)
 	 * @require [detect](./detect.js.html)
-	 * @require [Dialog](./dialog.js.html)
+	 * @require [Popup](./popup.js.html)
 	 * @require [DateHelper](./date.js.html)
 	 */
-	var core = __webpack_require__(8),
-	    $ = __webpack_require__(6),
-	    os = __webpack_require__(9),
-	    Dialog = __webpack_require__(13),
-	    template = __webpack_require__(23)
+	var core = __webpack_require__(9),
+	    $ = __webpack_require__(7),
+	    os = __webpack_require__(10),
+	    Popup = __webpack_require__(24),
+	    template = __webpack_require__(26);
 
-	__webpack_require__(10)
+	__webpack_require__(11)
+
+	var HEIGHT_UNIT = 54,
+	    DURATION = 200,
+	    COLUMN_SELECTOR = '.kub-datepicker-column',
+	    POPUP_CLASS_NAME = 'kub-datepicker-popup',
+	    DIALOG_BUTTON_SELECTOR = '.J_dialogButton',
+	    COLUMN_ITEM_SELECTOR = 'li',
+	    COLUMN_CONTAINER_SELECTOR = 'ul'
+
+	var $document = $(document),
+	    isTouch = os.mobile
+
+	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
+	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
+	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
+	    EVENT_NAME = 'click'
+
+	//渲染对话框
+	var render = function(datepicker) {
+
+	    var options = datepicker.options,
+	        html = template(options)
+
+	    var popup = datepicker.$element[0].popup = new Popup({
+	        title: options.title,
+	        message: html,
+	        className: options.className || '' + ' ' + POPUP_CLASS_NAME,
+	        closeHandler:function(){
+	            this.hide()
+	            return false
+	        }
+	    })
+
+	    var handlers = [
+	        function(e) {
+	            var cancel = options.cancel
+	            cancel ? cancel.call(this, e, datepicker) : popup.hide()
+	        },
+	        function(e) {
+	            var confirm = options.confirm,
+	                formatDate = datepicker.getDate().format(options.format)
+
+	            confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
+	                datepicker.$element[0].value = formatDate
+	                popup.hide()
+	            }()
+	        }
+	    ]
+
+	    //注册按钮事件
+	    popup.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
+	        var index = parseInt($(this).attr('data-index')),
+	            handler = handlers[index]
+
+	        handler && handler.call(this, e, popup)
+	    })
+	}
 
 	/**
 	 * ## DatePicker Constructor
@@ -3024,28 +3093,8 @@
 	 *  })
 	 * ```
 	 */
-	function DatePicker(element, options) {
-	    this.$element = $(element)
-	    this.options = core.extend({}, _prototype.defaults, options || {})
 
-	    init(this)
-	}
-
-	var HEIGHT_UNIT = 54,
-	    DURATION = 200,
-	    COLUMN_SELECTOR = '.kub-datepicker-column',
-	    COLUMN_ITEM_SELECTOR = 'li',
-	    COLUMN_CONTAINER_SELECTOR = 'ul'
-
-	var $document = $(document),
-	    isTouch = os.mobile
-
-	var START_EVENT = isTouch ? 'touchstart' : 'mousedown',
-	    MOVE_EVENT = isTouch ? 'touchmove' : 'mousemove',
-	    END_EVENT = isTouch ? 'touchend' : 'mouseup',
-	    EVENT_NAME = 'click'
-
-	var _prototype = DatePicker.prototype
+	var _prototype
 
 	//获取触摸点
 	var getCoords = function(event) {
@@ -3082,7 +3131,7 @@
 	//根据偏移量算出索引值
 	var getIndexByDistance = function(y, max) {
 	    //去掉空白的两行
-	    max = max - 3
+	    max = max - 5
 	    y = y > 0 ? 0 : y
 	    var index = Math.round(Math.abs(y) / HEIGHT_UNIT)
 	    return index > max ? max : index
@@ -3141,7 +3190,7 @@
 
 	    if ($this) {
 	        $items = $this.find(COLUMN_ITEM_SELECTOR)
-	        index = $this[0].index + 1
+	        index = $this[0].index+2
 	        value = parseInt($items.eq(index).attr('data-value'))
 	    }
 
@@ -3158,35 +3207,7 @@
 	    format.indexOf('s') === -1 && (ui.second.remove(), ui.second = null)
 	}
 
-	//渲染对话框
-	var render = function(datepicker) {
-	    var options = datepicker.options,
-	        html = template(options)
 
-	    datepicker.$element[0].dialog = new Dialog({
-	        title: options.title,
-	        message: html,
-	        className: options.className,
-	        buttons: [{
-	            text: options.cancelText,
-	            handler: function(e, dialog) {
-	                var cancel = options.cancel
-	                cancel ? cancel.call(this, e, datepicker) : dialog.hide()
-	            }
-	        }, {
-	            text: options.confirmText,
-	            handler: function(e, dialog) {
-	                var confirm = options.confirm,
-	                    formatDate = datepicker.getDate().format(options.format)
-
-	                confirm ? confirm.call(this, e, datepicker, formatDate) : function() {
-	                    datepicker.$element[0].value = formatDate
-	                    dialog.hide()
-	                }()
-	            }
-	        }]
-	    })
-	}
 
 	//重置每月最大天数
 	var setActualDays = function(datepicker, year, month) {
@@ -3268,7 +3289,7 @@
 	    bindInputFocusEvent(datepicker)
 	}
 
-	var init = function(datepicker) {
+	function init(datepicker) {
 	    var options = datepicker.options,
 	        $element,
 	        ui
@@ -3276,7 +3297,7 @@
 	    //创建对话框
 	    render(datepicker)
 
-	    $element = datepicker.$element[0].dialog.$element
+	    $element = datepicker.$element[0].popup.$element
 
 	    //缓存dom
 	    ui = datepicker._ui = {
@@ -3290,7 +3311,7 @@
 	    ui.columns = $element.find(COLUMN_SELECTOR)
 
 	    //设置块高度
-	    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight
+	    HEIGHT_UNIT = ui.columns.find(COLUMN_ITEM_SELECTOR)[0].offsetHeight || HEIGHT_UNIT
 
 	    //隐藏对话框
 	    datepicker.hide()
@@ -3308,6 +3329,14 @@
 	    bindEvents(datepicker)
 	}
 
+	function DatePicker(element, options) {
+	    this.$element = $(element)
+	    this.options = core.extend({}, _prototype.defaults, options || {})
+
+	    init(this)
+	}
+
+	_prototype = DatePicker.prototype
 
 	/**
 	 * ## DatePicker.prototype.defaults
@@ -3338,7 +3367,7 @@
 	 *
 	 * * `format`: `String` 日期格式。
 	 *
-	 * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-dialog`默认类名。
+	 * * `className`: `String` 弹窗类名，修改时需加上`kub-datepicker-popup`默认类名。
 	 *
 	 * * `date`: `Date` 默认显示时间。
 	 *
@@ -3346,13 +3375,13 @@
 	 */
 	_prototype.defaults = {
 	    locale: 'zh',
-	    title: '选择时间',
+	    title: '',
 	    confirmText: '确定',
 	    confirm: null,
 	    cancelText: '取消',
 	    cancel: null,
 	    format: 'yyyy-MM-dd',
-	    className: 'kub-datepicker-dialog',
+	    className: '',
 	    date: new Date(),
 	    yearRange: [1970, 2050]
 	}
@@ -3412,7 +3441,7 @@
 	 * @return {instance} 当前实例
 	 */
 	_prototype.close = function() {
-	    this.$element[0].dialog.close()
+	    this.$element[0].popup.close()
 	    return this
 	}
 
@@ -3424,7 +3453,7 @@
 	 * @return {instance} 当前实例
 	 */
 	_prototype.show = function() {
-	    this.$element[0].dialog.show()
+	    this.$element[0].popup.show()
 	    return this
 	}
 
@@ -3436,7 +3465,7 @@
 	 * @return {instance} 当前实例
 	 */
 	_prototype.hide = function() {
-	    this.$element[0].dialog.hide()
+	    this.$element[0].popup.hide()
 	    return this
 	}
 
@@ -3444,12 +3473,183 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * # Popup
+	 *
+	 * 对话框.
+	 */
+
+	/**
+	 * @require [core](./core.js.html)
+	 * @require [Lite](./lite.js.html)
+	 */
+	var core = __webpack_require__(9),
+	    $ = __webpack_require__(7),
+	    template = __webpack_require__(25)
+
+	/**
+	 * ## Popup Constructor
+	 *
+	 * Popup 构造函数。
+	 *
+	 * 使用：
+	 * ```js
+	 *   var popup = new Kub.Popup({
+	 *       message:'popup dialog'
+	 *   })
+	 * ```
+	 */
+	function Popup(options) {
+	    this.options = core.extend({}, _prototype.defaults, options || {})
+	    init(this)
+	}
+
+	var ANIMATION_CLASS = 'kub-popup-animation',
+	    EVENT_NAME = 'click',
+	    POPUP_SELECTOR = '.J_popup'
+
+	var $body
+
+	var _prototype = Popup.prototype
+
+	var render = function(popup,data) {
+	    var html = template(data)
+
+	    popup.$element = $(html).appendTo($body)
+	    return this
+	}
+
+	var bindEvents = function(popup){
+	    popup.$element.on(EVENT_NAME, function(e) {
+	        if($(e.target).closest(POPUP_SELECTOR).length){
+	            return
+	        }
+	        popup.close()
+	    })
+	}
+
+	var init = function(popup) {
+	    !$body && ($body = $(document.body))
+
+	    //渲染数据
+	    render(popup, popup.options)
+
+	    bindEvents(popup)
+
+	    popup.show()
+	}
+
+	/**
+	 * ## Popup.prototype.defaults
+	 *
+	 * 默认配置项。
+	 *
+	 * 配置项说明：
+	 *
+	 * * `message` : `String` 弹窗内容。
+	 *
+	 * * `className` : `String` 弹窗类名。
+	 *
+	 */
+	_prototype.defaults = {
+	    message: '',
+	    className: '',
+	    duration:350
+	}
+
+	/**
+	 * ## Popup.prototype.show
+	 *
+	 * 显示弹窗。
+	 * @return {instance} 返回当前实例
+	 */
+	_prototype.show = function() {
+
+	    clearTimeout(this._timer)
+	    this.$element.show().addClass(ANIMATION_CLASS)
+
+	    return this
+	}
+
+	/**
+	 * ## Popup.prototype.hide
+	 *
+	 * 隐藏弹窗。
+	 * @return {instance} 返回当前实例
+	 */
+	_prototype.hide = function(callback) {
+	    var self = this,
+	        $element = self.$element
+
+	    function handler(){
+	        $element.hide()
+	        callback && callback()
+	    }
+
+	    $element.removeClass(ANIMATION_CLASS)
+
+	    clearTimeout(self._timer)
+	    self._timer = setTimeout(function(){
+	        handler()
+	    },self.options.duration)
+
+	    return self
+	}
+
+	/**
+	 * ## Popup.prototype.close
+	 *
+	 * 关闭弹窗。
+	 * @return {instance} 返回当前实例
+	 */
+	_prototype.close = function() {
+	    var self = this,
+	        opts = self.options
+
+	    if (opts.closeHandler && opts.closeHandler.call(self) === false) {
+	        return self
+	    }
+
+	    self.hide(function(){
+	        self.$element.remove()
+	    })
+
+	    return self
+	}
+
+	module.exports = Popup
+
+
+/***/ },
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-	__p+='<div class="kub-datepicker"><div class="kub-datepicker-column year" data-type="year"><ul><li></li> ';
+	__p+='<div class="kub-dialog-modal kub-popup-modal '+
+	((__t=( data.className))==null?'':__t)+
+	'"><div class="kub-popup J_popup"> '+
+	((__t=( data.message))==null?'':__t)+
+	' </div></div>';
+	return __p;
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	module.exports = function(data){
+	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
+	__p+='<div class="kub-datepicker-header"><button class="kub-datepicker-button J_dialogButton" data-index="0"> '+
+	((__t=( data.cancelText))==null?'':__t)+
+	' </button><div class="kub-datepicker-header-text">'+
+	((__t=( data.title))==null?'':__t)+
+	'</div><button class="kub-datepicker-button J_dialogButton" data-index="1"> '+
+	((__t=( data.confirmText))==null?'':__t)+
+	' </button></div><div class="kub-datepicker"><div class="kub-datepicker-column year" data-type="year"><ul><li></li><li></li> ';
 	for(var i=data.yearRange[0],j=0;i<=data.yearRange[1];i++,j++){
 	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
@@ -3459,7 +3659,7 @@
 	((__t=( i ))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-column month" data-type="month"><ul><li></li> ';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-column month" data-type="month"><ul><li></li><li></li> ';
 	for(var i=1 ;i<= 12; i++){
 	__p+=' <li data-value="'+
 	((__t=( i-1))==null?'':__t)+
@@ -3469,7 +3669,7 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-column day" data-type="day"><ul><li></li> ';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-column day" data-type="day"><ul><li></li><li></li> ';
 	for(var i=1 ;i<=31;i++){
 	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
@@ -3479,7 +3679,7 @@
 	((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-column hour" data-type="hour"><ul><li></li> ';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-column hour" data-type="hour"><ul><li></li><li></li> ';
 	for(var i=0 ;i<=23;i++){
 	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
@@ -3489,7 +3689,7 @@
 	((__t=(( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-column minute" data-type="minute"><ul><li></li> ';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-column minute" data-type="minute"><ul><li></li><li></li> ';
 	for(var i=0 ;i<=59;i++){
 	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
@@ -3499,7 +3699,7 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-column second" data-type="second"><ul><li></li> ';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-column second" data-type="second"><ul><li></li><li></li> ';
 	for(var i=0 ;i<=59;i++){
 	__p+=' <li data-value="'+
 	((__t=( i))==null?'':__t)+
@@ -3509,12 +3709,12 @@
 	((__t=( ( i < 10 ? ( "0" + i) : i)))==null?'':__t)+
 	' </li> ';
 	}
-	__p+=' <li></li></ul></div><div class="kub-datepicker-overlay"></div></div>';
+	__p+=' <li></li><li></li></ul></div><div class="kub-datepicker-overlay"></div></div>';
 	return __p;
 	};
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3536,7 +3736,7 @@
 	 * @require [polyfill](./polyfill.js.html)
 	 */
 
-	__webpack_require__(7)
+	__webpack_require__(8)
 
 	var MOBILE_REGEXP = /mobile|tablet|ip(ad|hone|od)|android/i
 
@@ -3791,7 +3991,7 @@
 
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3800,19 +4000,19 @@
 	 * 与`Kub`对象一致，增加样式文件。
 	 *
 	 */
-	__webpack_require__(26)
+	__webpack_require__(29)
 
-	module.exports = __webpack_require__(5)
+	module.exports = __webpack_require__(6)
 
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(27)({"insertAt":"top","css":".kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-dialog .kub-dialog-body{padding:12px}.kub-datepicker{font-size:16px;color:#333;text-align:center;white-space:nowrap;position:relative}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;top:54px;left:0;height:54px;width:100%;z-index:0;border:1px solid rgba(0,0,0,.1);border-radius:6px;box-shadow:0 0 108px rgba(0,0,0,.3);box-sizing:border-box}.kub-datepicker .kub-datepicker-column{position:relative;height:162px;padding:0 10px;display:inline-block;overflow:hidden;z-index:1}.kub-datepicker .kub-datepicker-column:after{position:absolute;font-size:12px;top:54px;right:0}.kub-datepicker .kub-datepicker-column ul li{line-height:54px;height:54px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}"})
+	__webpack_require__(30)({"insertAt":"top","css":".kub-datepicker-header .kub-datepicker-button:focus,.kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-popup .kub-popup{bottom:-280px;height:280px}.kub-datepicker{font-size:16px;color:#000;text-align:center;white-space:nowrap;position:relative;display:-webkit-box;display:-webkit-flex;display:flex;height:240px}.kub-datepicker:after,.kub-datepicker:before{position:absolute;left:0;right:0;height:96px;z-index:2;content:'';pointer-events:none}.kub-datepicker:before{top:0;background:-webkit-linear-gradient(top,rgba(255,255,255,.9),rgba(255,255,255,.35));background:linear-gradient(top,rgba(255,255,255,.9),rgba(255,255,255,.35))}.kub-datepicker:after{bottom:0;background:-webkit-linear-gradient(top,rgba(255,255,255,.35),rgba(255,255,255,.9));background:linear-gradient(top,rgba(255,255,255,.35),rgba(255,255,255,.9))}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;left:0;top:96px;height:48px;width:100%;border:1px solid rgba(0,0,0,.1);border-width:1px 0;z-index:3;pointer-events:none}.kub-datepicker .kub-datepicker-column{display:block;position:relative;overflow:hidden;z-index:1;-webkit-box-flex:1;-webkit-flex:1;flex:1;height:240px}.kub-datepicker .kub-datepicker-column:after{position:absolute;top:96px;right:2%;color:#999;font-size:12px;line-height:48px}.kub-datepicker .kub-datepicker-column ul li{width:100%;line-height:48px;height:48px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}.kub-datepicker-header{line-height:40px;text-align:center;background:#f4f4f4;color:#333;display:-webkit-box;display:-webkit-flex;display:flex}.kub-datepicker-header .kub-datepicker-button{display:block;-webkit-box-flex:1;-webkit-flex:1;flex:1;line-height:40px;border:none;background:0 0;text-align:left;padding:0 16px;font-size:16px;color:#999}.kub-datepicker-header .kub-datepicker-button:last-child{text-align:right;color:#222}.kub-popup-modal{-webkit-transition:background 350ms;transition:background 350ms;background:0 0}.kub-popup{background:#fff;width:100%;position:absolute;left:0;bottom:-60%;height:60%;z-index:1;-webkit-transition:bottom 350ms;transition:bottom 350ms}.kub-popup-animation{background:rgba(0,0,0,.6)}.kub-popup-animation .kub-popup{bottom:0}"})
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var _document = document,
