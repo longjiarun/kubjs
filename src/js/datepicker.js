@@ -52,13 +52,12 @@ var render = function(datepicker) {
         }
     })
 
-    var handlers = [{
-        handler: function(e) {
+    var handlers = [
+        function(e) {
             var cancel = options.cancel
             cancel ? cancel.call(this, e, datepicker) : popup.hide()
-        }
-    }, {
-        handler: function(e) {
+        },
+        function(e) {
             var confirm = options.confirm,
                 formatDate = datepicker.getDate().format(options.format)
 
@@ -67,12 +66,12 @@ var render = function(datepicker) {
                 popup.hide()
             }()
         }
-    }]
+    ]
 
     //注册按钮事件
     popup.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
         var index = parseInt($(this).attr('data-index')),
-            handler = handlers[index].handler
+            handler = handlers[index]
 
         handler && handler.call(this, e, popup)
     })

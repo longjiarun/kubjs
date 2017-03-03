@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.2.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.3.0. (https://github.com/longjiarun/kubjs)*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -66,7 +66,7 @@
 	var _window = window,
 	    Kub = _window.Kub = _window.Kub || {}
 
-	Kub.version = '2.1.0'
+	Kub.version = '2.3.0'
 
 	/**
 	 * ## Kub.$
@@ -1594,7 +1594,13 @@
 	    load:null
 	}
 
-	//更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内
+	/**
+	 * ## LazyLoad.prototype.updateElement
+	 *
+	 * 更新需要加载的节点，更新以后会立即检测是否有节点在可视区域内，修改的节点为替换，不是增加，意味着原来的节点会被替换。
+	 *
+	 * @return {instance} 当前实例
+	 */
 	_prototype.updateElement = function(element) {
 
 	    this.$element = $(element)
@@ -3033,13 +3039,12 @@
 	        }
 	    })
 
-	    var handlers = [{
-	        handler: function(e) {
+	    var handlers = [
+	        function(e) {
 	            var cancel = options.cancel
 	            cancel ? cancel.call(this, e, datepicker) : popup.hide()
-	        }
-	    }, {
-	        handler: function(e) {
+	        },
+	        function(e) {
 	            var confirm = options.confirm,
 	                formatDate = datepicker.getDate().format(options.format)
 
@@ -3048,12 +3053,12 @@
 	                popup.hide()
 	            }()
 	        }
-	    }]
+	    ]
 
 	    //注册按钮事件
 	    popup.$element.find(DIALOG_BUTTON_SELECTOR).on(EVENT_NAME, function(e) {
 	        var index = parseInt($(this).attr('data-index')),
-	            handler = handlers[index].handler
+	            handler = handlers[index]
 
 	        handler && handler.call(this, e, popup)
 	    })

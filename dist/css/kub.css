@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.2.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.3.0. (https://github.com/longjiarun/kubjs)*/
 /**
  * animate.less
  */
@@ -159,6 +159,7 @@
   white-space: nowrap;
   position: relative;
   display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
   height: 240px;
 }
@@ -205,6 +206,7 @@
   overflow: hidden;
   z-index: 1;
   -webkit-box-flex: 1;
+  -webkit-flex: 1;
   flex: 1;
   height: 240px;
 }
