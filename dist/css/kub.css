@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.3.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.3.0.*/
 /**
  * animate.less
  */
@@ -175,13 +175,13 @@
 }
 .kub-datepicker:before {
   top: 0;
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
-  background: linear-gradient(top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
+  background: -webkit-linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
 }
 .kub-datepicker:after {
   bottom: 0;
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.9));
-  background: linear-gradient(top, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.9));
+  background: -webkit-linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.9));
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.9));
 }
 .kub-datepicker ul,
 .kub-datepicker li {
