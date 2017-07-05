@@ -340,8 +340,8 @@ var bindEvents = function(swiper) {
     bindTransitionEndEvent(swiper)
 
     swiper.$element.on(START_EVENT, start)
-    $document.on(MOVE_EVENT, move)
-    $document.on(END_EVENT, end)
+    swiper.$element.on(MOVE_EVENT, move)
+    swiper.$element.on(END_EVENT, end)
 
     swiper.$element[0].onselectstart = returnFalse
     swiper.$element[0].ondragstart = returnFalse

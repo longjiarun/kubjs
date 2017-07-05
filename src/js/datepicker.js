@@ -296,8 +296,8 @@ var bindEvents = function(datepicker) {
         this.ondragstart = returnFalse
     })
 
-    $document.on(MOVE_EVENT, move)
-    $document.on(END_EVENT, end)
+    $('.' + POPUP_CLASS_NAME).on(MOVE_EVENT, move);
+    $('.' + POPUP_CLASS_NAME).on(END_EVENT, end);
 
     bindInputFocusEvent(datepicker)
 }
