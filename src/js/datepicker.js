@@ -245,7 +245,8 @@ var bindInputFocusEvent = function(datepicker) {
 //绑定事件
 var bindEvents = function(datepicker) {
     var flag = false,
-        $activeElement
+        $activeElement,
+        $element = datepicker.$element[0].popup.$element
 
     var start = function(event) {
             flag = true
@@ -296,8 +297,8 @@ var bindEvents = function(datepicker) {
         this.ondragstart = returnFalse
     })
 
-    $('.' + POPUP_CLASS_NAME).on(MOVE_EVENT, move);
-    $('.' + POPUP_CLASS_NAME).on(END_EVENT, end);
+    $element.on(MOVE_EVENT, move)
+    $element.on(END_EVENT, end)
 
     bindInputFocusEvent(datepicker)
 }

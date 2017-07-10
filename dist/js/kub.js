@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.3.0.*/
+/*! Kub Mobile JavaScript Components Library v2.4.0.*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1501,6 +1501,8 @@
 
 	    this.$container = $(this.options.container)
 
+	    this.isWebp = this.isSupportWebp()
+
 	    init(this)
 	}
 
@@ -1532,13 +1534,44 @@
 
 	    elements = getUnloadedElements(lazyload)
 
-	    lazyload.completed  = elements.length === 0 ? true : false
+	    lazyload.completed = elements.length === 0 ? true : false
 
 	    elements.forEach(function(element) {
 	        var $this = $(element)
 
 	        lazyload.isVisible($this) && lazyload.load($this)
 	    })
+	}
+
+	// 图片格式转换成webp格式
+	var handleImgToWebp = function(url, lazyload) {
+	    var changeURL = url.toString().replace(/(\.(?:gif|jpg|jpeg|png)(?:\.(?:jpg|png|webp))?)/i, function(match) {
+	        var result = ''
+	        if (match) {
+	            var type = match.toLowerCase()
+	        }
+
+	        switch (type) {
+	            case '.png.webp':
+	            case '.jpg.webp':
+	            case '.gif.webp':
+	            case '.jpeg.webp':
+	                result = match;
+	                break;
+	            case '.png':
+	            case '.jpg':
+	            case '.jpeg':
+	                result = lazyload.isWebp ? match + '.webp' : match;
+	                break;
+	            case '.gif':
+	                result = match
+	                break;
+	        }
+
+	        return result
+	    });
+
+	    return changeURL
 	}
 
 	var init = function(lazyload) {
@@ -1585,13 +1618,16 @@
 	 *
 	 *   `load` : `Function` 图片加载事件。
 	 *
+	 *   `imgToWebp` : `Boolean` 加载图片是否转换成webp格式
+	 *
 	 */
 	_prototype.defaults = {
 	    container: _window,
 	    threshold: 200,
 	    delay: 100,
 	    attributeName: 'original',
-	    load:null
+	    load: null,
+	    imgToWebp: false
 	}
 
 	/**
@@ -1647,7 +1683,7 @@
 	        element = $this[0]
 
 	    //如果节点不可见，则不进行加载
-	    if(element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0){
+	    if (element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0) {
 	        return false
 	    }
 
@@ -1662,6 +1698,25 @@
 	        return false
 	    }
 	    return true
+	}
+
+	/**
+	 * ## LazyLoad.prototype.isSupportWebp
+	 *
+	 * 是否支持webp图片格式后缀。
+	 *
+	 * @return {Boolean}    true： 支持 false： 不支持
+	 */
+	_prototype.isSupportWebp = function(){
+	    var element = document.createElement('canvas')
+
+	    if (!!(element.getContext && element.getContext('2d'))) {
+
+	        return element.toDataURL('image/webp').indexOf('data:image/webp') == 0
+
+	    } else {
+	        return false
+	    }
 	}
 
 	/**
@@ -1683,6 +1738,9 @@
 	    if (!original) {
 	        return this
 	    }
+
+	    original = options.imgToWebp ? handleImgToWebp(original, this) : original
+
 	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original)
 	    } else {
@@ -1707,12 +1765,13 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.belowthefold = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
-	        fold = _window.innerHeight  + _window.scrollY
+	        fold = _window.innerHeight + _window.scrollY
 	    } else {
-	        var $container = $(container), offset = $container.offset()
+	        var $container = $(container),
+	            offset = $container.offset()
 
 	        fold = offset.top + $container[0].offsetHeight
 	    }
@@ -1730,7 +1789,7 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.abovethetop = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.scrollY
@@ -1738,7 +1797,8 @@
 	        fold = $(container).offset().top
 	    }
 
-	    var $element = $(element), offset = $element.offset()
+	    var $element = $(element),
+	        offset = $element.offset()
 	    return fold >= offset.top + settings.threshold + $element[0].offsetHeight
 	}
 
@@ -1752,12 +1812,13 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.rightoffold = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.innerWidth + _window.scrollX
 	    } else {
-	        var $container = $(container), offset = $container.offset()
+	        var $container = $(container),
+	            offset = $container.offset()
 	        fold = offset.left + $container[0].offsetWidth
 	    }
 	    return fold <= $(element).offset().left - settings.threshold
@@ -1773,7 +1834,7 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.leftofbegin = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.scrollX
@@ -1781,7 +1842,8 @@
 	        fold = $(container).offset().left
 	    }
 
-	    var $element = $(element), offset = $element.offset()
+	    var $element = $(element),
+	        offset = $element.offset()
 
 	    return fold >= offset.left + settings.threshold + $element[0].offsetWidth
 	}
@@ -3232,7 +3294,8 @@
 	//绑定事件
 	var bindEvents = function(datepicker) {
 	    var flag = false,
-	        $activeElement
+	        $activeElement,
+	        $element = datepicker.$element[0].popup.$element
 
 	    var start = function(event) {
 	            flag = true
@@ -3283,8 +3346,8 @@
 	        this.ondragstart = returnFalse
 	    })
 
-	    $('.' + POPUP_CLASS_NAME).on(MOVE_EVENT, move);
-	    $('.' + POPUP_CLASS_NAME).on(END_EVENT, end);
+	    $element.on(MOVE_EVENT, move)
+	    $element.on(END_EVENT, end)
 
 	    bindInputFocusEvent(datepicker)
 	}

@@ -4,50 +4,50 @@
 
 0. Kub 由多个组件构成，组件之间依赖较低；
 
-0. 组件尽量做到轻量且扩展性良好；
+1. 组件尽量做到轻量且扩展性良好；
 
-0. 组件对外提供稳定的API，在使用时可通过参数配置或者继承实现定制化的组件；
+2. 组件对外提供稳定的API，在使用时可通过参数配置或者继承实现定制化的组件；
 
-0. 组件采用`commonjs`规范，采用`webpack`编译，对外提供源文件与编译后的文件；
+3. 组件采用`commonjs`规范，采用`webpack`编译，对外提供源文件与编译后的文件；
 
-0. 提供模板源文件与预编译后的文件；
+4. 提供模板源文件与预编译后的文件；
 
-0. `Kub`对外提供暴露全局的`Kub`变量，所有组件绑定在该变量中；
+5. `Kub`对外提供暴露全局的`Kub`变量，所有组件绑定在该变量中；
 
-0. 样式采用`less`编写，对外提供源文件与编译后的文件；
+6. 样式采用`less`编写，对外提供源文件与编译后的文件；
 
-0. 样式可统一在`variables.less`文件中配置；
+7. 样式可统一在`variables.less`文件中配置；
 
-0. 对外提供不包含样式的`kub.js`以及包含样式的`kub.style.js`;
+8. 对外提供不包含样式的`kub.js`以及包含样式的`kub.style.js`;
 
 ## 兼容性
 
 0. ios7及以上版本；
-    
-0. Android4.0及以上版本；
+
+1. Android4.0及以上版本；
 
 ## 版本
 
 0. 遵循[语义化版本规范](http://semver.org/lang/zh-CN/)；
 
-0. `master`分支为最新的稳定的发布版本；
+1. `master`分支为最新的稳定的发布版本；
 
-0. `tags`中的分支对应每一个发布版本；
+2. `tags`中的分支对应每一个发布版本；
 
-0. 其余分支为开发分支，为不稳定版本；
+3. 其余分支为开发分支，为不稳定版本；
 
-0. `1.*` 版本将不再升级与维护，除非有重大bug；
+4. `1.*` 版本将不再升级与维护，除非有重大bug；
 
 ## 安装
 
 ### CDN
 
 ```
-<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.3.0/index.css">
+<link rel="stylesheet" type="text/css" href="//assets.geilicdn.com/v-components/kubjs/2.4.0/index.css">
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.3.0/index.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.4.0/index.js"></script>
 
-<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.3.0/index.style.js"></script>
+<script type="text/javascript" src="//assets.geilicdn.com/v-components/kubjs/2.4.0/index.style.js"></script>
 ```
 
 ### git
@@ -142,31 +142,31 @@ require('kub/src/less/dialog.less')
 
 0. 模块规范由`umd`修改为`commonjs`;
 
-0. 去除`zepto`、`underscore`、`hammerjs`依赖；
+1. 去除`zepto`、`underscore`、`hammerjs`依赖；
 
-0. 去除`js/extend`目录中的组件；
+2. 去除`js/extend`目录中的组件；
 
-0. 去除`calculator`组件；
+3. 去除`calculator`组件；
 
-0. 将`os`模块迁移到`detect`中，绑定由`Kub.core.os`迁移到`Kub.os`;
+4. 将`os`模块迁移到`detect`中，绑定由`Kub.core.os`迁移到`Kub.os`;
 
-0. 增加`kub.js`与`kub.style.js`文件；
+5. 增加`kub.js`与`kub.style.js`文件；
 
-0. 将模板从组件中抽离，提供模板预编译文件；
+6. 将模板从组件中抽离，提供模板预编译文件；
 
-0. 去除多余API，详见API文档；
+7. 去除多余API，详见API文档；
 
-0. 将`css`文件夹名称修改为`less`；
+8. 将`css`文件夹名称修改为`less`；
 
-0. 将样式可配置项统一配置在`variables.less`中；
+9. 将样式可配置项统一配置在`variables.less`中；
 
-0. 在`variables.less`中提供单位可配置变量`@unit: 1px;`;
+10. 在`variables.less`中提供单位可配置变量`@unit: 1px;`;
 
 ## 问题
 
 0. 通过[Github issues](https://github.com/longjiarun/kubjs/issues)反馈；
 
-0. 通过[Email](mailto:longjiarun@qq.com)反馈；
+1. 通过[Email](mailto:longjiarun@qq.com)反馈；
 
 ## API文档
 
