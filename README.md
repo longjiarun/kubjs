@@ -170,4 +170,4 @@ require('kub/src/less/dialog.less')
 
 ## API文档
 
-[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.3.0/kub.js.html)
+[查看文档](http://h5.weidian.com/v-components/kubjs/docs/v2.4.0/kub.js.html)

@@ -1618,7 +1618,7 @@
 	 *
 	 *   `load` : `Function` 图片加载事件。
 	 *
-	 *   `imgToWebp` : `Boolean` 加载图片是否转换成webp格式。默认为false：不转换成webp格式。
+	 *   `useWebp` : `Boolean` 加载图片是否使用webp格式。默认为false：不使用webp格式。
 	 *
 	 */
 	_prototype.defaults = {
@@ -1627,7 +1627,7 @@
 	    delay: 100,
 	    attributeName: 'original',
 	    load: null,
-	    imgToWebp: false
+	    useWebp: false
 	}
 
 	/**
@@ -1739,7 +1739,7 @@
 	        return this
 	    }
 
-	    original = options.imgToWebp ? handleImgToWebp(original, this) : original
+	    original = options.useWebp ? handleImgToWebp(original, this) : original
 
 	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original)
