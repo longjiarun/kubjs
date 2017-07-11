@@ -1,4 +1,4 @@
-/*! Kub Mobile JavaScript Components Library v2.3.0. (https://github.com/longjiarun/kubjs)*/
+/*! Kub Mobile JavaScript Components Library v2.4.0.*/
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -43,19 +43,19 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(28);
 
 
-/***/ },
+/***/ }),
 /* 1 */,
 /* 2 */,
 /* 3 */,
 /* 4 */,
 /* 5 */,
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Kub
@@ -153,9 +153,9 @@
 	module.exports = Kub
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Lite
@@ -749,9 +749,9 @@
 	module.exports = _window.Zepto || Lite
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	var _window = window,
 	    _document = document
@@ -813,9 +813,9 @@
 	}
 
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * # core
@@ -1065,9 +1065,9 @@
 	module.exports = new Core()
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * # os
@@ -1138,9 +1138,9 @@
 	module.exports = os
 
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * # DateHelper
@@ -1393,9 +1393,9 @@
 	module.exports = dateHelper
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * # cookie
@@ -1466,9 +1466,9 @@
 	module.exports = cookie
 
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # LazyLoad
@@ -1501,6 +1501,8 @@
 
 	    this.$container = $(this.options.container)
 
+	    this.isWebp = this.isSupportWebp()
+
 	    init(this)
 	}
 
@@ -1532,13 +1534,44 @@
 
 	    elements = getUnloadedElements(lazyload)
 
-	    lazyload.completed  = elements.length === 0 ? true : false
+	    lazyload.completed = elements.length === 0 ? true : false
 
 	    elements.forEach(function(element) {
 	        var $this = $(element)
 
 	        lazyload.isVisible($this) && lazyload.load($this)
 	    })
+	}
+
+	// 图片格式转换成webp格式
+	var handleImgToWebp = function(url, lazyload) {
+	    var changeURL = url.toString().replace(/(\.(?:gif|jpg|jpeg|png)(?:\.(?:jpg|png|webp))?)/i, function(match) {
+	        var result = ''
+	        if (match) {
+	            var type = match.toLowerCase()
+	        }
+
+	        switch (type) {
+	            case '.png.webp':
+	            case '.jpg.webp':
+	            case '.gif.webp':
+	            case '.jpeg.webp':
+	                result = match;
+	                break;
+	            case '.png':
+	            case '.jpg':
+	            case '.jpeg':
+	                result = lazyload.isWebp ? match + '.webp' : match;
+	                break;
+	            case '.gif':
+	                result = match
+	                break;
+	        }
+
+	        return result
+	    });
+
+	    return changeURL
 	}
 
 	var init = function(lazyload) {
@@ -1585,13 +1618,16 @@
 	 *
 	 *   `load` : `Function` 图片加载事件。
 	 *
+	 *   `useWebp` : `Boolean` 加载图片是否使用webp格式。默认为false：不使用webp格式。
+	 *
 	 */
 	_prototype.defaults = {
 	    container: _window,
 	    threshold: 200,
 	    delay: 100,
 	    attributeName: 'original',
-	    load:null
+	    load: null,
+	    useWebp: false
 	}
 
 	/**
@@ -1647,7 +1683,7 @@
 	        element = $this[0]
 
 	    //如果节点不可见，则不进行加载
-	    if(element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0){
+	    if (element.offsetWidth == 0 && element.offsetHeight == 0 && element.getClientRects().length == 0) {
 	        return false
 	    }
 
@@ -1662,6 +1698,25 @@
 	        return false
 	    }
 	    return true
+	}
+
+	/**
+	 * ## LazyLoad.prototype.isSupportWebp
+	 *
+	 * 是否支持webp图片格式后缀。
+	 *
+	 * @return {Boolean}    true： 支持 false： 不支持
+	 */
+	_prototype.isSupportWebp = function(){
+	    var element = document.createElement('canvas')
+
+	    if (!!(element.getContext && element.getContext('2d'))) {
+
+	        return element.toDataURL('image/webp').indexOf('data:image/webp') == 0
+
+	    } else {
+	        return false
+	    }
 	}
 
 	/**
@@ -1683,6 +1738,9 @@
 	    if (!original) {
 	        return this
 	    }
+
+	    original = options.useWebp ? handleImgToWebp(original, this) : original
+
 	    if ($element[0].nodeName === 'IMG') {
 	        $element.attr('src', original)
 	    } else {
@@ -1707,12 +1765,13 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.belowthefold = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
-	        fold = _window.innerHeight  + _window.scrollY
+	        fold = _window.innerHeight + _window.scrollY
 	    } else {
-	        var $container = $(container), offset = $container.offset()
+	        var $container = $(container),
+	            offset = $container.offset()
 
 	        fold = offset.top + $container[0].offsetHeight
 	    }
@@ -1730,7 +1789,7 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.abovethetop = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.scrollY
@@ -1738,7 +1797,8 @@
 	        fold = $(container).offset().top
 	    }
 
-	    var $element = $(element), offset = $element.offset()
+	    var $element = $(element),
+	        offset = $element.offset()
 	    return fold >= offset.top + settings.threshold + $element[0].offsetHeight
 	}
 
@@ -1752,12 +1812,13 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.rightoffold = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.innerWidth + _window.scrollX
 	    } else {
-	        var $container = $(container), offset = $container.offset()
+	        var $container = $(container),
+	            offset = $container.offset()
 	        fold = offset.left + $container[0].offsetWidth
 	    }
 	    return fold <= $(element).offset().left - settings.threshold
@@ -1773,7 +1834,7 @@
 	 * @return {Boolean}        是：true 否 ：false
 	 */
 	_prototype.leftofbegin = function(element, settings) {
-	    var fold,container = settings.container
+	    var fold, container = settings.container
 
 	    if (container === _window) {
 	        fold = _window.scrollX
@@ -1781,7 +1842,8 @@
 	        fold = $(container).offset().left
 	    }
 
-	    var $element = $(element), offset = $element.offset()
+	    var $element = $(element),
+	        offset = $element.offset()
 
 	    return fold >= offset.left + settings.threshold + $element[0].offsetWidth
 	}
@@ -1789,9 +1851,9 @@
 	module.exports = LazyLoad
 
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Dialog
@@ -1974,9 +2036,9 @@
 	module.exports = Dialog
 
 
-/***/ },
+/***/ }),
 /* 15 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -2012,9 +2074,9 @@
 	return __p;
 	};
 
-/***/ },
+/***/ }),
 /* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Alert
@@ -2089,9 +2151,9 @@
 	module.exports = Alert
 
 
-/***/ },
+/***/ }),
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Confirm
@@ -2179,9 +2241,9 @@
 	module.exports = Confirm
 
 
-/***/ },
+/***/ }),
 /* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Prompt
@@ -2288,9 +2350,9 @@
 	module.exports = Prompt
 
 
-/***/ },
+/***/ }),
 /* 19 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -2306,9 +2368,9 @@
 	return __p;
 	};
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Toast
@@ -2391,9 +2453,9 @@
 	module.exports = Toast
 
 
-/***/ },
+/***/ }),
 /* 21 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Loader
@@ -2463,9 +2525,9 @@
 	module.exports = Loader
 
 
-/***/ },
+/***/ }),
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Swiper
@@ -2809,8 +2871,8 @@
 	    bindTransitionEndEvent(swiper)
 
 	    swiper.$element.on(START_EVENT, start)
-	    $document.on(MOVE_EVENT, move)
-	    $document.on(END_EVENT, end)
+	    swiper.$element.on(MOVE_EVENT, move)
+	    swiper.$element.on(END_EVENT, end)
 
 	    swiper.$element[0].onselectstart = returnFalse
 	    swiper.$element[0].ondragstart = returnFalse
@@ -2981,9 +3043,9 @@
 	module.exports = Swiper
 
 
-/***/ },
+/***/ }),
 /* 23 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # DatePicker
@@ -3232,7 +3294,8 @@
 	//绑定事件
 	var bindEvents = function(datepicker) {
 	    var flag = false,
-	        $activeElement
+	        $activeElement,
+	        $element = datepicker.$element[0].popup.$element
 
 	    var start = function(event) {
 	            flag = true
@@ -3283,8 +3346,8 @@
 	        this.ondragstart = returnFalse
 	    })
 
-	    $document.on(MOVE_EVENT, move)
-	    $document.on(END_EVENT, end)
+	    $element.on(MOVE_EVENT, move)
+	    $element.on(END_EVENT, end)
 
 	    bindInputFocusEvent(datepicker)
 	}
@@ -3472,9 +3535,9 @@
 	module.exports = DatePicker
 
 
-/***/ },
+/***/ }),
 /* 24 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Popup
@@ -3623,9 +3686,9 @@
 	module.exports = Popup
 
 
-/***/ },
+/***/ }),
 /* 25 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -3637,9 +3700,9 @@
 	return __p;
 	};
 
-/***/ },
+/***/ }),
 /* 26 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = function(data){
 	var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
@@ -3713,9 +3776,9 @@
 	return __p;
 	};
 
-/***/ },
+/***/ }),
 /* 27 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Touch
@@ -3990,9 +4053,9 @@
 	module.exports = Touch
 
 
-/***/ },
+/***/ }),
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * # Kub
@@ -4005,15 +4068,15 @@
 	module.exports = __webpack_require__(6)
 
 
-/***/ },
+/***/ }),
 /* 29 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	__webpack_require__(30)({"insertAt":"top","css":".kub-datepicker-header .kub-datepicker-button:focus,.kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-popup .kub-popup{bottom:-280px;height:280px}.kub-datepicker{font-size:16px;color:#000;text-align:center;white-space:nowrap;position:relative;display:-webkit-box;display:-webkit-flex;display:flex;height:240px}.kub-datepicker:after,.kub-datepicker:before{position:absolute;left:0;right:0;height:96px;z-index:2;content:'';pointer-events:none}.kub-datepicker:before{top:0;background:-webkit-linear-gradient(top,rgba(255,255,255,.9),rgba(255,255,255,.35));background:linear-gradient(top,rgba(255,255,255,.9),rgba(255,255,255,.35))}.kub-datepicker:after{bottom:0;background:-webkit-linear-gradient(top,rgba(255,255,255,.35),rgba(255,255,255,.9));background:linear-gradient(top,rgba(255,255,255,.35),rgba(255,255,255,.9))}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;left:0;top:96px;height:48px;width:100%;border:1px solid rgba(0,0,0,.1);border-width:1px 0;z-index:3;pointer-events:none}.kub-datepicker .kub-datepicker-column{display:block;position:relative;overflow:hidden;z-index:1;-webkit-box-flex:1;-webkit-flex:1;flex:1;height:240px}.kub-datepicker .kub-datepicker-column:after{position:absolute;top:96px;right:2%;color:#999;font-size:12px;line-height:48px}.kub-datepicker .kub-datepicker-column ul li{width:100%;line-height:48px;height:48px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}.kub-datepicker-header{line-height:40px;text-align:center;background:#f4f4f4;color:#333;display:-webkit-box;display:-webkit-flex;display:flex}.kub-datepicker-header .kub-datepicker-button{display:block;-webkit-box-flex:1;-webkit-flex:1;flex:1;line-height:40px;border:none;background:0 0;text-align:left;padding:0 16px;font-size:16px;color:#999}.kub-datepicker-header .kub-datepicker-button:last-child{text-align:right;color:#222}.kub-popup-modal{-webkit-transition:background 350ms;transition:background 350ms;background:0 0}.kub-popup{background:#fff;width:100%;position:absolute;left:0;bottom:-60%;height:60%;z-index:1;-webkit-transition:bottom 350ms;transition:bottom 350ms}.kub-popup-animation{background:rgba(0,0,0,.6)}.kub-popup-animation .kub-popup{bottom:0}"})
+	__webpack_require__(30)({"insertAt":"top","css":".kub-datepicker-header .kub-datepicker-button:focus,.kub-dialog .kub-dialog-button:focus,.kub-prompt .kub-prompt-input:focus{outline:0}.kub-animated{-webkit-animation-duration:.5s;animation-duration:.5s;-webkit-animation-fill-mode:both;animation-fill-mode:both}@-webkit-keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}@keyframes kubZoomIn{0%{opacity:0;-webkit-transform:scale3d(1.1,1.1,1.1);transform:scale3d(1.1,1.1,1.1)}100%{opacity:1}}.kub-zoomin{-webkit-animation-name:kubZoomIn;animation-name:kubZoomIn}.kub-dialog-modal{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;height:100%;z-index:10000}.kub-modal{background:rgba(0,0,0,.6)}.kub-dialog-wrapper{display:table;width:100%;height:100%}.kub-dialog-wrapper .kub-dialog-container{display:table-cell;vertical-align:middle}.kub-dialog{width:86%;margin:0 auto;font-size:18px;background:#fff;border-radius:6px;color:#333;box-shadow:0 2px 5px rgba(0,0,0,.1)}.kub-dialog .kub-dialog-header{border-radius:6px 6px 0 0;padding:16px 8px;text-align:center;background:#f4f4f4}.kub-dialog .kub-dialog-body{line-height:1.5;padding:24px 16px;color:#333}.kub-dialog .kub-dialog-button{display:block;background:0 0;border:none;border-right:2px solid #f4f4f4;padding:16px 8px;font-size:100%;text-align:center}.kub-dialog .kub-dialog-footer{border-top:2px solid #f4f4f4;display:-webkit-box;display:-webkit-flex;display:flex}.kub-dialog .kub-dialog-footer .kub-dialog-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.kub-dialog .kub-dialog-footer .kub-dialog-button:last-child{border:none}.kub-toast{position:fixed;bottom:auto;height:auto;z-index:10002}.kub-toast .kub-dialog{border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.7)}.kub-toast .kub-dialog-body{padding:16px 8px;color:#fff;text-align:center}.kub-prompt .kub-prompt-input{font-size:100%;width:100%;border:1px solid #f4f4f4;padding:8px;background:#fff;box-sizing:border-box}.kub-loader{z-index:10001}.kub-loader .kub-dialog{width:36%;background:rgba(0,0,0,.7);border-radius:16px}.kub-loader .kub-dialog .kub-dialog-body{color:#fff;padding:32px 16px;text-align:center}.kub-datepicker-popup .kub-popup{bottom:-280px;height:280px}.kub-datepicker{font-size:16px;color:#000;text-align:center;white-space:nowrap;position:relative;display:-webkit-box;display:-webkit-flex;display:flex;height:240px}.kub-datepicker:after,.kub-datepicker:before{position:absolute;left:0;right:0;height:96px;z-index:2;content:'';pointer-events:none}.kub-datepicker:before{top:0;background:-webkit-linear-gradient(to bottom,rgba(255,255,255,.9),rgba(255,255,255,.35));background:linear-gradient(to bottom,rgba(255,255,255,.9),rgba(255,255,255,.35))}.kub-datepicker:after{bottom:0;background:-webkit-linear-gradient(to bottom,rgba(255,255,255,.35),rgba(255,255,255,.9));background:linear-gradient(to bottom,rgba(255,255,255,.35),rgba(255,255,255,.9))}.kub-datepicker li,.kub-datepicker ul{list-style:none;margin:0;padding:0}.kub-datepicker .kub-datepicker-overlay{position:absolute;left:0;top:96px;height:48px;width:100%;border:1px solid rgba(0,0,0,.1);border-width:1px 0;z-index:3;pointer-events:none}.kub-datepicker .kub-datepicker-column{display:block;position:relative;overflow:hidden;z-index:1;-webkit-box-flex:1;-webkit-flex:1;flex:1;height:240px}.kub-datepicker .kub-datepicker-column:after{position:absolute;top:96px;right:2%;color:#999;font-size:12px;line-height:48px}.kub-datepicker .kub-datepicker-column ul li{width:100%;line-height:48px;height:48px}.kub-datepicker .year:after{content:\"年\"}.kub-datepicker .month:after{content:\"月\"}.kub-datepicker .day:after{content:\"日\"}.kub-datepicker .hour:after{content:\"时\"}.kub-datepicker .minute:after{content:\"分\"}.kub-datepicker .second:after{content:\"秒\"}.kub-datepicker-en .year:after{content:\"y\"}.kub-datepicker-en .month:after{content:\"m\"}.kub-datepicker-en .day:after{content:\"d\"}.kub-datepicker-en .hour:after{content:\"h\"}.kub-datepicker-en .minute:after{content:\"min\"}.kub-datepicker-en .second:after{content:\"s\"}.kub-datepicker-header{line-height:40px;text-align:center;background:#f4f4f4;color:#333;display:-webkit-box;display:-webkit-flex;display:flex}.kub-datepicker-header .kub-datepicker-button{display:block;-webkit-box-flex:1;-webkit-flex:1;flex:1;line-height:40px;border:none;background:0 0;text-align:left;padding:0 16px;font-size:16px;color:#999}.kub-datepicker-header .kub-datepicker-button:last-child{text-align:right;color:#222}.kub-popup-modal{-webkit-transition:background 350ms;transition:background 350ms;background:0 0}.kub-popup{background:#fff;width:100%;position:absolute;left:0;bottom:-60%;height:60%;z-index:1;-webkit-transition:bottom 350ms;transition:bottom 350ms}.kub-popup-animation{background:rgba(0,0,0,.6)}.kub-popup-animation .kub-popup{bottom:0}"})
 
-/***/ },
+/***/ }),
 /* 30 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	var _document = document,
 		_head = _document.head,
@@ -4048,5 +4111,5 @@
 		insertStyleElement(options, styleElement)
 	}
 
-/***/ }
+/***/ })
 /******/ ]);
