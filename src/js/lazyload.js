@@ -146,7 +146,7 @@ var init = function(lazyload) {
  *
  *   `load` : `Function` 图片加载事件。
  *
- *   `imgToWebp` : `Boolean` 加载图片是否转换成webp格式
+ *   `imgToWebp` : `Boolean` 加载图片是否转换成webp格式。默认为false：不转换成webp格式。
  *
  */
 _prototype.defaults = {
